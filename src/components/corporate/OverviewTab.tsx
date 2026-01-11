@@ -48,6 +48,7 @@ interface OverviewTabProps {
   onTogglePauseProject: (id: string) => void;
   onNavigateToProject: (id: string) => void;
   onMarkActivityAsRead?: (activityId: string) => void;
+  loading?: boolean;
 }
 
 export function OverviewTab({
@@ -60,7 +61,8 @@ export function OverviewTab({
   onEditProject,
   onTogglePauseProject,
   onNavigateToProject,
-  onMarkActivityAsRead
+  onMarkActivityAsRead,
+  loading
 }: OverviewTabProps) {
   const [viewMode, setViewMode] = useState<'table' | 'card'>('card');
   const [searchQuery, setSearchQuery] = useState('');

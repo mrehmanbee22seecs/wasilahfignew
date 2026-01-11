@@ -17,21 +17,10 @@ import { executeRecaptcha } from './recaptchaService';
 import { AuthEvents } from './analyticsService';
 import { getMaskedEmailForLogging } from '../utils/emailMasking';
 import { projectId, publicAnonKey } from '../utils/supabase/info';
+import { supabase } from '../lib/supabase';
 
-// =====================================================
-// SUPABASE CLIENT INITIALIZATION
-// =====================================================
-
-const supabaseUrl = `https://${projectId}.supabase.co`;
-const supabaseAnonKey = publicAnonKey;
-
-export const supabase: SupabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    autoRefreshToken: true,
-    persistSession: true,
-    detectSessionInUrl: true
-  }
-});
+// Export the supabase client from lib for consistency
+export { supabase } from '../lib/supabase';
 
 // =====================================================
 // TYPE DEFINITIONS

@@ -11,117 +11,69 @@ import { ContractManagement } from '../components/corporate/ContractManagement';
 import { RequestReportModal, ReportRequest } from '../components/corporate/RequestReportModal';
 import { OfflineBanner } from '../components/corporate/OfflineBanner';
 import { ProjectsPage } from './ProjectsPage';
-import { 
-  MOCK_PENDING_PAYMENTS, 
-  MOCK_PAYMENT_HISTORY, 
-  MOCK_BUDGET_LINES, 
-  MOCK_PROJECT_BUDGETS,
-  MOCK_BUDGET_ALERTS,
-  MOCK_CONTRACTS,
-  MOCK_BUDGET_FORECAST
-} from '../data/mockCorporateData';
 import { toast } from 'sonner';
+import { useAuth } from '../contexts/AuthContext';
+import { useCorporateDashboardStats, useCorporateProjects } from '../hooks/useCorporates';
+import { usePaymentApprovals } from '../hooks/usePayments';
+import { useRealtimeProjects } from '../hooks/useRealtimeProjects';
+import { useRealtimePaymentApprovals } from '../hooks/useRealtimePayments';
+import { useRealtimeActivityFeed } from '../hooks/useRealtimeActivityFeed';
+import { paymentsApi } from '../lib/api/payments';
+import { useCorporateBudgetOverview, useProjectBudgets, useBudgetAlerts, useBudgetForecast } from '../hooks/useBudget';
 
 export function CorporateDashboard({ onNavigateHome }: { onNavigateHome?: () => void }) {
+  const { user } = useAuth();
+  const corporateId = user?.id || null;
+  
   const [activeTab, setActiveTab] = useState<'overview' | 'payments' | 'budget' | 'contracts' | 'csr-plan' | 'volunteering' | 'calendar' | 'projects'>('overview');
   const [isNavCollapsed, setIsNavCollapsed] = useState(false);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [showRequestReportModal, setShowRequestReportModal] = useState(false);
-  const [activities, setActivities] = useState([
-    {
-      id: 'a1',
-      type: 'media_upload' as const,
-      user: 'Sara Khan (Shehri CBE)',
-      message: 'uploaded 12 photos from the beach cleanup event',
-      projectId: 'p1',
-      projectName: 'Clean Karachi Drive',
-      timestamp: '2025-12-14T08:32:00Z',
-      read: false
-    },
-    {
-      id: 'a2',
-      type: 'payment' as const,
-      user: 'Finance Team',
-      message: 'released PKR 50,000 to NGO Alfalah',
-      projectId: 'p3',
-      projectName: 'Healthcare Access Initiative',
-      timestamp: '2025-12-13T12:00:00Z',
-      read: false
-    },
-    {
-      id: 'a3',
-      type: 'volunteer_join' as const,
-      user: 'Ahmed Ali',
-      message: 'joined as a volunteer',
-      timestamp: '2025-12-13T09:15:00Z',
-      read: true
-    },
-    {
-      id: 'a4',
-      type: 'milestone' as const,
-      user: 'System',
-      message: 'Project milestone achieved: 50% completion',
-      projectId: 'p1',
-      projectName: 'Clean Karachi Drive',
-      timestamp: '2025-12-12T16:00:00Z',
-      read: true
-    }
-  ]);
 
-  // Mock data - replace with React Query/Supabase calls
-  const mockKpiData = {
-    activeProjects: 12,
-    beneficiariesYtd: 4385,
-    csrSpendYtd: { amount: 1250000, currency: 'PKR' },
-    upcomingEvents: 3,
+  // Real-time data hooks
+  const { stats, loading: statsLoading } = useCorporateDashboardStats(corporateId);
+  const { projects, loading: projectsLoading } = useCorporateProjects(corporateId);
+  const { approvals, loading: approvalsLoading, refetch: refetchApprovals } = usePaymentApprovals(corporateId);
+  
+  // Budget hooks
+  const { budget, budgetLines, loading: budgetLoading } = useCorporateBudgetOverview(corporateId);
+  const { projectBudgets, loading: projectBudgetsLoading } = useProjectBudgets(corporateId);
+  const { alerts: budgetAlerts, loading: alertsLoading } = useBudgetAlerts(corporateId);
+  const { forecast: budgetForecast, loading: forecastLoading } = useBudgetForecast(corporateId);
+  
+  // Real-time subscriptions
+  const { projects: realtimeProjects } = useRealtimeProjects(corporateId, projects);
+  const { approvals: realtimeApprovals } = useRealtimePaymentApprovals(corporateId, approvals);
+  const { activities } = useRealtimeActivityFeed(corporateId);
+
+  // Use real-time data if available, fallback to initial data
+  const currentProjects = realtimeProjects.length > 0 ? realtimeProjects : projects;
+  const currentApprovals = realtimeApprovals.length > 0 ? realtimeApprovals : approvals;
+
+  // Transform stats data for KPI cards
+  const kpiData = stats ? {
+    activeProjects: stats.active_projects || 0,
+    beneficiariesYtd: stats.total_beneficiaries || 0,
+    csrSpendYtd: { amount: stats.total_spent || 0, currency: 'PKR' },
+    upcomingEvents: stats.upcoming_events || 0,
     trends: {
-      activeProjects: { pct: 5, period: 'vs Q2' },
-      beneficiariesYtd: { pct: -2, period: 'vs Q2' },
-      csrSpendYtd: { pct: 12, period: 'vs Q2' },
-      upcomingEvents: { pct: 0, period: 'vs Q2' }
+      activeProjects: { pct: stats.project_growth || 0, period: 'vs last month' },
+      beneficiariesYtd: { pct: stats.beneficiary_growth || 0, period: 'vs last month' },
+      csrSpendYtd: { pct: stats.spend_growth || 0, period: 'vs last month' },
+      upcomingEvents: { pct: 0, period: 'vs last month' }
+    }
+  } : {
+    activeProjects: 0,
+    beneficiariesYtd: 0,
+    csrSpendYtd: { amount: 0, currency: 'PKR' },
+    upcomingEvents: 0,
+    trends: {
+      activeProjects: { pct: 0, period: 'vs last month' },
+      beneficiariesYtd: { pct: 0, period: 'vs last month' },
+      csrSpendYtd: { pct: 0, period: 'vs last month' },
+      upcomingEvents: { pct: 0, period: 'vs last month' }
     }
   };
-
-  const mockProjects = [
-    {
-      id: 'p1',
-      title: 'Clean Karachi Drive',
-      status: 'active' as const,
-      ngoName: 'Shehri CBE',
-      startDate: '2025-01-15',
-      endDate: '2025-06-30',
-      progress: 65,
-      volunteersCount: 42,
-      budget: 500000,
-      spent: 325000,
-      thumbnail: 'https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=400'
-    },
-    {
-      id: 'p2',
-      title: 'Skills Training for Youth',
-      status: 'active' as const,
-      ngoName: 'The Citizens Foundation',
-      startDate: '2025-02-01',
-      endDate: '2025-08-31',
-      progress: 40,
-      volunteersCount: 18,
-      budget: 750000,
-      spent: 300000,
-      thumbnail: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=400'
-    },
-    {
-      id: 'p3',
-      title: 'Healthcare Access Initiative',
-      status: 'draft' as const,
-      ngoName: 'Akhuwat Foundation',
-      startDate: '2025-04-01',
-      endDate: '2025-12-31',
-      progress: 10,
-      volunteersCount: 5,
-      budget: 1000000,
-      spent: 100000
-    }
-  ];
 
   const mockCSRPlan = {
     id: 'plan_2025',
@@ -278,35 +230,38 @@ export function CorporateDashboard({ onNavigateHome }: { onNavigateHome?: () => 
   };
 
   const handleMarkActivityAsRead = (activityId: string) => {
-    setActivities(prev =>
-      prev.map(activity =>
-        activity.id === activityId ? { ...activity, read: true } : activity
-      )
-    );
+    // Mark activity as read in database
+    // For now, activities come from real-time subscription
+    console.log('Mark activity as read:', activityId);
   };
 
-  // Payment handlers
+  // Payment handlers - Connected to real API
   const handleApprovePayment = async (paymentId: string, notes: string) => {
-    console.log('Approve payment:', paymentId, notes);
-    // TODO: Implement Supabase update
-    // await supabase.from('payments').update({
-    //   corporate_approved_at: new Date().toISOString(),
-    //   corporate_approved_by: currentUserId,
-    //   corporate_notes: notes,
-    //   status: 'pending_admin'
-    // }).eq('id', paymentId);
-    toast.success('Payment approved! Sent to Admin for final approval.');
+    try {
+      const response = await paymentsApi.approvePayment(paymentId, { notes });
+      if (response.success) {
+        toast.success('Payment approved! Sent to Admin for final approval.');
+        refetchApprovals();
+      } else {
+        toast.error(response.error?.message || 'Failed to approve payment');
+      }
+    } catch (error) {
+      toast.error('Failed to approve payment');
+    }
   };
 
   const handleRejectPayment = async (paymentId: string, reason: string) => {
-    console.log('Reject payment:', paymentId, reason);
-    // TODO: Implement Supabase update
-    // await supabase.from('payments').update({
-    //   status: 'rejected',
-    //   rejected_by: currentUserId,
-    //   rejection_reason: reason
-    // }).eq('id', paymentId);
-    toast.error('Payment rejected');
+    try {
+      const response = await paymentsApi.rejectPayment(paymentId, { reason });
+      if (response.success) {
+        toast.error('Payment rejected');
+        refetchApprovals();
+      } else {
+        toast.error(response.error?.message || 'Failed to reject payment');
+      }
+    } catch (error) {
+      toast.error('Failed to reject payment');
+    }
   };
 
   // Budget handlers
@@ -367,9 +322,10 @@ export function CorporateDashboard({ onNavigateHome }: { onNavigateHome?: () => 
             {/* Overview Tab */}
             {activeTab === 'overview' && (
               <OverviewTab
-                kpiData={mockKpiData}
-                projects={mockProjects}
+                kpiData={kpiData}
+                projects={currentProjects}
                 activities={activities}
+                loading={statsLoading || projectsLoading}
                 onCreateProject={handleCreateProject}
                 onRequestReport={handleRequestReport}
                 onViewProjectDetails={handleViewProjectDetails}
@@ -383,8 +339,8 @@ export function CorporateDashboard({ onNavigateHome }: { onNavigateHome?: () => 
             {/* Payment Approval Tab */}
             {activeTab === 'payments' && (
               <PaymentApprovalTab
-                pendingPayments={MOCK_PENDING_PAYMENTS}
-                paymentHistory={MOCK_PAYMENT_HISTORY}
+                pendingPayments={currentApprovals}
+                paymentHistory={[]}
                 onApprovePayment={handleApprovePayment}
                 onRejectPayment={handleRejectPayment}
               />
@@ -393,11 +349,11 @@ export function CorporateDashboard({ onNavigateHome }: { onNavigateHome?: () => 
             {/* Budget Tracker Tab */}
             {activeTab === 'budget' && (
               <BudgetTracker
-                budgetLines={MOCK_BUDGET_LINES}
-                projectBudgets={MOCK_PROJECT_BUDGETS}
-                alerts={MOCK_BUDGET_ALERTS}
-                forecast={MOCK_BUDGET_FORECAST}
-                totalBudget={1800000}
+                budgetLines={budgetLines}
+                projectBudgets={projectBudgets}
+                alerts={budgetAlerts}
+                forecast={budgetForecast}
+                totalBudget={budget?.total_allocated || 1800000}
                 onAcknowledgeAlert={handleAcknowledgeAlert}
               />
             )}
@@ -405,7 +361,7 @@ export function CorporateDashboard({ onNavigateHome }: { onNavigateHome?: () => 
             {/* Contract Management Tab */}
             {activeTab === 'contracts' && (
               <ContractManagement
-                contracts={MOCK_CONTRACTS}
+                contracts={[]}
                 onCreateContract={handleCreateContract}
                 onViewContract={handleViewContract}
               />
@@ -462,7 +418,7 @@ export function CorporateDashboard({ onNavigateHome }: { onNavigateHome?: () => 
             // TODO: Send to backend/trigger report generation
             alert(`Report request submitted! Format: ${reportRequest.format}, Projects: ${reportRequest.includedProjects.length}`);
           }}
-          availableProjects={mockProjects.map(p => ({ id: p.id, title: p.title }))}
+          availableProjects={currentProjects.map(p => ({ id: p.id, title: p.title }))}
         />
       )}
 
