@@ -1,7 +1,7 @@
 
   # Wasilah
 
-  This is a code bundle for Wasilah. The original project is available at https://www.figma.com/design/FuKLH2hshBL7mqCCkxVYqo/Wasilah.
+  This is a code bundle for Wasilah. The original project is available at .
 
   ## Running the code
 
