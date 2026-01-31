@@ -4,7 +4,7 @@ import {
   Clock, XCircle, AlertCircle, Upload, Trash2, Eye, Download 
 } from 'lucide-react';
 import type { PaymentRequest, PaymentMilestone } from '../../types/ngo-payments';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 interface PaymentRequestsTabProps {
   requests: PaymentRequest[];

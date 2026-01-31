@@ -5,7 +5,7 @@ import { Scorecard, ScoreSection } from './Scorecard';
 import { VerificationChecklist, ChecklistItem } from './VerificationChecklist';
 import { AuditLogEntry, AuditLogEntryData } from './AuditLogEntry';
 import { FileRowData } from './FileRow';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 /**
  * VettingDetailDrawer Component

@@ -4,7 +4,7 @@ import { AuditLogEntry, AuditLogEntryData } from '../components/admin/AuditLogEn
 import { AuditEntryDetailModal, AuditEntry } from '../components/admin/audit/AuditEntryDetailModal';
 import { JSONDiffViewer } from '../components/admin/audit/JSONDiffViewer';
 import { ResourceTimeline, TimelineEvent } from '../components/admin/audit/ResourceTimeline';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 /**
  * Audit Log Viewer Page

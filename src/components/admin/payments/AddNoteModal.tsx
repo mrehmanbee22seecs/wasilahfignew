@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X, FileText } from 'lucide-react';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 type AddNoteModalProps = {
   isOpen: boolean;

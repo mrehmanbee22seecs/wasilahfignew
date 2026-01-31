@@ -4,7 +4,7 @@ import {
   Clock, AlertCircle, Download, ExternalLink, Eye, MessageSquare 
 } from 'lucide-react';
 import type { PendingPayment } from '../../types/corporate';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 interface PaymentApprovalTabProps {
   pendingPayments: PendingPayment[];

@@ -4,7 +4,7 @@ import {
   Download, ExternalLink, Plus, Search, Filter, Eye, XCircle 
 } from 'lucide-react';
 import type { Contract } from '../../types/corporate';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 interface ContractManagementProps {
   contracts: Contract[];

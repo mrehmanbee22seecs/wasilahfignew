@@ -17,7 +17,7 @@ import {
 import { ExportConfig, ExportFormat, ExportEntityType, DateRange } from './types';
 import { reportTemplates, templatesByCategory } from './reportTemplates';
 import { estimateFileSize, formatFileSize } from '../../utils/exportUtils';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 type ExportModalProps = {
   isOpen: boolean;

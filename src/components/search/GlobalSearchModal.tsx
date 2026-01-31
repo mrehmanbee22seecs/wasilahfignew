@@ -14,7 +14,7 @@ import {
 import { SearchResultItem } from './SearchResultItem';
 import { SearchEntityType, SearchResult } from './types';
 import { useGlobalSearch } from '../../hooks/useGlobalSearch';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 type GlobalSearchModalProps = {
   isOpen: boolean;

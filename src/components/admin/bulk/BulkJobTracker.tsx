@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Clock, CheckCircle, XCircle, Loader, ChevronDown, ChevronUp, Download } from 'lucide-react';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 export type BulkJobStatus = 'pending' | 'processing' | 'completed' | 'failed' | 'partial';
 

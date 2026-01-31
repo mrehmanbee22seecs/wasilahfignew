@@ -4,7 +4,7 @@ import {
   Calendar, TrendingUp, Award, FileText, AlertCircle 
 } from 'lucide-react';
 import type { VolunteerHoursSession, VolunteerHoursSummary, CheckInRequest, CheckOutRequest } from '../../types/volunteer-verification';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 interface HoursTrackingTabProps {
   sessions: VolunteerHoursSession[];

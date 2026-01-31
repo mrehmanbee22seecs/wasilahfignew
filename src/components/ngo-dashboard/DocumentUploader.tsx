@@ -1,7 +1,7 @@
 import React, { useState, useRef, useCallback } from 'react';
 import { Upload, X, FileText, CheckCircle, AlertCircle, Loader, Tag, Edit2, Calendar, FileCheck, RefreshCw, WifiOff, ExternalLink, MapPin, Smartphone, Copy } from 'lucide-react';
 import type { DocumentUploaderProps, FileUploadState, DocumentType } from '../../types/ngo';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 const ACCEPTED_TYPES = ['application/pdf', 'image/jpeg', 'image/png', 'image/jpg', 'video/mp4'];
 const MAX_SIZE_MB = 10;

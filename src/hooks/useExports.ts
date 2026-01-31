@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { ExportConfig, ExportJob, ExportStatus } from '../components/exports/types';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 import {
   generateCSV,
   generateJSON,

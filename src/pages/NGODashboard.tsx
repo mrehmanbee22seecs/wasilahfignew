@@ -23,7 +23,7 @@ import {
 import type { VerificationStatus } from '../types/ngo';
 import type { NGOAssignedProject, ProjectUpdate } from '../types/ngo-projects';
 import type { PaymentRequest, Expense } from '../types/ngo-payments';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 type TabId = 'overview' | 'profile' | 'documents' | 'scorecard' | 'projects' | 'payments' | 'budget';
 

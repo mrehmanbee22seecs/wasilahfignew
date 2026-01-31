@@ -26,7 +26,7 @@ const ERROR_CONFIG = {
   'not-found': {
     icon: AlertCircle,
     defaultTitle: 'Not found',
-    defaultMessage: 'The content you're looking for doesn't exist or has been removed.',
+    defaultMessage: "The content you're looking for doesn't exist or has been removed.",
     iconColor: 'text-gray-400',
   },
 };

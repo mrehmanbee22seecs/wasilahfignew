@@ -4,7 +4,7 @@ import { UserManagementTable, User } from '../components/admin/team/UserManageme
 import { EditUserRoleModal } from '../components/admin/team/EditUserRoleModal';
 import { InviteUserModal } from '../components/admin/team/InviteUserModal';
 import { TwoFactorSetupModal } from '../components/admin/team/TwoFactorSetupModal';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 /**
  * Team Management Page

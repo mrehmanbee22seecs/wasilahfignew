@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Save, AlertCircle, Clock, Database, Mail, Shield, DollarSign, Code, Palette, Settings } from 'lucide-react';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 import { FinanceThresholdsTab } from '../components/admin/settings/FinanceThresholdsTab';
 import { IntegrationsTab } from '../components/admin/settings/IntegrationsTab';
 import { DeveloperTab } from '../components/admin/settings/DeveloperTab';

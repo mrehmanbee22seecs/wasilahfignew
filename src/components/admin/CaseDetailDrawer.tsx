@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { X, User, Clock, AlertCircle, FileText, MessageSquare, CheckCircle } from 'lucide-react';
 import { CaseData } from './CaseCard';
 import { EvidenceGallery, EvidenceItem } from './EvidenceGallery';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 interface CaseDetailDrawerProps {
   caseId: string | null;

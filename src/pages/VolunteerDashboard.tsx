@@ -10,7 +10,7 @@ import {
   MOCK_AVAILABLE_PROJECTS
 } from '../data/mockVolunteerData';
 import type { BackgroundCheck, VolunteerHoursSession, CheckInRequest, CheckOutRequest } from '../types/volunteer-verification';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 type TabId = 'overview' | 'hours' | 'background' | 'projects' | 'profile';
 

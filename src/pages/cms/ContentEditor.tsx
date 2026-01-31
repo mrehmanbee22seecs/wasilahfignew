@@ -5,7 +5,7 @@ import { PublishPanel, ContentStatus } from '../../components/cms/PublishPanel';
 import { MediaUploader, MediaFile } from '../../components/cms/MediaUploader';
 import { PreviewModal } from '../../components/cms/PreviewModal';
 import { VersionHistoryModal, mockVersions } from '../../components/cms/VersionHistoryModal';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 /**
  * ContentEditor - Unified editor for all content types

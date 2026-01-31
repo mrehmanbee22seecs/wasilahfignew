@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Edit, Globe, Facebook, Twitter, Linkedin, Instagram, MapPin, Mail, Phone, User, CheckCircle, AlertCircle, X } from 'lucide-react';
 import { VerificationTimeline } from '../VerificationTimeline';
 import type { NGO, VettingAudit, VerificationStatus } from '../../../types/ngo';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 interface ProfileVerificationTabProps {
   ngo: NGO;

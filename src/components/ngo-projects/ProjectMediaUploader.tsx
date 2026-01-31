@@ -1,7 +1,7 @@
 import React, { useState, useRef, useCallback } from 'react';
 import { Upload, X, Image as ImageIcon, Video, CheckCircle, AlertCircle, Loader, MapPin, Tag } from 'lucide-react';
 import type { MediaUploaderProps, MediaItem, ProjectTask } from '../../types/ngo-projects';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 interface FileUploadState {
   file: File;

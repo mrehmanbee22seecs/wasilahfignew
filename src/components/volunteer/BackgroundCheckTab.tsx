@@ -4,7 +4,7 @@ import {
   FileText, Trash2, ExternalLink, Info, XCircle 
 } from 'lucide-react';
 import type { BackgroundCheck, BackgroundCheckDocument, BackgroundCheckRequirement } from '../../types/volunteer-verification';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 interface BackgroundCheckTabProps {
   backgroundCheck: BackgroundCheck | null;

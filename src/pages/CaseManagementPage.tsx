@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Search, Filter, Plus, Download } from 'lucide-react';
 import { CaseCard, CaseData } from '../components/admin/CaseCard';
 import { CaseDetailDrawer } from '../components/admin/CaseDetailDrawer';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 /**
  * Case Management Page

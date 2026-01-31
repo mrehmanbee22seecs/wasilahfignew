@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Plus, Shield, Users, Search } from 'lucide-react';
 import { RoleCard, Role } from '../components/admin/RoleCard';
 import { CreateRoleModal } from '../components/admin/CreateRoleModal';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 /**
  * Role & Team Management Page

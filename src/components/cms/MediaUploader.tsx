@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { Upload, X, CheckCircle, AlertCircle, Loader2, Image as ImageIcon, Crop } from 'lucide-react';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 /**
  * MediaUploader Component

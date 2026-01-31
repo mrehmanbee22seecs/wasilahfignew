@@ -5,7 +5,7 @@ import { ProjectMediaUploader } from './ProjectMediaUploader';
 import { ProgressIndicator } from './ProgressIndicator';
 import type { SubmitUpdateModalProps, UpdateFormState, MediaItem, ProjectTask } from '../../types/ngo-projects';
 import { MOCK_PROJECT_TASKS } from '../../data/mockNGOProjects';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 const STEPS = [
   { id: 1, title: 'Task Checklist', description: 'Mark completed tasks' },

@@ -1,7 +1,7 @@
 import React from 'react';
 import { ScorecardViewer } from '../ScorecardViewer';
 import type { NGOScorecard } from '../../../types/ngo';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 interface ScorecardTabProps {
   scorecard: NGOScorecard | undefined;
