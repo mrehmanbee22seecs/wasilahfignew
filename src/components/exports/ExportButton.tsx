@@ -76,10 +76,10 @@ export function ExportButton({
       <ExportHistoryPanel
         isOpen={historyOpen}
         onClose={() => setHistoryOpen(false)}
-        exports={exportHistory}
-        onRedownload={redownloadExport}
+        jobs={exportHistory}
         onDelete={deleteExport}
         onClearAll={clearHistory}
+        onRefresh={loadHistory}
       />
     </>
   );

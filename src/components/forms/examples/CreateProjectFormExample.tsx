@@ -23,7 +23,7 @@ export function CreateProjectFormExample({ onSubmit }: CreateProjectFormProps) {
       end_date: '',
       location: '',
       city: '',
-      province: '',
+      province: undefined,
       sdg_goals: [],
       focus_areas: [],
       volunteer_capacity: 10,
@@ -181,8 +181,9 @@ export function CreateProjectFormExample({ onSubmit }: CreateProjectFormProps) {
             UN SDG Goals <span className="text-red-500">*</span>
           </label>
           <SDGSelector
-            selectedGoals={form.values.sdg_goals || []}
-            onChange={(goals) => form.setFieldValue('sdg_goals', goals)}
+            label="UN SDG Goals"
+            selected={form.values.sdg_goals || []}
+            onChange={(goals: number[]) => form.setFieldValue('sdg_goals', goals)}
           />
           {form.getFieldError('sdg_goals') && form.touched.sdg_goals && (
             <p className="text-xs text-red-600 mt-1">{form.getFieldError('sdg_goals')}</p>
@@ -194,9 +195,9 @@ export function CreateProjectFormExample({ onSubmit }: CreateProjectFormProps) {
             Focus Areas <span className="text-red-500">*</span>
           </label>
           <MultiSelectChips
-            options={focusAreaOptions.map(area => ({ id: area, label: area }))}
+            options={focusAreaOptions}
             selectedIds={form.values.focus_areas || []}
-            onChange={(areas) => form.setFieldValue('focus_areas', areas)}
+            onChange={(areas: string[]) => form.setFieldValue('focus_areas', areas)}
             placeholder="Select focus areas"
           />
           {form.getFieldError('focus_areas') && form.touched.focus_areas && (

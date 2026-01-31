@@ -105,9 +105,9 @@ export function VolunteerApplicationFormExample({ projectTitle, onSubmit }: Volu
           Relevant Skills <span className="text-red-500">*</span>
         </label>
         <MultiSelectChips
-          options={skillOptions.map(s => ({ id: s, label: s }))}
+          options={skillOptions}
           selectedIds={form.values.skills || []}
-          onChange={(skills) => form.setFieldValue('skills', skills)}
+          onChange={(skills: string[]) => form.setFieldValue('skills', skills)}
           placeholder="Select your skills"
         />
         {form.getFieldError('skills') && form.touched.skills && (

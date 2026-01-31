@@ -88,6 +88,14 @@ export type ReportTemplate = {
   isCustom?: boolean;
 };
 
+export type ColumnDefinition = {
+  id: string;
+  label: string;
+  field: string;
+  type: 'string' | 'number' | 'currency' | 'date' | 'boolean';
+  required?: boolean;
+};
+
 export type ColumnOption = {
   id: string;
   label: string;
