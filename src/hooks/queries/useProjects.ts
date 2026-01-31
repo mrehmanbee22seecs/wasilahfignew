@@ -65,6 +65,7 @@ import {
   Project 
 } from '../../lib/api/projects';
 import { PaginationParams, PaginatedResponse } from '../../lib/api/base';
+import { queryKeys } from './queryKeys';
 
 /**
  * React Query hook for fetching projects list with filtering and pagination
@@ -86,7 +87,7 @@ export function useProjects(
   pagination: PaginationParams = {}
 ): UseQueryResult<PaginatedResponse<Project>, Error> {
   return useQuery<PaginatedResponse<Project>, Error>({
-    queryKey: ['projects', 'list', filters, pagination],
+    queryKey: queryKeys.projects.list({ filters, pagination }),
     queryFn: async () => {
       const response = await projectsApi.list(filters, pagination);
       

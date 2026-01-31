@@ -51,6 +51,7 @@
 
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import { projectsApi, Project } from '../../lib/api/projects';
+import { queryKeys } from './queryKeys';
 
 /**
  * React Query hook for fetching a single project by ID
@@ -71,7 +72,7 @@ export function useProject(
   projectId: string | null
 ): UseQueryResult<Project, Error> {
   return useQuery<Project, Error>({
-    queryKey: ['projects', 'detail', projectId],
+    queryKey: queryKeys.projects.detail(projectId || ''),
     queryFn: async () => {
       if (!projectId) {
         throw new Error('Project ID is required');

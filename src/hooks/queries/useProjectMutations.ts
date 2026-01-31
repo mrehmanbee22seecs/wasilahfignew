@@ -75,6 +75,7 @@ import {
   CreateProjectInput, 
   UpdateProjectInput 
 } from '../../lib/api/projects';
+import { queryKeys } from './queryKeys';
 
 /**
  * Options for mutation hooks
@@ -126,7 +127,7 @@ export function useCreateProject(
     },
     onSuccess: (data) => {
       // Invalidate all project list queries to refetch with new data
-      queryClient.invalidateQueries({ queryKey: ['projects', 'list'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.projects.lists() });
       
       // Call user's onSuccess callback
       options?.onSuccess?.(data);
@@ -192,7 +193,7 @@ export function useUpdateProject(
     },
     onMutate: async ({ id, updates }: UpdateProjectParams) => {
       // Cancel any outgoing refetches for this project
-      await queryClient.cancelQueries({ queryKey: ['projects', 'detail', id] });
+      await queryClient.cancelQueries({ queryKey: queryKeys.projects.detail(id) });
 
       // Snapshot the previous value for rollback
       const previousProject = queryClient.getQueryData<Project>(['projects', 'detail', id]);
@@ -210,10 +211,10 @@ export function useUpdateProject(
     },
     onSuccess: (data, { id }) => {
       // Update the detail cache with server response
-      queryClient.setQueryData(['projects', 'detail', id], data);
+      queryClient.setQueryData(queryKeys.projects.detail(id), data);
       
       // Invalidate all project list queries to refetch
-      queryClient.invalidateQueries({ queryKey: ['projects', 'list'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.projects.lists() });
       
       // Call user's onSuccess callback
       options?.onSuccess?.(data);
@@ -221,7 +222,7 @@ export function useUpdateProject(
     onError: (error, { id }, context) => {
       // Rollback to previous value on error
       if (context?.previousProject) {
-        queryClient.setQueryData(['projects', 'detail', id], context.previousProject);
+        queryClient.setQueryData(queryKeys.projects.detail(id), context.previousProject);
       }
       
       // Call user's onError callback
@@ -229,7 +230,7 @@ export function useUpdateProject(
     },
     onSettled: (data, error, { id }) => {
       // Always refetch after error or success to ensure cache is in sync
-      queryClient.invalidateQueries({ queryKey: ['projects', 'detail', id] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.projects.detail(id) });
       
       // Call user's onSettled callback
       options?.onSettled?.();
@@ -279,21 +280,21 @@ export function useDeleteProject(
     },
     onMutate: async (projectId: string) => {
       // Cancel any outgoing refetches
-      await queryClient.cancelQueries({ queryKey: ['projects', 'detail', projectId] });
-      await queryClient.cancelQueries({ queryKey: ['projects', 'list'] });
+      await queryClient.cancelQueries({ queryKey: queryKeys.projects.detail(projectId) });
+      await queryClient.cancelQueries({ queryKey: queryKeys.projects.lists() });
 
       // Snapshot the previous project for rollback
       const previousProject = queryClient.getQueryData<Project>(['projects', 'detail', projectId]);
 
       // Optimistically remove from cache
-      queryClient.removeQueries({ queryKey: ['projects', 'detail', projectId] });
+      queryClient.removeQueries({ queryKey: queryKeys.projects.detail(projectId) });
 
       // Return context for rollback
       return { previousProject, projectId };
     },
     onSuccess: () => {
       // Invalidate all project list queries to remove deleted project
-      queryClient.invalidateQueries({ queryKey: ['projects', 'list'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.projects.lists() });
       
       // Call user's onSuccess callback
       options?.onSuccess?.(undefined);
@@ -309,7 +310,7 @@ export function useDeleteProject(
     },
     onSettled: () => {
       // Ensure cache is in sync
-      queryClient.invalidateQueries({ queryKey: ['projects', 'list'] });
+      queryClient.invalidateQueries({ queryKey: queryKeys.projects.lists() });
       
       // Call user's onSettled callback
       options?.onSettled?.();
