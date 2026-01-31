@@ -100,3 +100,56 @@ export type {
   UseRequestBackgroundCheckReturn,
   UseUpdateBackgroundCheckReturn,
 } from './useVolunteerMutations';
+
+// ============================================================================
+// ADMIN HOOKS
+// ============================================================================
+
+// Query hooks
+export {
+  usePlatformStats,
+  useAllUsers,
+  useUserById,
+  useVettingQueue,
+  useAuditLogs,
+} from './useAdmin';
+
+// Mutation hooks
+export {
+  useUpdateUserRole,
+  useActivateUser,
+  useDeactivateUser,
+  useDeleteUser,
+  useAssignVettingItem,
+  useApproveVettingItem,
+  useRejectVettingItem,
+  useUpdateVettingPriority,
+  useBulkUpdateStatus,
+  useBulkDelete,
+  useCreateAuditLog,
+} from './useAdminMutations';
+
+// Type exports
+export type {
+  UsePlatformStatsReturn,
+  UseAllUsersReturn,
+  UseUserByIdReturn,
+  UseVettingQueueReturn,
+  UseAuditLogsReturn,
+  VettingQueueFilters,
+  AuditLogFilters,
+} from './useAdmin';
+
+export type {
+  UseUpdateUserRoleReturn,
+  UseActivateUserReturn,
+  UseDeactivateUserReturn,
+  UseDeleteUserReturn,
+  UseAssignVettingItemReturn,
+  UseApproveVettingItemReturn,
+  UseRejectVettingItemReturn,
+  UseUpdateVettingPriorityReturn,
+  UseBulkUpdateStatusReturn,
+  UseBulkDeleteReturn,
+  UseCreateAuditLogReturn,
+} from './useAdminMutations';
