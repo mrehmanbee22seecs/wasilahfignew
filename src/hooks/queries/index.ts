@@ -2,7 +2,7 @@
  * Query Hooks - Centralized Exports
  * 
  * @fileoverview
- * Central export point for all React Query hooks (Projects, Applications, Volunteers).
+ * Central export point for all React Query hooks (Projects, Applications, Volunteers, Payments, Organizations).
  * Provides easy imports for consuming components.
  * 
  * @example
@@ -15,6 +15,12 @@
  * 
  * // Volunteers
  * import { useVolunteers, useVolunteer, useUpdateVolunteer } from '@/hooks/queries';
+ * 
+ * // Payments
+ * import { usePayments, usePayment, useApprovePayment } from '@/hooks/queries';
+ * 
+ * // Organizations
+ * import { useOrganizations, useOrganization, useUpdateOrganization } from '@/hooks/queries';
  * ```
  * 
  * @module hooks/queries
@@ -100,3 +106,69 @@ export type {
   UseRequestBackgroundCheckReturn,
   UseUpdateBackgroundCheckReturn,
 } from './useVolunteerMutations';
+
+// ============================================================================
+// PAYMENT HOOKS
+// ============================================================================
+
+// Query hooks
+export {
+  usePayments,
+  usePayment,
+  usePaymentsByProject,
+  usePaymentStats,
+} from './usePayments';
+
+// Mutation hooks
+export {
+  useCreatePayment,
+  useApprovePayment,
+  useRejectPayment,
+  useDualApprovePayment,
+} from './usePayments';
+
+// Type exports
+export type {
+  UsePaymentsReturn,
+  UsePaymentReturn,
+  UsePaymentsByProjectReturn,
+  UsePaymentStatsReturn,
+  UseCreatePaymentReturn,
+  UseApprovePaymentReturn,
+  UseRejectPaymentReturn,
+  UseDualApprovePaymentReturn,
+} from './usePayments';
+
+// ============================================================================
+// ORGANIZATION HOOKS
+// ============================================================================
+
+// Query hooks
+export {
+  useOrganizations,
+  useOrganization,
+  useOrganizationDocuments,
+  useOrganizationProjects,
+} from './useOrganizations';
+
+// Mutation hooks
+export {
+  useUpdateOrganization,
+  useUploadOrganizationDocument,
+  useVerifyOrganizationDocument,
+  useUpdateOrganizationVerification,
+  useUploadOrganizationLogo,
+} from './useOrganizations';
+
+// Type exports
+export type {
+  UseOrganizationsReturn,
+  UseOrganizationReturn,
+  UseOrganizationDocumentsReturn,
+  UseOrganizationProjectsReturn,
+  UseUpdateOrganizationReturn,
+  UseUploadOrganizationDocumentReturn,
+  UseVerifyOrganizationDocumentReturn,
+  UseUpdateOrganizationVerificationReturn,
+  UseUploadOrganizationLogoReturn,
+} from './useOrganizations';
