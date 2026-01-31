@@ -631,6 +631,10 @@ interface BulkUpdateStatusParams {
  * 
  * Updates the status of multiple entities (NGOs, projects, or volunteers) at once.
  * 
+ * Note: Bulk operations cannot be fully optimistic due to potential partial failures.
+ * If some entities succeed and others fail, we cannot predict the final state.
+ * Therefore, we invalidate all queries on success to fetch the actual server state.
+ * 
  * @param options - Optional callbacks for success, error, and settled states
  * @returns Mutation object with mutate, mutateAsync, isPending, error, etc.
  * 
@@ -700,6 +704,10 @@ interface BulkDeleteParams {
  * Hook for bulk deleting entities
  * 
  * Deletes multiple entities (NGOs, projects, or users) at once.
+ * 
+ * Note: Bulk operations cannot be fully optimistic due to potential partial failures.
+ * If some entities succeed and others fail, we cannot predict the final state.
+ * Therefore, we invalidate all queries on success to fetch the actual server state.
  * 
  * @param options - Optional callbacks for success, error, and settled states
  * @returns Mutation object with mutate, mutateAsync, isPending, error, etc.

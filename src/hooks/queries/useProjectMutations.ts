@@ -88,6 +88,9 @@ interface MutationOptions<TData, TError = Error> {
 /**
  * Hook for creating a new project
  * 
+ * Note: Create mutations cannot be fully optimistic because the server generates
+ * the ID. We invalidate queries on success to fetch the new project with its ID.
+ * 
  * @param options - Optional callbacks for success, error, and settled states
  * @returns Mutation object with mutate, mutateAsync, isLoading, error, etc.
  * 

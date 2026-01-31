@@ -372,6 +372,10 @@ interface BulkApproveParams {
 /**
  * Hook for bulk approving applications
  * 
+ * Note: Bulk operations cannot be fully optimistic due to potential partial failures.
+ * If some applications succeed and others fail, we cannot predict the final state.
+ * Therefore, we invalidate all queries on success to fetch the actual server state.
+ * 
  * @param options - Optional callbacks for success, error, and settled states
  * @returns Mutation object with mutate, mutateAsync, isLoading, error, etc.
  * 
@@ -433,6 +437,10 @@ interface BulkRejectParams {
 
 /**
  * Hook for bulk rejecting applications
+ * 
+ * Note: Bulk operations cannot be fully optimistic due to potential partial failures.
+ * If some applications succeed and others fail, we cannot predict the final state.
+ * Therefore, we invalidate all queries on success to fetch the actual server state.
  * 
  * @param options - Optional callbacks for success, error, and settled states
  * @returns Mutation object with mutate, mutateAsync, isLoading, error, etc.

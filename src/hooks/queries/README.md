@@ -343,6 +343,195 @@ The DevTools are included in development mode:
    - Follow the pattern: ['entity', 'action', ...params]
    - Example: ['projects', 'list', filters, pagination]
 
+## ⚡ Optimistic Updates Guide
+
+### What are Optimistic Updates?
+
+Optimistic updates make your UI feel instant by updating the local cache **before** the server responds. If the server request fails, changes are automatically rolled back.
+
+### Which Mutations Support Optimistic Updates?
+
+#### ✅ Fully Optimistic (with Rollback)
+These mutations update the cache immediately and rollback on error:
+
+**Projects:**
+- `useUpdateProject` - Updates project fields instantly
+- `useDeleteProject` - Removes project from UI instantly
+
+**Applications:**
+- `useReviewApplication` - Changes status instantly (approved/rejected)
+- `useWithdrawApplication` - Updates status to withdrawn instantly
+
+**Volunteers:**
+- `useUpdateVolunteer` - Updates volunteer profile instantly
+- `useUpdateBackgroundCheck` - Changes background check status instantly
+- `useApproveVolunteerHours` - Marks hours as approved instantly
+
+**Payments:**
+- `useApprovePayment` - Changes payment status to approved instantly
+- `useRejectPayment` - Changes payment status to rejected instantly
+- `useDualApprovePayment` - Second approval happens instantly
+
+**Organizations:**
+- `useUpdateOrganization` - Updates organization profile instantly
+- `useVerifyOrganizationDocument` - Marks document as verified instantly
+- `useUpdateOrganizationVerification` - Changes verification status instantly
+
+**Admin:**
+- `useUpdateUserRole` - Changes user role instantly
+- `useDeleteUser` - Removes user from UI instantly
+
+#### ⚠️ Not Fully Optimistic (Server ID Required)
+These mutations cannot be fully optimistic because the server generates IDs:
+
+- `useCreateProject` - Invalidates queries on success (no optimistic create)
+- `useCreateApplication` - Invalidates queries on success
+- `useLogVolunteerHours` - Invalidates queries on success
+- `useCreatePayment` - Invalidates queries on success
+- `useUploadOrganizationDocument` - Invalidates queries on success
+
+**Why?** The server generates unique IDs for new entities. We can't predict these IDs, so we must wait for the server response before adding the item to lists.
+
+### How Optimistic Updates Work
+
+```tsx
+// Example: Update Project
+const updateProject = useUpdateProject({
+  onSuccess: () => toast.success('Saved!'),
+  onError: () => toast.error('Failed - changes reverted')
+});
+
+// User clicks save
+updateProject.mutate({
+  id: 'project-123',
+  updates: { title: 'New Title' }
+});
+
+// What happens:
+// 1. onMutate: Cache updated immediately (title = 'New Title')
+//    → User sees change instantly
+// 2. API call sent to server
+// 3a. If SUCCESS:
+//    - onSuccess: Cache updated with server response
+//    - Queries invalidated to refetch related data
+// 3b. If ERROR:
+//    - onError: Cache rolled back (title = 'Original Title')
+//    - User sees original data again
+//    - Error toast shown
+```
+
+### Rollback Examples
+
+#### Update Rollback
+```tsx
+// Initial cache: { id: '123', title: 'Original' }
+updateProject.mutate({ 
+  id: '123', 
+  updates: { title: 'New' } 
+});
+
+// User sees: { id: '123', title: 'New' } ← Instant!
+
+// If server fails:
+// User sees: { id: '123', title: 'Original' } ← Rolled back!
+```
+
+#### Delete Rollback
+```tsx
+// Initial cache: Project exists in list
+deleteProject.mutate('project-123');
+
+// User sees: Project removed from list ← Instant!
+
+// If server fails:
+// User sees: Project restored in list ← Rolled back!
+```
+
+### Best Practices for Optimistic Updates
+
+1. **Always show feedback**
+   ```tsx
+   const updateProject = useUpdateProject({
+     onSuccess: () => toast.success('Saved!'),
+     onError: () => toast.error('Failed - please try again')
+   });
+   ```
+
+2. **Disable UI during mutations (optional)**
+   ```tsx
+   <Button 
+     disabled={updateProject.isPending}
+     onClick={() => updateProject.mutate(data)}
+   >
+     {updateProject.isPending ? 'Saving...' : 'Save'}
+   </Button>
+   ```
+
+3. **Handle concurrent mutations**
+   - Multiple updates to the same entity are safe
+   - React Query cancels outdated requests
+   - Last successful update wins
+
+4. **Test rollback scenarios**
+   ```tsx
+   // Simulate server error in tests
+   vi.mocked(api.update).mockResolvedValue({
+     success: false,
+     error: 'Server error'
+   });
+   
+   // Verify cache was rolled back
+   expect(cache.data).toBe(originalData);
+   ```
+
+### Caveats and Limitations
+
+1. **No Optimistic Create**
+   - Cannot optimistically add items to lists
+   - Server must generate ID first
+   - Use loading states instead
+
+2. **Race Conditions**
+   - Concurrent mutations to same entity are safe
+   - Query invalidation ensures eventual consistency
+   - React Query handles cancellation automatically
+
+3. **Network Offline**
+   - Optimistic update still happens
+   - Error shown when network request fails
+   - Rollback restores original state
+
+4. **Complex Updates**
+   - Some mutations affect multiple entities
+   - Bulk operations may only partially succeed
+   - These invalidate all affected queries instead
+
+### Debugging Optimistic Updates
+
+Use React Query DevTools to inspect:
+
+1. **Cache State**: View current cached data
+2. **Mutation State**: See pending/error/success
+3. **Query Invalidation**: Watch cache invalidation
+4. **Rollback**: Observe context restoration
+
+```tsx
+// Enable DevTools in development
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+
+<ReactQueryDevtools initialIsOpen={false} />
+```
+
+### Testing Optimistic Updates
+
+See `__tests__/optimisticUpdates.integration.test.ts` for comprehensive examples:
+
+- ✅ Optimistic update occurs immediately
+- ✅ Cache rollback on error
+- ✅ Cache sync on success
+- ✅ Concurrent mutation handling
+- ✅ Error recovery
+
 ## 📚 Resources
 
 - [React Query Documentation](https://tanstack.com/query/latest/docs/react/overview)
