@@ -80,11 +80,11 @@ export function AppContent() {
   // Toast management
   const addToast = (toast: Omit<ToastProps, 'id' | 'onClose'>) => {
     const id = Date.now().toString();
-    setToasts(prev => [...prev, { ...toast, id }]);
+    setToasts((prev: ToastProps[]) => [...prev, { ...toast, id }]);
   };
 
   const removeToast = (id: string) => {
-    setToasts(prev => prev.filter(t => t.id !== id));
+    setToasts((prev: ToastProps[]) => prev.filter((t: ToastProps) => t.id !== id));
   };
   
   // Notifications
@@ -276,7 +276,7 @@ export function AppContent() {
       case "impact":
         return <ImpactPage />;
       case "unauthorized":
-        return <UnauthorizedPage onNavigate={setCurrentPage} />;
+        return <UnauthorizedPage onNavigate={(page) => setCurrentPage(page as PageType)} />;
       default:
         return <HomePage />;
     }
@@ -309,7 +309,7 @@ export function AppContent() {
           onClose={() => setSearchModalOpen(false)}
         />
         
-        <PageSwitcher currentPage={currentPage} onNavigate={setCurrentPage} />
+        <PageSwitcher currentPage={currentPage} onNavigate={(page) => setCurrentPage(page as PageType)} />
       </>
     );
   }

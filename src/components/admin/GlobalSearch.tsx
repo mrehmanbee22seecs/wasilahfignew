@@ -49,7 +49,7 @@ export function GlobalSearch({ isOpen, onClose, onResultClick }: GlobalSearchPro
         const mockResults: SearchResult[] = [
           {
             id: 'ngo-001',
-            type: 'ngo',
+            type: 'ngo' as const,
             title: 'Pakistan Education Foundation',
             subtitle: 'NGO-2024-001',
             description: 'Providing quality education to underprivileged children',
@@ -59,7 +59,7 @@ export function GlobalSearch({ isOpen, onClose, onResultClick }: GlobalSearchPro
           },
           {
             id: 'vet-001',
-            type: 'vetting',
+            type: 'vetting' as const,
             title: 'Vetting Request #vet-001',
             subtitle: 'Green Pakistan Initiative',
             description: 'Pending vetting request',
@@ -69,7 +69,7 @@ export function GlobalSearch({ isOpen, onClose, onResultClick }: GlobalSearchPro
           },
           {
             id: 'case-001',
-            type: 'case',
+            type: 'case' as const,
             title: 'CASE-001: Suspicious Financial Report',
             subtitle: 'Pakistan Education Foundation',
             description: 'High priority investigation case',
@@ -79,7 +79,7 @@ export function GlobalSearch({ isOpen, onClose, onResultClick }: GlobalSearchPro
           },
           {
             id: 'proj-102',
-            type: 'project',
+            type: 'project' as const,
             title: 'Clean Water Initiative - Phase 2',
             subtitle: 'Green Pakistan Initiative',
             description: 'Water infrastructure project',
@@ -89,7 +89,7 @@ export function GlobalSearch({ isOpen, onClose, onResultClick }: GlobalSearchPro
           },
           {
             id: 'vol-045',
-            type: 'volunteer',
+            type: 'volunteer' as const,
             title: 'Ali Hassan',
             subtitle: 'Volunteer',
             description: '32 hours volunteered • 5 projects',

@@ -130,8 +130,9 @@ export async function withPagination<T>(
   }
 }
 
-export function getCurrentUserId(): string | null {
-  return supabase.auth.getUser().then(({ data }) => data.user?.id || null);
+export async function getCurrentUserId(): Promise<string | null> {
+  const { data } = await supabase.auth.getUser();
+  return data.user?.id || null;
 }
 
 export async function checkPermission(
