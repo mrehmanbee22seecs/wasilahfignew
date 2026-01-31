@@ -165,7 +165,7 @@ export function useUpdateVolunteer(
       // Call user's onSuccess callback
       options?.onSuccess?.(data);
     },
-    onError: (error, { id }, context) => {
+    onError: (error, { id }, context: any) => {
       // Rollback to previous value on error
       if (context?.previousVolunteer) {
         queryClient.setQueryData(['volunteers', 'detail', id], context.previousVolunteer);
@@ -433,7 +433,7 @@ export function useUpdateBackgroundCheck(
       // Call user's onSuccess callback
       options?.onSuccess?.(data);
     },
-    onError: (error, { volunteerId }, context) => {
+    onError: (error, { volunteerId }, context: any) => {
       // Restore volunteer cache on error
       if (context?.previousVolunteer) {
         queryClient.setQueryData(['volunteers', 'detail', volunteerId], context.previousVolunteer);

@@ -234,7 +234,7 @@ export function useReviewApplication(
       // Call user's onSuccess callback
       options?.onSuccess?.(data);
     },
-    onError: (error, { id }, context) => {
+    onError: (error, { id }, context: any) => {
       // Rollback to previous value on error
       if (context?.previousApplication) {
         queryClient.setQueryData(
@@ -337,7 +337,7 @@ export function useWithdrawApplication(
       // Call user's onSuccess callback
       options?.onSuccess?.(data);
     },
-    onError: (error, { id }, context) => {
+    onError: (error, { id }, context: any) => {
       // Restore application cache on error
       if (context?.previousApplication) {
         queryClient.setQueryData(

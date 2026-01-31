@@ -141,7 +141,7 @@ describe('useApplications', () => {
     // Assert - data loaded
     expect(result.current.data?.data).toHaveLength(1);
     expect(result.current.data?.data[0].volunteer_id).toBe('vol-1');
-    expect(applicationsApi.getVolunteerApplications).toHaveBeenCalledWith('vol-1', {});
+    expect(applicationsApi.getVolunteerApplications).toHaveBeenCalledWith('vol-1', { volunteer_id: 'vol-1' });
   });
 
   it('should handle fetch errors', async () => {

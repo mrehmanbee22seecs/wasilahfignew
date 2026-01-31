@@ -112,11 +112,12 @@ export function useApplications(
           otherFilters
         );
         
-        if (!response.success) {
+        if (!response.success || !response.data) {
           throw new Error(response.error || 'Failed to fetch applications');
         }
         
-        return response.data as PaginatedResponse<VolunteerApplication>;
+        // response.data is already a PaginatedResponse
+        return response.data;
       }
       
       // For volunteer_id filter, use getVolunteerApplications
@@ -126,7 +127,7 @@ export function useApplications(
           otherFilters
         );
         
-        if (!response.success) {
+        if (!response.success || !response.data) {
           throw new Error(response.error || 'Failed to fetch applications');
         }
         
