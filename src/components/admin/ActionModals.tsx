@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X, Loader2, AlertTriangle, CheckCircle, Plus, Trash2 } from 'lucide-react';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 /**
  * Action Modals for Vetting Decisions

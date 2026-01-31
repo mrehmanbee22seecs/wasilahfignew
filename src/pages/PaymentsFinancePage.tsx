@@ -5,7 +5,7 @@ import { ApprovalModal } from '../components/admin/ApprovalModal';
 import { ReleaseRequestModal } from '../components/admin/payments/ReleaseRequestModal';
 import { LedgerViewer, LedgerEntry } from '../components/admin/payments/LedgerViewer';
 import { AddNoteModal } from '../components/admin/payments/AddNoteModal';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 /**
  * Payments & Finance Page

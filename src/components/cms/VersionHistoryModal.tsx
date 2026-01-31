@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X, History, RotateCcw, User, Clock, FileText, Eye, ChevronDown, ChevronUp } from 'lucide-react';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 /**
  * VersionHistoryModal - View and restore content versions

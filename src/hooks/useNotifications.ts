@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Notification } from '../components/notifications/types';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 /**
  * Custom hook for managing notifications

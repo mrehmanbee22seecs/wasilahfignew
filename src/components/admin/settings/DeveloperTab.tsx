@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Code, Key, Copy, Check, Plus, Trash2, Eye, EyeOff, Terminal } from 'lucide-react';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 type APIKey = {
   id: string;

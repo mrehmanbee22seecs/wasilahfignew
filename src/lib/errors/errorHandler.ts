@@ -1,6 +1,6 @@
 import { AppError, BaseError, ApiError, NetworkError, AuthError } from './types';
 import { errorLogger } from './errorLogger';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 class ErrorHandler {
   private static instance: ErrorHandler;

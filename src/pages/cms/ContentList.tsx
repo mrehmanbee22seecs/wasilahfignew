@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Plus, Filter, Eye, Edit, Trash2, Copy, ChevronDown, Grid3x3, List, CheckSquare, Square } from 'lucide-react';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 import { Pagination } from '../../components/cms/Pagination';
 
 /**

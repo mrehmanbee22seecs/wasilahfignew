@@ -4,7 +4,7 @@ import {
   FileText, AlertTriangle, CheckCircle, Download, Upload
 } from 'lucide-react';
 import type { ProjectBudgetSummary, BudgetCategory, Expense } from '../../types/ngo-payments';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 interface BudgetVsActualTabProps {
   budgetSummary: ProjectBudgetSummary;

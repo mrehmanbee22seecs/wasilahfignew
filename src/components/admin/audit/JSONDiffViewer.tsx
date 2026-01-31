@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Copy, Check, ChevronRight, ChevronDown } from 'lucide-react';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 type JSONDiffViewerProps = {
   before: any;

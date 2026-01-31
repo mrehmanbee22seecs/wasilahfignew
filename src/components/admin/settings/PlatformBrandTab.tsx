@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Palette, Upload, Save, Globe, Type, Image as ImageIcon } from 'lucide-react';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 type BrandSettings = {
   platformName: string;

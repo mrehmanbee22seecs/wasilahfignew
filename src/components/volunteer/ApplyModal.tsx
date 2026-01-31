@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { X, Upload, FileText, AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
 import { SDGBadge } from './SDGBadge';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 export type ApplicationPayload = {
   userId: string;

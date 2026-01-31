@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X, User, Calendar, FileText, Code, Copy, Check, ExternalLink } from 'lucide-react';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 export type AuditEntry = {
   id: string;

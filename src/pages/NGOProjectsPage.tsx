@@ -6,7 +6,7 @@ import { SubmitUpdateModal } from '../components/ngo-projects/SubmitUpdateModal'
 import { MOCK_NGO_PROJECTS, MOCK_PROJECT_REPORTS } from '../data/mockNGOProjects';
 import { MOCK_NGO } from '../data/mockNGOData';
 import type { NGOAssignedProject, ProjectUpdate } from '../types/ngo-projects';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 type TabType = 'projects' | 'reports';
 

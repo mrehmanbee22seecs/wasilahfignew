@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X, Download, FileText, Image, Receipt, Calendar, User } from 'lucide-react';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 export type LedgerEntry = {
   entryId: string;

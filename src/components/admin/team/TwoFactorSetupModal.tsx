@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X, Shield, Copy, Check, Smartphone, Key } from 'lucide-react';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 
 type TwoFactorSetupModalProps = {
   isOpen: boolean;
