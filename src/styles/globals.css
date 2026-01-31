@@ -71,8 +71,21 @@
   }
 }
 
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
 .animate-shake {
   animation: shake 0.4s ease-in-out;
+}
+
+.animate-shimmer {
+  animation: shimmer 2s ease-in-out infinite;
 }
 
 /* =====================================================
@@ -103,6 +116,7 @@
   .animate-ping,
   .animate-pulse,
   .animate-bounce,
+  .animate-shimmer,
   .animate-in,
   [class*="animate-"] {
     animation: none !important;
