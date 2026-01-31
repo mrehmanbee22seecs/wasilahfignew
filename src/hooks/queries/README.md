@@ -1,14 +1,31 @@
-# Project Query Hooks - React Query Implementation
+# Query Hooks - React Query Implementation
 
 ## Overview
 
-This directory contains production-grade React Query hooks for managing project CRUD operations in the Wasilah application. These hooks provide automatic caching, optimistic updates, and comprehensive error handling.
+This directory contains production-grade React Query hooks for managing all CRUD operations in the Wasilah application. These hooks provide automatic caching, optimistic updates, and comprehensive error handling.
 
 ## 📁 Files
 
+### Projects (Task A2)
 - **`useProjects.ts`** - Fetch projects list with filtering and pagination
 - **`useProject.ts`** - Fetch a single project by ID
 - **`useProjectMutations.ts`** - Create, update, and delete mutations
+
+### Applications (Task A3)
+- **`useApplications.ts`** - Fetch applications list with filtering
+- **`useApplication.ts`** - Fetch a single application by ID
+- **`useApplicationMutations.ts`** - Create, review, withdraw, and bulk operations
+
+### Volunteers (Task A4)
+- **`useVolunteersQuery.ts`** - Fetch volunteers list with filtering
+- **`useVolunteer.ts`** - Fetch a single volunteer by ID
+- **`useVolunteerMutations.ts`** - Update volunteer, log hours, and background checks
+
+### Admin (Task A5)
+- **`useAdmin.ts`** - Fetch platform stats, users, vetting queue, audit logs
+- **`useAdminMutations.ts`** - User management, vetting operations, bulk actions
+
+### Central Exports
 - **`index.ts`** - Central export point for all hooks
 
 ## 🚀 Quick Start
@@ -22,7 +39,17 @@ All dependencies are already installed (from Task A1):
 ### Basic Usage
 
 ```tsx
+// Projects
 import { useProjects, useProject, useCreateProject } from '@/hooks/queries';
+
+// Applications
+import { useApplications, useApplication, useCreateApplication } from '@/hooks/queries';
+
+// Volunteers
+import { useVolunteers, useVolunteer, useUpdateVolunteer } from '@/hooks/queries';
+
+// Admin
+import { usePlatformStats, useAllUsers, useUpdateUserRole } from '@/hooks/queries';
 
 // In your component
 function MyComponent() {
@@ -240,11 +267,27 @@ See `src/examples/ProjectsExample.tsx` for complete usage examples:
 ## 🔍 Testing
 
 The project uses React Query's built-in caching and testing utilities. Tests can be found in:
-- `src/tests/hooks/queries/useProjects.test.ts`
-- `src/tests/hooks/queries/useProject.test.ts`
-- `src/tests/hooks/queries/useProjectMutations.test.ts`
 
-Note: Test infrastructure requires vitest setup.
+### Projects (Task A2)
+- `src/hooks/queries/__tests__/useProjects.test.ts`
+- `src/hooks/queries/__tests__/useProject.test.ts`
+- `src/hooks/queries/__tests__/useProjectMutations.test.ts`
+
+### Applications (Task A3)
+- `src/hooks/queries/__tests__/useApplications.test.ts`
+- `src/hooks/queries/__tests__/useApplication.test.ts`
+- `src/hooks/queries/__tests__/useApplicationMutations.test.ts`
+
+### Volunteers (Task A4)
+- `src/hooks/queries/__tests__/useVolunteersQuery.test.ts`
+- `src/hooks/queries/__tests__/useVolunteer.test.ts`
+- `src/hooks/queries/__tests__/useVolunteerMutations.test.ts`
+
+### Admin (Task A5)
+- `src/hooks/queries/__tests__/useAdmin.test.ts`
+- `src/hooks/queries/__tests__/useAdminMutations.test.ts`
+
+**Total Tests**: 86 tests across 11 test files
 
 ## 🐛 Debugging
 
@@ -309,11 +352,23 @@ The DevTools are included in development mode:
 
 ## ⏱️ Time Estimates
 
+### Task A2 - Projects
 - **useProjects.ts**: 30-45 minutes
 - **useProject.ts**: 20-30 minutes
 - **useProjectMutations.ts**: 45-60 minutes
-- **Tests**: 15-20 minutes per file
-- **Total**: ~2-3 hours
+
+### Task A3 - Applications
+- Similar to A2: ~2-3 hours
+
+### Task A4 - Volunteers
+- Similar to A2: ~2-3 hours
+
+### Task A5 - Admin
+- **useAdmin.ts**: 45-60 minutes (5 query hooks)
+- **useAdminMutations.ts**: 60-90 minutes (11 mutation hooks)
+- **Tests**: 30-40 minutes
+
+**Total for all tasks**: ~10-12 hours
 
 ## 📄 License
 
