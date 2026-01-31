@@ -149,7 +149,7 @@ export function useUpdateUserRole(
       // Call user's onSuccess callback
       options?.onSuccess?.(data);
     },
-    onError: (error, { userId }, context) => {
+    onError: (error, { userId }, context: { previousUser?: AdminUser; userId: string } | undefined) => {
       // Rollback to previous value on error
       if (context?.previousUser) {
         queryClient.setQueryData(['admin', 'users', 'detail', userId], context.previousUser);
@@ -336,7 +336,7 @@ export function useDeleteUser(
       // Call user's onSuccess callback
       options?.onSuccess?.(undefined);
     },
-    onError: (error, userId, context) => {
+    onError: (error, userId, context: { previousUser?: AdminUser; userId: string } | undefined) => {
       // Restore user cache on error
       if (context?.previousUser) {
         queryClient.setQueryData(['admin', 'users', 'detail', userId], context.previousUser);
