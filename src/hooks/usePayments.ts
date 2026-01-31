@@ -18,7 +18,7 @@ export function usePaymentApprovals(corporateId: string | null) {
       if (response.success && response.data) {
         setApprovals(response.data);
       } else {
-        setError(new Error(response.error?.message || 'Failed to fetch payment approvals'));
+        setError(new Error(response.error || 'Failed to fetch payment approvals'));
       }
 
       setLoading(false);
@@ -47,7 +47,7 @@ export function useProjectPaymentApprovals(projectId: string | null) {
       if (response.success && response.data) {
         setApprovals(response.data);
       } else {
-        setError(new Error(response.error?.message || 'Failed to fetch payment approvals'));
+        setError(new Error(response.error || 'Failed to fetch payment approvals'));
       }
 
       setLoading(false);
@@ -76,7 +76,7 @@ export function usePaymentApproval(id: string | null) {
       if (response.success && response.data) {
         setApproval(response.data);
       } else {
-        setError(new Error(response.error?.message || 'Failed to fetch payment approval'));
+        setError(new Error(response.error || 'Failed to fetch payment approval'));
       }
 
       setLoading(false);
@@ -103,7 +103,7 @@ export function useCreatePaymentApproval() {
       setLoading(false);
       return response.data;
     } else {
-      const err = new Error(response.error?.message || 'Failed to create payment approval');
+      const err = new Error(response.error || 'Failed to create payment approval');
       setError(err);
       setLoading(false);
       throw err;
@@ -128,7 +128,7 @@ export function useApprovePayment() {
       setLoading(false);
       return response.data;
     } else {
-      const err = new Error(response.error?.message || 'Failed to approve payment');
+      const err = new Error(response.error || 'Failed to approve payment');
       setError(err);
       setLoading(false);
       throw err;
@@ -153,7 +153,7 @@ export function useRejectPayment() {
       setLoading(false);
       return response.data;
     } else {
-      const err = new Error(response.error?.message || 'Failed to reject payment');
+      const err = new Error(response.error || 'Failed to reject payment');
       setError(err);
       setLoading(false);
       throw err;
@@ -180,7 +180,7 @@ export function usePaymentStats(corporateId: string | null) {
       if (response.success && response.data) {
         setStats(response.data);
       } else {
-        setError(new Error(response.error?.message || 'Failed to fetch payment stats'));
+        setError(new Error(response.error || 'Failed to fetch payment stats'));
       }
 
       setLoading(false);
