@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Grid, X, LogIn, LayoutDashboard, Building2, Users, Shield, Briefcase, DollarSign, FileText, UserCog, Settings } from 'lucide-react';
+import { Grid, X, LogIn, LayoutDashboard, Building2, Users, Shield, Briefcase, DollarSign, FileText, UserCog, Settings, Box } from 'lucide-react';
 
 interface PageSwitcherProps {
   currentPage: string;
@@ -15,6 +15,7 @@ export function PageSwitcher({ currentPage, onNavigate }: PageSwitcherProps) {
     { name: 'NGO Dashboard', page: 'ngo-dashboard', icon: Building2, color: 'from-indigo-600 to-purple-600', description: 'Includes Projects Tab' },
     { name: 'Volunteer Dashboard', page: 'volunteer-dashboard', icon: Users, color: 'from-emerald-600 to-teal-600', description: 'Discover, Apply, Track' },
     { name: 'Admin Dashboard', page: 'admin-dashboard', icon: Shield, color: 'from-red-600 to-orange-600', description: 'All admin pages nested inside' },
+    { name: 'Skeletons Demo', page: 'skeletons-demo', icon: Box, color: 'from-cyan-600 to-blue-600', description: 'Loading components showcase' },
   ];
 
   const handleNavigate = (page: string) => {
