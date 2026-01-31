@@ -196,12 +196,12 @@ export function useUpdateProject(
       await queryClient.cancelQueries({ queryKey: queryKeys.projects.detail(id) });
 
       // Snapshot the previous value for rollback
-      const previousProject = queryClient.getQueryData<Project>(['projects', 'detail', id]);
+      const previousProject = queryClient.getQueryData<Project>(queryKeys.projects.detail(id));
 
       // Optimistically update the cache
       if (previousProject) {
         queryClient.setQueryData<Project>(
-          ['projects', 'detail', id],
+          queryKeys.projects.detail(id),
           { ...previousProject, ...updates }
         );
       }
@@ -284,7 +284,7 @@ export function useDeleteProject(
       await queryClient.cancelQueries({ queryKey: queryKeys.projects.lists() });
 
       // Snapshot the previous project for rollback
-      const previousProject = queryClient.getQueryData<Project>(['projects', 'detail', projectId]);
+      const previousProject = queryClient.getQueryData<Project>(queryKeys.projects.detail(projectId));
 
       // Optimistically remove from cache
       queryClient.removeQueries({ queryKey: queryKeys.projects.detail(projectId) });
