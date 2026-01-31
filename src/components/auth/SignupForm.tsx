@@ -115,7 +115,7 @@ export function SignupForm({ onSuccess, onSwitchToLogin }: SignupFormProps) {
 
   const handleAcceptTerms = () => {
     setFormData({ ...formData, acceptTerms: true });
-    setErrors({ ...errors, acceptTerms: undefined });
+    setErrors({ ...errors, acceptTerms: '' });
   };
 
   const handleSocialSignup = (provider: string) => {

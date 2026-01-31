@@ -287,7 +287,7 @@ export function AdminOverviewTab() {
     loadVettingQueue();
   };
 
-  const confirmBulkReject = async (payload: { ids: string[]; reason: string; createCases: boolean; note?: string }) => {
+  const confirmBulkReject = async (payload: { ids: string[]; reason: string; category: string }) => {
     toast.success(`${selectedRequests.length} items rejected`);
     setBulkRejectOpen(false);
     setSelectedRequests([]);
@@ -370,10 +370,8 @@ export function AdminOverviewTab() {
                   />
                 </div>
                 <SavedFilters
-                  filters={filters}
-                  onApplyFilter={(filter) => setFilters(filter)}
-                  onSaveFilter={(name, filter) => toast.success(`Filter "${name}" saved`)}
-                  onDeleteFilter={(name) => toast.success(`Filter "${name}" deleted`)}
+                  currentFilters={filters}
+                  onApplyFilter={(filter: Record<string, any>) => setFilters(filter)}
                 />
               </div>
             </div>
@@ -446,13 +444,11 @@ export function AdminOverviewTab() {
                       <QueueRow
                         key={request.vettingId}
                         {...request}
-                        selected={selectedRequests.includes(request.vettingId)}
-                        onClick={() => handleRowClick(request.vettingId)}
-                        onApprove={() => handleApprove(request.vettingId)}
-                        onReject={() => handleReject(request.vettingId)}
-                        onAddNote={() => handleAddNote(request.vettingId)}
-                        onAssign={() => handleAssign(request.vettingId)}
-                        onSelect={(id, selected) => handleSelect(id, selected)}
+                        isSelected={selectedRequests.includes(request.vettingId)}
+                        onPreview={(id: string) => handleRowClick(id)}
+                        onAssign={(id: string) => handleAssign(id)}
+                        onMarkUrgent={(id: string) => {}}
+                        onSelect={(id: string, selected: boolean) => handleSelect(id, selected)}
                       />
                     ))}
                   </tbody>
@@ -519,7 +515,8 @@ export function AdminOverviewTab() {
         isOpen={approveModalOpen}
         onClose={() => setApproveModalOpen(false)}
         vettingId={selectedVettingId || ''}
-        onConfirm={() => {
+        ngoName="NGO"
+        onSubmit={async (payload: { vettingId: string; note?: string; force?: boolean }) => {
           toast.success('Vetting approved successfully');
           setApproveModalOpen(false);
           loadVettingQueue();
@@ -530,7 +527,8 @@ export function AdminOverviewTab() {
         isOpen={conditionalModalOpen}
         onClose={() => setConditionalModalOpen(false)}
         vettingId={selectedVettingId || ''}
-        onConfirm={(conditions) => {
+        ngoName="NGO"
+        onSubmit={async (payload: { vettingId: string; reason: string; conditions: string[]; deadline: string }) => {
           toast.success('Conditional approval granted');
           setConditionalModalOpen(false);
           loadVettingQueue();
@@ -541,8 +539,9 @@ export function AdminOverviewTab() {
         isOpen={rejectModalOpen}
         onClose={() => setRejectModalOpen(false)}
         vettingId={selectedVettingId || ''}
-        onConfirm={(reason, createCase) => {
-          toast.success(createCase ? 'Rejected and case created' : 'Vetting rejected');
+        ngoName="NGO"
+        onSubmit={async (payload: { vettingId: string; reason: string; isPrivate: boolean }) => {
+          toast.success(payload.isPrivate ? 'Rejected with private reason' : 'Vetting rejected');
           setRejectModalOpen(false);
           loadVettingQueue();
         }}

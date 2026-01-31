@@ -49,7 +49,7 @@ export function LedgerViewer({
     toast.success('Download started: ledger_' + holdId + '.zip');
   };
 
-  const handleDownloadAttachment = (attachment: LedgerEntry['attachments'][0]) => {
+  const handleDownloadAttachment = (attachment: NonNullable<LedgerEntry['attachments']>[number]) => {
     toast.success(`Downloading ${attachment.name}`);
     // In production: trigger actual download
   };
