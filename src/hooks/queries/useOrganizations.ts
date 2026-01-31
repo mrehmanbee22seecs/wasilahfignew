@@ -154,15 +154,15 @@ export function useOrganizations(
     queryFn: async () => {
       const response = await ngosApi.list(filters, pagination);
 
-      if (!response.success) {
+      if (!response.success || !response.data) {
         throw new Error(response.error || 'Failed to fetch organizations');
       }
 
       return {
-        data: response.data || [],
-        total: response.total || 0,
-        page: response.page || 1,
-        limit: response.limit || 20,
+        data: response.data.data || [],
+        total: response.data.total || 0,
+        page: response.data.page || 1,
+        limit: response.data.limit || 20,
       };
     },
     // Prevent unnecessary refetches

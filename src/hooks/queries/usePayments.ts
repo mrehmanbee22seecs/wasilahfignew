@@ -281,7 +281,7 @@ export function usePaymentStats(
 
       const response = await paymentsApi.getPaymentStats(corporateId);
 
-      if (!response.success) {
+      if (!response.success || !response.data) {
         throw new Error(response.error || 'Failed to fetch payment stats');
       }
 
