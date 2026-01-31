@@ -402,12 +402,12 @@ export function useAssignVettingItem(
 
       return response.data as VettingQueue;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       // Invalidate vetting queue queries
       queryClient.invalidateQueries({ queryKey: ['admin', 'vetting', 'list'] });
 
       // Call user's onSuccess callback
-      options?.onSuccess?.(undefined as any);
+      options?.onSuccess?.(data);
     },
     onError: (error) => {
       // Call user's onError callback
@@ -467,12 +467,12 @@ export function useApproveVettingItem(
 
       return response.data as VettingQueue;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       // Invalidate vetting queue queries
       queryClient.invalidateQueries({ queryKey: ['admin', 'vetting', 'list'] });
 
       // Call user's onSuccess callback
-      options?.onSuccess?.(undefined as any);
+      options?.onSuccess?.(data);
     },
     onError: (error) => {
       // Call user's onError callback
@@ -532,12 +532,12 @@ export function useRejectVettingItem(
 
       return response.data as VettingQueue;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       // Invalidate vetting queue queries
       queryClient.invalidateQueries({ queryKey: ['admin', 'vetting', 'list'] });
 
       // Call user's onSuccess callback
-      options?.onSuccess?.(undefined as any);
+      options?.onSuccess?.(data);
     },
     onError: (error) => {
       // Call user's onError callback
@@ -597,12 +597,12 @@ export function useUpdateVettingPriority(
 
       return response.data as VettingQueue;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       // Invalidate vetting queue queries
       queryClient.invalidateQueries({ queryKey: ['admin', 'vetting', 'list'] });
 
       // Call user's onSuccess callback
-      options?.onSuccess?.(undefined as any);
+      options?.onSuccess?.(data);
     },
     onError: (error) => {
       // Call user's onError callback
@@ -814,12 +814,12 @@ export function useCreateAuditLog(
 
       return response.data as AuditLog;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       // Invalidate audit log queries
       queryClient.invalidateQueries({ queryKey: ['admin', 'audit', 'list'] });
 
       // Call user's onSuccess callback
-      options?.onSuccess?.(undefined as any);
+      options?.onSuccess?.(data);
     },
     onError: (error) => {
       // Call user's onError callback
