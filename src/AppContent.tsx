@@ -39,6 +39,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import { ResourcesHub } from "./pages/ResourcesHub";
 import { ImpactPage } from "./pages/ImpactPage";
 import { UnauthorizedPage } from "./pages/UnauthorizedPage";
+import { SkeletonsDemo } from "./pages/dev/SkeletonsDemo";
 
 type PageType =
   | "home"
@@ -62,7 +63,8 @@ type PageType =
   | "volunteer-directory"
   | "volunteer-profile"
   | "opportunities"
-  | "opportunity-detail";
+  | "opportunity-detail"
+  | "skeletons-demo";
 
 export function AppContent() {
   const [currentPage, setCurrentPage] = useState<PageType>("home");
@@ -277,6 +279,8 @@ export function AppContent() {
         return <ImpactPage />;
       case "unauthorized":
         return <UnauthorizedPage onNavigate={(page) => setCurrentPage(page as PageType)} />;
+      case "skeletons-demo":
+        return <SkeletonsDemo />;
       default:
         return <HomePage />;
     }
@@ -289,7 +293,8 @@ export function AppContent() {
     "ngo-dashboard",
     "volunteer-dashboard",
     "admin-dashboard",
-    "unauthorized"
+    "unauthorized",
+    "skeletons-demo"
   ];
 
   if (pagesWithoutNavFooter.includes(currentPage)) {
@@ -378,7 +383,7 @@ export function AppContent() {
       />
       
       {/* Page Switcher for Quick Access */}
-      <PageSwitcher currentPage={currentPage} onNavigate={setCurrentPage} />
+      <PageSwitcher currentPage={currentPage} onNavigate={(page) => setCurrentPage(page as PageType)} />
     </div>
   );
 }

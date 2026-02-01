@@ -79,7 +79,7 @@ export function ExportButton({
         jobs={exportHistory}
         onDelete={deleteExport}
         onClearAll={clearHistory}
-        onRefresh={loadHistory}
+        onRefresh={() => {/* History auto-refreshes */}}
       />
     </>
   );
