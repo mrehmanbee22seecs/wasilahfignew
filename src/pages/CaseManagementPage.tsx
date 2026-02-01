@@ -3,6 +3,7 @@ import { Search, Filter, Plus, Download } from 'lucide-react';
 import { CaseCard, CaseData } from '../components/admin/CaseCard';
 import { CaseDetailDrawer } from '../components/admin/CaseDetailDrawer';
 import { toast } from 'sonner';
+import { CardSkeleton } from '../components/skeletons';
 
 /**
  * Case Management Page
@@ -347,9 +348,10 @@ export default function CaseManagementPage() {
 
         {/* Cases Grid */}
         {isLoading ? (
-          <div className="text-center py-12">
-            <div className="animate-spin w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full mx-auto"></div>
-            <p className="text-sm text-gray-600 mt-4">Loading cases...</p>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <CardSkeleton key={i} lines={4} />
+            ))}
           </div>
         ) : filteredCases.length === 0 ? (
           <div className="text-center py-12 bg-white border border-gray-200 rounded-lg">
