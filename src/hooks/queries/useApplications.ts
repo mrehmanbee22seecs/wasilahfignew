@@ -58,9 +58,10 @@
  * @estimated-time 30-45 minutes
  */
 
-import { useQuery, UseQueryResult } from '@tanstack/react-query';
+import { UseQueryResult } from '@tanstack/react-query';
 import { applicationsApi, VolunteerApplication } from '../../lib/api/applications';
 import { PaginatedResponse } from '../../lib/api/base';
+import { useRealtimeQuery } from '../useRealtimeQuery';
 
 /**
  * Filters for querying applications
@@ -81,9 +82,11 @@ export interface ApplicationPagination {
 
 /**
  * React Query hook for fetching applications list with filtering and pagination
+ * NOW WITH REAL-TIME UPDATES!
  * 
  * @param filters - Optional filters for applications (status, project_id, volunteer_id)
  * @param pagination - Optional pagination parameters (page, limit)
+ * @param enableRealtime - Enable real-time updates (default: true)
  * @returns Query result with applications data, loading state, and error
  * 
  * @example
@@ -96,11 +99,12 @@ export interface ApplicationPagination {
  */
 export function useApplications(
   filters: ApplicationFilters = {},
-  pagination: ApplicationPagination = {}
+  pagination: ApplicationPagination = {},
+  enableRealtime: boolean = true
 ): UseQueryResult<PaginatedResponse<VolunteerApplication>, Error> {
   const { project_id, page = 1, limit = 20, ...otherFilters } = { ...filters, ...pagination };
   
-  return useQuery<PaginatedResponse<VolunteerApplication>, Error>({
+  return useRealtimeQuery<PaginatedResponse<VolunteerApplication>, Error>({
     queryKey: ['applications', 'list', filters, pagination],
     queryFn: async () => {
       // If project_id is provided, use paginated endpoint
@@ -151,6 +155,10 @@ export function useApplications(
         totalPages: 0,
       };
     },
+    // Real-time configuration
+    realtimeEntity: 'volunteer_applications',
+    realtimeFilter: project_id ? `project_id=eq.${project_id}` : filters.volunteer_id ? `volunteer_id=eq.${filters.volunteer_id}` : undefined,
+    enableRealtime,
     // Only fetch if we have necessary filters
     enabled: !!(project_id || filters.volunteer_id),
     // Prevent unnecessary refetches

@@ -58,19 +58,22 @@
  * @estimated-time 30-45 minutes
  */
 
-import { useQuery, UseQueryResult } from '@tanstack/react-query';
+import { UseQueryResult } from '@tanstack/react-query';
 import { 
   projectsApi, 
   ProjectFilters, 
   Project 
 } from '../../lib/api/projects';
 import { PaginationParams, PaginatedResponse } from '../../lib/api/base';
+import { useRealtimeQuery } from '../useRealtimeQuery';
 
 /**
  * React Query hook for fetching projects list with filtering and pagination
+ * NOW WITH REAL-TIME UPDATES!
  * 
  * @param filters - Optional filters for projects (status, corporate_id, ngo_id, etc.)
  * @param pagination - Optional pagination parameters (page, limit, sortBy, sortOrder)
+ * @param enableRealtime - Enable real-time updates (default: true)
  * @returns Query result with projects data, loading state, and error
  * 
  * @example
@@ -79,13 +82,17 @@ import { PaginationParams, PaginatedResponse } from '../../lib/api/base';
  *   { status: ['active'], city: 'Lahore' },
  *   { page: 1, limit: 10 }
  * );
+ * 
+ * // Disable real-time updates if needed
+ * const { data } = useProjects({}, {}, false);
  * ```
  */
 export function useProjects(
   filters: ProjectFilters = {},
-  pagination: PaginationParams = {}
+  pagination: PaginationParams = {},
+  enableRealtime: boolean = true
 ): UseQueryResult<PaginatedResponse<Project>, Error> {
-  return useQuery<PaginatedResponse<Project>, Error>({
+  return useRealtimeQuery<PaginatedResponse<Project>, Error>({
     queryKey: ['projects', 'list', filters, pagination],
     queryFn: async () => {
       const response = await projectsApi.list(filters, pagination);
@@ -96,6 +103,9 @@ export function useProjects(
       
       return response.data as PaginatedResponse<Project>;
     },
+    // Real-time configuration
+    realtimeEntity: 'projects',
+    enableRealtime,
     // Only fetch if we have necessary data (can add more conditions)
     enabled: true,
     // Prevent unnecessary refetches
