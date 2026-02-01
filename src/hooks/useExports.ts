@@ -181,7 +181,6 @@ export function useExports() {
         }
         
         job.totalRecords = data.length;
-        job.status = 'processing';
 
         setExportHistory((prev) =>
           prev.map((j) => (j.id === job.id ? { ...job } : j))
