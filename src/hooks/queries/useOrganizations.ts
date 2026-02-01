@@ -86,7 +86,6 @@
  */
 
 import {
-  useQuery,
   useMutation,
   useQueryClient,
   UseQueryResult,
@@ -100,6 +99,7 @@ import {
   NGODocument,
 } from '../../lib/api/ngos';
 import { PaginationParams } from '../../lib/api/base';
+import { useRealtimeQuery } from '../useRealtimeQuery';
 
 /**
  * Options for mutation hooks
@@ -125,9 +125,11 @@ export interface OrganizationWithStats extends NGO {
 
 /**
  * React Query hook for fetching organizations list
+ * NOW WITH REAL-TIME UPDATES!
  * 
  * @param filters - Optional filters for verification status, location, etc.
  * @param pagination - Optional pagination parameters
+ * @param enableRealtime - Enable real-time updates (default: true)
  * @returns Query result with organizations data, loading state, and error
  * 
  * @example
@@ -147,9 +149,10 @@ export interface OrganizationWithStats extends NGO {
  */
 export function useOrganizations(
   filters?: NGOFilters,
-  pagination?: PaginationParams
+  pagination?: PaginationParams,
+  enableRealtime: boolean = true
 ): UseQueryResult<{ data: NGO[]; total: number; page: number; limit: number }, Error> {
-  return useQuery({
+  return useRealtimeQuery({
     queryKey: ['organizations', 'list', filters, pagination],
     queryFn: async () => {
       const response = await ngosApi.list(filters, pagination);
@@ -165,6 +168,9 @@ export function useOrganizations(
         limit: response.data.limit || 20,
       };
     },
+    // Real-time configuration
+    realtimeEntity: 'ngos',
+    enableRealtime,
     // Prevent unnecessary refetches
     staleTime: 1000 * 60 * 5, // 5 minutes
     // Retry once on failure
@@ -176,9 +182,11 @@ export function useOrganizations(
 
 /**
  * React Query hook for fetching a single organization by ID
+ * NOW WITH REAL-TIME UPDATES!
  * 
  * @param organizationId - The ID of the organization to fetch (optional)
  * @param includeStats - Whether to include organization statistics (default: false)
+ * @param enableRealtime - Enable real-time updates (default: true)
  * @returns Query result with organization data, loading state, and error
  * 
  * @example
@@ -193,9 +201,10 @@ export function useOrganizations(
  */
 export function useOrganization(
   organizationId?: string,
-  includeStats: boolean = false
+  includeStats: boolean = false,
+  enableRealtime: boolean = true
 ): UseQueryResult<OrganizationWithStats, Error> {
-  return useQuery<OrganizationWithStats, Error>({
+  return useRealtimeQuery<OrganizationWithStats, Error>({
     queryKey: ['organizations', 'detail', organizationId, includeStats],
     queryFn: async () => {
       if (!organizationId) {
@@ -225,6 +234,10 @@ export function useOrganization(
 
       return organization;
     },
+    // Real-time configuration
+    realtimeEntity: 'ngos',
+    realtimeFilter: organizationId ? `id=eq.${organizationId}` : undefined,
+    enableRealtime,
     // Only fetch if we have an ID
     enabled: !!organizationId,
     // Prevent unnecessary refetches

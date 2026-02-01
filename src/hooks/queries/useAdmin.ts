@@ -67,7 +67,7 @@
  * @since 2026-01-31
  */
 
-import { useQuery, UseQueryResult } from '@tanstack/react-query';
+import { UseQueryResult } from '@tanstack/react-query';
 import {
   adminApi,
   AdminUser,
@@ -76,6 +76,7 @@ import {
   PlatformStats,
 } from '../../lib/api/admin';
 import { PaginationParams, PaginatedResponse } from '../../lib/api/base';
+import { useRealtimeQuery } from '../useRealtimeQuery';
 
 /**
  * Filters for vetting queue queries
@@ -100,10 +101,12 @@ export interface AuditLogFilters {
 
 /**
  * React Query hook for fetching platform statistics
+ * NOW WITH REAL-TIME UPDATES!
  * 
  * Fetches aggregated statistics about the platform including user counts,
  * project metrics, NGO verification status, and volunteer activity.
  * 
+ * @param enableRealtime - Enable real-time updates (default: true)
  * @returns Query result with platform stats, loading state, and error
  * 
  * @example
@@ -121,8 +124,10 @@ export interface AuditLogFilters {
  * );
  * ```
  */
-export function usePlatformStats(): UseQueryResult<PlatformStats, Error> {
-  return useQuery<PlatformStats, Error>({
+export function usePlatformStats(
+  enableRealtime: boolean = true
+): UseQueryResult<PlatformStats, Error> {
+  return useRealtimeQuery<PlatformStats, Error>({
     queryKey: ['admin', 'stats'],
     queryFn: async () => {
       const response = await adminApi.getPlatformStats();
@@ -133,6 +138,9 @@ export function usePlatformStats(): UseQueryResult<PlatformStats, Error> {
 
       return response.data as PlatformStats;
     },
+    // Real-time configuration - stats can change from multiple entities
+    realtimeEntity: 'users', // Will trigger on user changes
+    enableRealtime,
     // Platform stats change frequently, so shorter stale time
     staleTime: 1000 * 60 * 2, // 2 minutes
     // Retry once on failure
@@ -144,11 +152,13 @@ export function usePlatformStats(): UseQueryResult<PlatformStats, Error> {
 
 /**
  * React Query hook for fetching all users with pagination
+ * NOW WITH REAL-TIME UPDATES!
  * 
  * Fetches a paginated list of all platform users with their roles and status.
  * Supports pagination and sorting.
  * 
  * @param pagination - Optional pagination parameters (page, limit, sortBy, sortOrder)
+ * @param enableRealtime - Enable real-time updates (default: true)
  * @returns Query result with paginated users data, loading state, and error
  * 
  * @example
@@ -174,9 +184,10 @@ export function usePlatformStats(): UseQueryResult<PlatformStats, Error> {
  * ```
  */
 export function useAllUsers(
-  pagination: PaginationParams = {}
+  pagination: PaginationParams = {},
+  enableRealtime: boolean = true
 ): UseQueryResult<PaginatedResponse<AdminUser>, Error> {
-  return useQuery<PaginatedResponse<AdminUser>, Error>({
+  return useRealtimeQuery<PaginatedResponse<AdminUser>, Error>({
     queryKey: ['admin', 'users', 'list', pagination],
     queryFn: async () => {
       const response = await adminApi.getAllUsers(pagination);
@@ -187,6 +198,9 @@ export function useAllUsers(
 
       return response.data as PaginatedResponse<AdminUser>;
     },
+    // Real-time configuration
+    realtimeEntity: 'users',
+    enableRealtime,
     // User lists change moderately, so medium stale time
     staleTime: 1000 * 60 * 5, // 5 minutes
     // Retry once on failure
@@ -249,12 +263,14 @@ export function useUserById(
 
 /**
  * React Query hook for fetching the vetting queue with filters and pagination
+ * NOW WITH REAL-TIME UPDATES!
  * 
  * Fetches items pending vetting/review with filtering by entity type, status,
  * priority, and assignee. Supports pagination and sorting.
  * 
  * @param filters - Optional filters for the vetting queue
  * @param pagination - Optional pagination parameters
+ * @param enableRealtime - Enable real-time updates (default: true)
  * @returns Query result with paginated vetting queue data, loading state, and error
  * 
  * @example
@@ -283,9 +299,10 @@ export function useUserById(
  */
 export function useVettingQueue(
   filters: VettingQueueFilters = {},
-  pagination: PaginationParams = {}
+  pagination: PaginationParams = {},
+  enableRealtime: boolean = true
 ): UseQueryResult<PaginatedResponse<VettingQueue>, Error> {
-  return useQuery<PaginatedResponse<VettingQueue>, Error>({
+  return useRealtimeQuery<PaginatedResponse<VettingQueue>, Error>({
     queryKey: ['admin', 'vetting', 'list', filters, pagination],
     queryFn: async () => {
       const response = await adminApi.getVettingQueue(filters, pagination);
@@ -296,6 +313,9 @@ export function useVettingQueue(
 
       return response.data as PaginatedResponse<VettingQueue>;
     },
+    // Real-time configuration
+    realtimeEntity: 'vetting_queue',
+    enableRealtime,
     // Vetting queue needs to be near real-time, so short stale time
     staleTime: 1000 * 60 * 1, // 1 minute
     // Retry once on failure

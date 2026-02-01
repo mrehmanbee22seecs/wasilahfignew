@@ -58,15 +58,18 @@
  * @estimated-time 30-45 minutes
  */
 
-import { useQuery, UseQueryResult } from '@tanstack/react-query';
+import { UseQueryResult } from '@tanstack/react-query';
 import { volunteersApi, Volunteer, VolunteerFilters } from '../../lib/api/volunteers';
 import { PaginationParams, PaginatedResponse } from '../../lib/api/base';
+import { useRealtimeQuery } from '../useRealtimeQuery';
 
 /**
  * React Query hook for fetching volunteers list with filtering and pagination
+ * NOW WITH REAL-TIME UPDATES!
  * 
  * @param filters - Optional filters for volunteers (city, province, skills, etc.)
  * @param pagination - Optional pagination parameters (page, limit, sortBy, sortOrder)
+ * @param enableRealtime - Enable real-time updates (default: true)
  * @returns Query result with volunteers data, loading state, and error
  * 
  * @example
@@ -83,9 +86,10 @@ import { PaginationParams, PaginatedResponse } from '../../lib/api/base';
  */
 export function useVolunteers(
   filters: VolunteerFilters = {},
-  pagination: PaginationParams = {}
+  pagination: PaginationParams = {},
+  enableRealtime: boolean = true
 ): UseQueryResult<PaginatedResponse<Volunteer>, Error> {
-  return useQuery<PaginatedResponse<Volunteer>, Error>({
+  return useRealtimeQuery<PaginatedResponse<Volunteer>, Error>({
     queryKey: ['volunteers', 'list', filters, pagination],
     queryFn: async () => {
       const response = await volunteersApi.list(filters, pagination);
@@ -96,6 +100,9 @@ export function useVolunteers(
       
       return response.data as PaginatedResponse<Volunteer>;
     },
+    // Real-time configuration
+    realtimeEntity: 'volunteers',
+    enableRealtime,
     // Always enabled - can fetch all volunteers
     enabled: true,
     // Prevent unnecessary refetches
