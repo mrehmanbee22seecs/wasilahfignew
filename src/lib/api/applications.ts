@@ -243,6 +243,42 @@ class ApplicationsApi {
         .select()
     );
   }
+
+  /**
+   * Export applications data for CSV/Excel export
+   * Fetches all applications matching filters without pagination for export purposes
+   */
+  async exportData(filters?: {
+    status?: string;
+    project_id?: string;
+    volunteer_id?: string;
+  }): Promise<ApiResponse<VolunteerApplication[]>> {
+    let query = supabase
+      .from('volunteer_applications')
+      .select(`
+        *,
+        volunteer:profiles!volunteer_id(display_name, email),
+        project:projects!project_id(title)
+      `)
+      .order('created_at', { ascending: false });
+
+    if (filters?.status) {
+      query = query.eq('status', filters.status);
+    }
+
+    if (filters?.project_id) {
+      query = query.eq('project_id', filters.project_id);
+    }
+
+    if (filters?.volunteer_id) {
+      query = query.eq('volunteer_id', filters.volunteer_id);
+    }
+
+    // Limit to reasonable export size (max 10,000 records)
+    query = query.limit(10000);
+
+    return wrapApiCall(query);
+  }
 }
 
 export const applicationsApi = new ApplicationsApi();

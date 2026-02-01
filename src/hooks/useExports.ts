@@ -10,10 +10,58 @@ import {
   estimateFileSize,
 } from '../utils/exportFormatters';
 import { getColumnsByEntityType } from '../components/exports/columnDefinitions';
+import { projectsApi } from '../lib/api/projects';
+import { volunteersApi } from '../lib/api/volunteers';
+import { applicationsApi } from '../lib/api/applications';
+import { paymentsApi } from '../lib/api/payments';
+import { ngosApi } from '../lib/api/ngos';
 
 /**
- * Mock data generator for demo purposes
- * In production, this would fetch real data from API
+ * Fetch real data from API based on entity type
+ */
+async function fetchExportData(entityType: string, config: ExportConfig): Promise<any[]> {
+  try {
+    let response;
+    
+    switch (entityType) {
+      case 'projects':
+        response = await projectsApi.exportData(config.filters || {});
+        break;
+      case 'volunteers':
+        response = await volunteersApi.exportData(config.filters || {});
+        break;
+      case 'opportunities':
+        // Applications are volunteer opportunities
+        response = await applicationsApi.exportData(config.filters || {});
+        break;
+      case 'payments':
+        response = await paymentsApi.exportData(config.filters || {});
+        break;
+      case 'ngos':
+        response = await ngosApi.exportData(config.filters || {});
+        break;
+      default:
+        // Fallback to mock data for unsupported entity types
+        return generateMockData(entityType, 100);
+    }
+    
+    if (response.success && response.data) {
+      return Array.isArray(response.data) ? response.data : [response.data];
+    } else {
+      console.error('Failed to fetch export data:', response.error);
+      toast.error(`Failed to fetch ${entityType} data: ${response.error}`);
+      return [];
+    }
+  } catch (error) {
+    console.error('Error fetching export data:', error);
+    toast.error(`Error fetching ${entityType} data`);
+    return [];
+  }
+}
+
+/**
+ * Mock data generator for demo purposes (fallback)
+ * Used only for entity types without API support
  */
 function generateMockData(entityType: string, count: number = 100): any[] {
   const data: any[] = [];
@@ -118,14 +166,22 @@ export function useExports() {
       setExportHistory((prev) => [job, ...prev]);
 
       try {
-        // Simulate async processing
-        await new Promise((resolve) => setTimeout(resolve, 500));
-
-        // Generate mock data
-        const data = generateMockData(config.entityType, 100);
-        job.totalRecords = data.length;
+        // Update status to processing
         job.status = 'processing';
         job.startedAt = new Date().toISOString();
+        setExportHistory((prev) =>
+          prev.map((j) => (j.id === job.id ? { ...job } : j))
+        );
+
+        // Fetch real data from API
+        const data = await fetchExportData(config.entityType, config);
+        
+        if (data.length === 0) {
+          throw new Error('No data available for export');
+        }
+        
+        job.totalRecords = data.length;
+        job.status = 'processing';
 
         setExportHistory((prev) =>
           prev.map((j) => (j.id === job.id ? { ...job } : j))

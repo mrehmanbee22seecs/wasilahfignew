@@ -326,6 +326,46 @@ class NGOsApi {
 
     return { success: true, data: stats };
   }
+
+  /**
+   * Export NGOs data for CSV/Excel export
+   * Fetches all NGOs matching filters without pagination for export purposes
+   */
+  async exportData(filters: NGOFilters = {}): Promise<ApiResponse<NGO[]>> {
+    let query = supabase
+      .from('organizations')
+      .select('*');
+
+    // Apply the same filters as list()
+    if (filters.verification_status && filters.verification_status.length > 0) {
+      query = query.in('verification_status', filters.verification_status);
+    }
+
+    if (filters.city) {
+      query = query.eq('city', filters.city);
+    }
+
+    if (filters.province) {
+      query = query.eq('province', filters.province);
+    }
+
+    if (filters.focus_areas && filters.focus_areas.length > 0) {
+      query = query.overlaps('focus_areas', filters.focus_areas);
+    }
+
+    if (filters.sdg_alignment && filters.sdg_alignment.length > 0) {
+      query = query.overlaps('sdg_alignment', filters.sdg_alignment);
+    }
+
+    if (filters.search) {
+      query = query.or(`name.ilike.%${filters.search}%,description.ilike.%${filters.search}%`);
+    }
+
+    // Limit to reasonable export size (max 10,000 records)
+    query = query.limit(10000);
+
+    return wrapApiCall(query);
+  }
 }
 
 export const ngosApi = new NGOsApi();
