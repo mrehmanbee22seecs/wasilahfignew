@@ -90,13 +90,19 @@ function generateProfessionalCertificate(
   const primaryColor = config?.primaryColor || DEFAULT_COLORS.primary;
   const accentColor = config?.accentColor || DEFAULT_COLORS.accent;
 
-  // Set document properties
-  doc.setProperties({
-    title: `Certificate - ${data.volunteerName}`,
-    author: data.organizationName,
-    creator: 'Wasilah CSR Platform',
-    subject: 'Volunteer Certificate of Appreciation',
-  });
+  // Set document properties (if supported)
+  try {
+    if (typeof (doc as any).setProperties === 'function') {
+      (doc as any).setProperties({
+        title: `Certificate - ${data.volunteerName}`,
+        author: data.organizationName,
+        creator: 'Wasilah CSR Platform',
+        subject: 'Volunteer Certificate of Appreciation',
+      });
+    }
+  } catch (e) {
+    // Ignore if not supported
+  }
 
   // Draw decorative border
   doc.setDrawColor(...primaryColor);
@@ -279,16 +285,34 @@ function generateModernCertificate(
 
   const primaryColor = config?.primaryColor || DEFAULT_COLORS.primary;
 
-  // Set document properties
-  doc.setProperties({
-    title: `Certificate - ${data.volunteerName}`,
-    author: data.organizationName,
-  });
+  // Set document properties (if supported)
+  try {
+    if (typeof (doc as any).setProperties === 'function') {
+      (doc as any).setProperties({
+        title: `Certificate - ${data.volunteerName}`,
+        author: data.organizationName,
+      });
+    }
+  } catch (e) {
+    // Ignore if not supported
+  }
 
   // Modern geometric design
   doc.setFillColor(...primaryColor);
-  doc.triangle(0, 0, 40, 0, 0, 40, 'F');
-  doc.triangle(pageWidth, pageHeight, pageWidth - 40, pageHeight, pageWidth, pageHeight - 40, 'F');
+  // Draw triangles using lines (triangle method may not be available)
+  // Top-left triangle
+  doc.moveTo(0, 0);
+  doc.lineTo(40, 0);
+  doc.lineTo(0, 40);
+  doc.lineTo(0, 0);
+  (doc as any).fill();
+  
+  // Bottom-right triangle
+  doc.moveTo(pageWidth, pageHeight);
+  doc.lineTo(pageWidth - 40, pageHeight);
+  doc.lineTo(pageWidth, pageHeight - 40);
+  doc.lineTo(pageWidth, pageHeight);
+  (doc as any).fill();
 
   let currentY = 40;
 

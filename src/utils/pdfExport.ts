@@ -58,13 +58,19 @@ export async function createPDFDocument(options: PDFExportOptions): Promise<jsPD
     format: 'a4',
   });
 
-  // Set document properties
-  doc.setProperties({
-    title: options.title,
-    author: options.creator || 'Wasilah Platform',
-    creator: 'Wasilah CSR Platform',
-    subject: 'Report Export',
-  });
+  // Set document properties (if supported)
+  try {
+    if (typeof (doc as any).setProperties === 'function') {
+      (doc as any).setProperties({
+        title: options.title,
+        author: options.creator || 'Wasilah Platform',
+        creator: 'Wasilah CSR Platform',
+        subject: 'Report Export',
+      });
+    }
+  } catch (e) {
+    // Ignore if not supported
+  }
 
   let currentY = 20;
 
