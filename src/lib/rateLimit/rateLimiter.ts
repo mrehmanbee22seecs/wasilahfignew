@@ -10,6 +10,8 @@
  * - Automatic cleanup of old entries
  */
 
+import { logger } from '../security/secureLogger';
+
 // =====================================================
 // TYPES & INTERFACES
 // =====================================================
@@ -146,7 +148,7 @@ function getEntry(key: string): RateLimitEntry | null {
     
     return entry;
   } catch (error) {
-    console.error('Error reading rate limit entry:', error);
+    logger.error('Error reading rate limit entry', { error, key });
     return null;
   }
 }
@@ -158,7 +160,7 @@ function saveEntry(key: string, entry: RateLimitEntry): void {
   try {
     localStorage.setItem(STORAGE_KEY_PREFIX + key, JSON.stringify(entry));
   } catch (error) {
-    console.error('Error saving rate limit entry:', error);
+    logger.error('Error saving rate limit entry', { error, key });
   }
 }
 
@@ -188,7 +190,7 @@ function cleanupOldEntries(): void {
       }
     }
   } catch (error) {
-    console.error('Error cleaning up rate limit entries:', error);
+    logger.error('Error cleaning up rate limit entries', { error });
   }
 }
 
@@ -374,7 +376,7 @@ function logRateLimitViolation(
     userAgent: navigator.userAgent,
   };
   
-  console.warn('Rate limit violation:', logEntry);
+  logger.warn('Rate limit violation', logEntry);
   
   // In production, send to logging service
   if (import.meta.env.PROD) {
@@ -426,7 +428,7 @@ export function getRateLimitViolations(): Array<{
       }
     }
   } catch (error) {
-    console.error('Error getting rate limit violations:', error);
+    logger.error('Error getting rate limit violations', { error });
   }
   
   return violations;

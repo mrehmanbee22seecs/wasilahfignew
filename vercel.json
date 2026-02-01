@@ -1,5 +1,14 @@
 {
   "rewrites": [
-    { "source": "/(.*)", "destination": "/" }
-  ]
+    {
+      "source": "/(.*)",
+      "destination": "/"
+    }
+  ],
+  "github": {
+    "silent": true,
+    "autoJobCancelation": true
+  },
+  "ignoreCommand": "bash .vercel-build-ignore.sh"
 }
+

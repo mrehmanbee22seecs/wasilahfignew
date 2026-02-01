@@ -6,6 +6,8 @@
  */
 
 import { supabase } from './authService';
+import { secureStorage } from '../lib/security/secureStorage';
+import { logger } from '../lib/security/secureLogger';
 
 // =====================================================
 // TYPE DEFINITIONS
@@ -60,16 +62,16 @@ export async function enableRememberMe(userId: string, email: string): Promise<v
       lastRefresh: new Date(),
     };
 
-    // Store in localStorage (survives browser close)
-    localStorage.setItem(REMEMBER_ME_KEY, 'true');
-    localStorage.setItem(SESSION_INFO_KEY, JSON.stringify(sessionInfo));
+    // Store in secure storage (encrypted, survives browser close)
+    await secureStorage.setItem(REMEMBER_ME_KEY, 'true', { encrypt: false });
+    await secureStorage.setItem(SESSION_INFO_KEY, sessionInfo, { encrypt: true, ttl: DEFAULT_CONFIG.persistDuration * 24 * 60 * 60 * 1000 });
 
     // Update Supabase session to persist
     await supabase.auth.refreshSession();
 
-    console.log('[SessionPersistence] Remember me enabled for', email);
+    logger.info('Remember me enabled', { email });
   } catch (error) {
-    console.error('[SessionPersistence] Error enabling remember me:', error);
+    logger.error('Error enabling remember me', { error });
   }
 }
 
@@ -78,12 +80,12 @@ export async function enableRememberMe(userId: string, email: string): Promise<v
  */
 export function disableRememberMe(): void {
   try {
-    localStorage.removeItem(REMEMBER_ME_KEY);
-    localStorage.removeItem(SESSION_INFO_KEY);
+    secureStorage.removeItem(REMEMBER_ME_KEY);
+    secureStorage.removeItem(SESSION_INFO_KEY);
     
-    console.log('[SessionPersistence] Remember me disabled');
+    logger.info('Remember me disabled');
   } catch (error) {
-    console.error('[SessionPersistence] Error disabling remember me:', error);
+    logger.error('Error disabling remember me', { error });
   }
 }
 
@@ -92,7 +94,7 @@ export function disableRememberMe(): void {
  */
 export function isRememberMeEnabled(): boolean {
   try {
-    return localStorage.getItem(REMEMBER_ME_KEY) === 'true';
+    return secureStorage.getItem(REMEMBER_ME_KEY) === 'true';
   } catch {
     return false;
   }
@@ -103,10 +105,8 @@ export function isRememberMeEnabled(): boolean {
  */
 export function getStoredSessionInfo(): SessionInfo | null {
   try {
-    const stored = localStorage.getItem(SESSION_INFO_KEY);
-    if (!stored) return null;
-
-    const info = JSON.parse(stored);
+    const info = secureStorage.getItem<SessionInfo>(SESSION_INFO_KEY);
+    if (!info) return null;
     
     // Parse dates
     info.expiresAt = new Date(info.expiresAt);
@@ -156,7 +156,7 @@ export async function refreshSessionIfNeeded(): Promise<boolean> {
     const { data, error } = await supabase.auth.refreshSession();
     
     if (error || !data.session) {
-      console.error('[SessionPersistence] Refresh failed:', error);
+      logger.error('Session refresh failed', { error });
       disableRememberMe();
       return false;
     }
@@ -168,13 +168,13 @@ export async function refreshSessionIfNeeded(): Promise<boolean> {
       sessionInfo.expiresAt = new Date();
       sessionInfo.expiresAt.setDate(sessionInfo.expiresAt.getDate() + DEFAULT_CONFIG.persistDuration);
       
-      localStorage.setItem(SESSION_INFO_KEY, JSON.stringify(sessionInfo));
+      await secureStorage.setItem(SESSION_INFO_KEY, sessionInfo, { encrypt: true });
     }
 
-    console.log('[SessionPersistence] Session refreshed successfully');
+    logger.info('Session refreshed successfully');
     return true;
   } catch (error) {
-    console.error('[SessionPersistence] Error refreshing session:', error);
+    logger.error('Error refreshing session', { error });
     return false;
   }
 }
@@ -242,10 +242,10 @@ export async function restoreSession(): Promise<boolean> {
     // Session exists, check if it needs refresh
     await refreshSessionIfNeeded();
     
-    console.log('[SessionPersistence] Session restored for', sessionInfo.email);
+    logger.info('Session restored', { email: sessionInfo.email });
     return true;
   } catch (error) {
-    console.error('[SessionPersistence] Error restoring session:', error);
+    logger.error('Error restoring session', { error });
     disableRememberMe();
     return false;
   }
@@ -266,9 +266,9 @@ export async function logout(): Promise<void> {
     // Sign out from Supabase
     await supabase.auth.signOut();
 
-    console.log('[SessionPersistence] Logged out successfully');
+    logger.info('Logged out successfully');
   } catch (error) {
-    console.error('[SessionPersistence] Error during logout:', error);
+    logger.error('Error during logout', { error });
   }
 }
 
@@ -289,7 +289,7 @@ export function isSecureConnection(): boolean {
 export function validateSessionSecurity(): boolean {
   // In production, require HTTPS for remember me
   if (DEFAULT_CONFIG.secureOnly && !isSecureConnection()) {
-    console.warn('[SessionPersistence] Remember me requires HTTPS in production');
+    logger.warn('Remember me requires HTTPS in production');
     return false;
   }
 

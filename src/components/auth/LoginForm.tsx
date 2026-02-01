@@ -5,6 +5,8 @@ import { login } from '../../services/authService';
 import { ForgotPasswordModal } from './ForgotPasswordModal';
 import { enableRememberMe } from '../../services/sessionPersistenceService';
 import { AuthEvents } from '../../services/analyticsService';
+import { validateInput } from '../../lib/security/inputValidator';
+import { logger } from '../../lib/security/secureLogger';
 
 interface LoginFormProps {
   onSuccess: () => void;
@@ -31,17 +33,27 @@ export function LoginForm({ onSuccess, onSwitchToSignup, onForgotPassword }: Log
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validation
+    // Validation with secure input validator
     const newErrors: typeof errors = {};
     
+    // Validate email
+    const emailValidation = validateInput.email(formData.email);
     if (!formData.email) {
       newErrors.email = 'Please enter your email address.';
-    } else if (!validateEmail(formData.email)) {
-      newErrors.email = 'Please enter a valid email address.';
+    } else if (!emailValidation.valid) {
+      newErrors.email = emailValidation.errors[0] || 'Please enter a valid email address.';
     }
     
+    // Validate password
+    const passwordValidation = validateInput.string(formData.password, {
+      minLength: 1,
+      maxLength: 1000,
+      allowSpecialChars: true
+    });
     if (!formData.password) {
       newErrors.password = 'Please enter your password.';
+    } else if (!passwordValidation.valid) {
+      newErrors.password = 'Invalid password format.';
     }
     
     if (Object.keys(newErrors).length > 0) {
@@ -56,10 +68,10 @@ export function LoginForm({ onSuccess, onSwitchToSignup, onForgotPassword }: Log
     AuthEvents.loginStarted('email');
 
     try {
-      // Real Supabase authentication
+      // Real Supabase authentication with sanitized inputs
       const result = await login({
-        email: formData.email,
-        password: formData.password,
+        email: emailValidation.sanitized,
+        password: passwordValidation.sanitized,
         rememberMe: formData.rememberMe
       });
       
@@ -73,7 +85,7 @@ export function LoginForm({ onSuccess, onSwitchToSignup, onForgotPassword }: Log
       
       // Enable remember me if checked
       if (formData.rememberMe && result.data?.user) {
-        await enableRememberMe(result.data.user.id, formData.email);
+        await enableRememberMe(result.data.user.id, emailValidation.sanitized);
       }
 
       // Track successful login
@@ -81,6 +93,7 @@ export function LoginForm({ onSuccess, onSwitchToSignup, onForgotPassword }: Log
       
       onSuccess();
     } catch (error) {
+      logger.error('Login error', { error });
       setErrors({
         general: 'An unexpected error occurred. Please try again.'
       });
@@ -92,7 +105,7 @@ export function LoginForm({ onSuccess, onSwitchToSignup, onForgotPassword }: Log
 
   const handleSocialLogin = (provider: string) => {
     // OAuth handled by SocialLoginButtons component
-    console.log('OAuth login with:', provider);
+    logger.info('OAuth login initiated', { provider });
   };
 
   return (
