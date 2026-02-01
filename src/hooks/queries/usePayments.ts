@@ -85,10 +85,9 @@
  */
 
 import {
-  useQuery,
+  UseQueryResult,
   useMutation,
   useQueryClient,
-  UseQueryResult,
   UseMutationResult,
 } from '@tanstack/react-query';
 import {
@@ -98,6 +97,7 @@ import {
   ApprovePaymentRequest,
   RejectPaymentRequest,
 } from '../../lib/api/payments';
+import { useRealtimeQuery } from '../useRealtimeQuery';
 
 /**
  * Options for mutation hooks
@@ -118,9 +118,11 @@ interface PaymentFilters {
 
 /**
  * React Query hook for fetching payment approvals list
+ * NOW WITH REAL-TIME UPDATES!
  * 
  * @param corporateId - The ID of the corporate to fetch payments for (optional)
  * @param filters - Optional filters for status and project
+ * @param enableRealtime - Enable real-time updates (default: true)
  * @returns Query result with payments data, loading state, and error
  * 
  * @example
@@ -137,9 +139,10 @@ interface PaymentFilters {
  */
 export function usePayments(
   corporateId?: string,
-  filters?: PaymentFilters
+  filters?: PaymentFilters,
+  enableRealtime: boolean = true
 ): UseQueryResult<PaymentApproval[], Error> {
-  return useQuery<PaymentApproval[], Error>({
+  return useRealtimeQuery<PaymentApproval[], Error>({
     queryKey: ['payments', 'list', corporateId, filters],
     queryFn: async () => {
       if (!corporateId) {
@@ -154,6 +157,10 @@ export function usePayments(
 
       return response.data as PaymentApproval[];
     },
+    // Real-time configuration
+    realtimeEntity: 'payment_approvals',
+    realtimeFilter: corporateId ? `corporate_id=eq.${corporateId}` : undefined,
+    enableRealtime,
     // Only fetch if we have a corporate ID
     enabled: !!corporateId,
     // Prevent unnecessary refetches
@@ -167,8 +174,10 @@ export function usePayments(
 
 /**
  * React Query hook for fetching a single payment by ID
+ * NOW WITH REAL-TIME UPDATES!
  * 
  * @param paymentId - The ID of the payment to fetch (optional)
+ * @param enableRealtime - Enable real-time updates (default: true)
  * @returns Query result with payment data, loading state, and error
  * 
  * @example
@@ -182,9 +191,10 @@ export function usePayments(
  * ```
  */
 export function usePayment(
-  paymentId?: string
+  paymentId?: string,
+  enableRealtime: boolean = true
 ): UseQueryResult<PaymentApproval, Error> {
-  return useQuery<PaymentApproval, Error>({
+  return useRealtimeQuery<PaymentApproval, Error>({
     queryKey: ['payments', 'detail', paymentId],
     queryFn: async () => {
       if (!paymentId) {
@@ -199,6 +209,10 @@ export function usePayment(
 
       return response.data as PaymentApproval;
     },
+    // Real-time configuration
+    realtimeEntity: 'payment_approvals',
+    realtimeFilter: paymentId ? `id=eq.${paymentId}` : undefined,
+    enableRealtime,
     // Only fetch if we have a payment ID
     enabled: !!paymentId,
     // Prevent unnecessary refetches
@@ -212,8 +226,10 @@ export function usePayment(
 
 /**
  * React Query hook for fetching payments by project
+ * NOW WITH REAL-TIME UPDATES!
  * 
  * @param projectId - The ID of the project to fetch payments for (optional)
+ * @param enableRealtime - Enable real-time updates (default: true)
  * @returns Query result with payments data, loading state, and error
  * 
  * @example
@@ -222,9 +238,10 @@ export function usePayment(
  * ```
  */
 export function usePaymentsByProject(
-  projectId?: string
+  projectId?: string,
+  enableRealtime: boolean = true
 ): UseQueryResult<PaymentApproval[], Error> {
-  return useQuery<PaymentApproval[], Error>({
+  return useRealtimeQuery<PaymentApproval[], Error>({
     queryKey: ['payments', 'list', 'project', projectId],
     queryFn: async () => {
       if (!projectId) {
@@ -239,6 +256,10 @@ export function usePaymentsByProject(
 
       return response.data as PaymentApproval[];
     },
+    // Real-time configuration
+    realtimeEntity: 'payment_approvals',
+    realtimeFilter: projectId ? `project_id=eq.${projectId}` : undefined,
+    enableRealtime,
     // Only fetch if we have a project ID
     enabled: !!projectId,
     // Prevent unnecessary refetches
