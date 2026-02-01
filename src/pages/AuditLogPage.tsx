@@ -297,7 +297,6 @@ export default function AuditLogPage() {
               showHistory={true}
             />
           </div>
-          </div>
         </div>
       </div>
 
