@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { LoadingSpinner } from '../common/LoadingSpinner';
+import { DashboardSkeleton } from '../skeletons';
 
 interface RoleBasedRedirectProps {
   onRedirect: (page: string) => void;
@@ -39,14 +39,7 @@ export function RoleBasedRedirect({ onRedirect, returnTo }: RoleBasedRedirectPro
   }, [user, role, loading, onRedirect, returnTo]);
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <LoadingSpinner />
-          <p className="mt-4 text-gray-600">Redirecting...</p>
-        </div>
-      </div>
-    );
+    return <DashboardSkeleton />;
   }
 
   return null;

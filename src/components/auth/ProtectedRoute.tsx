@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { LoadingSpinner } from '../common/LoadingSpinner';
+import { DashboardSkeleton } from '../skeletons';
 
 type UserRole = 'admin' | 'corporate' | 'ngo' | 'volunteer';
 
@@ -39,16 +39,9 @@ export function ProtectedRoute({
     }
   }, [user, role, loading, allowedRoles, onUnauthorized, onUnauthenticated]);
 
-  // Show loading spinner while checking auth
+  // Show loading skeleton while checking auth
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <LoadingSpinner />
-          <p className="mt-4 text-gray-600">Verifying access...</p>
-        </div>
-      </div>
-    );
+    return <DashboardSkeleton />;
   }
 
   // No user - don't render
