@@ -5,6 +5,7 @@ import { EditUserRoleModal } from '../components/admin/team/EditUserRoleModal';
 import { InviteUserModal } from '../components/admin/team/InviteUserModal';
 import { TwoFactorSetupModal } from '../components/admin/team/TwoFactorSetupModal';
 import { toast } from 'sonner';
+import { TableRowSkeleton } from '../components/skeletons';
 
 /**
  * Team Management Page
@@ -331,9 +332,21 @@ export default function TeamManagementPage() {
 
         {/* User Management Table */}
         {isLoading ? (
-          <div className="text-center py-12 bg-white border border-gray-200 rounded-lg">
-            <div className="animate-spin w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full mx-auto"></div>
-            <p className="text-sm text-gray-600 mt-4">Loading users...</p>
+          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+            <table className="w-full">
+              <thead className="bg-gray-50 border-b border-gray-200">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">User</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Role</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">2FA</th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <TableRowSkeleton columns={5} rows={10} showActions={true} />
+              </tbody>
+            </table>
           </div>
         ) : (
           <UserManagementTable

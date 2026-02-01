@@ -4,6 +4,7 @@ import { ProjectRow } from './ProjectRow';
 import { ProjectCard } from './ProjectCard';
 import { ActivityFeed } from './ActivityFeed';
 import { Plus, FileText, LayoutGrid, LayoutList, Search } from 'lucide-react';
+import { CardSkeleton, ProjectCardSkeleton, ListSkeleton } from '../skeletons';
 
 interface OverviewTabProps {
   kpiData: {
@@ -79,6 +80,37 @@ export function OverviewTab({
   const handleLoadMore = () => {
     setDisplayedCount(prev => prev + 6);
   };
+
+  // Show skeleton loading state
+  if (loading) {
+    return (
+      <div className="space-y-8">
+        {/* KPI Row Skeletons */}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <CardSkeleton key={i} />
+          ))}
+        </div>
+
+        {/* Main Content Grid */}
+        <div className="grid lg:grid-cols-3 gap-6">
+          {/* Left: Projects (2/3) */}
+          <div className="lg:col-span-2 space-y-6">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <ProjectCardSkeleton key={i} />
+              ))}
+            </div>
+          </div>
+
+          {/* Right: Activity Feed (1/3) */}
+          <div className="lg:col-span-1">
+            <ListSkeleton items={8} showAvatar={true} />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">

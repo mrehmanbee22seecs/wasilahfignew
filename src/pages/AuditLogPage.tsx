@@ -5,6 +5,7 @@ import { AuditEntryDetailModal, AuditEntry } from '../components/admin/audit/Aud
 import { JSONDiffViewer } from '../components/admin/audit/JSONDiffViewer';
 import { ResourceTimeline, TimelineEvent } from '../components/admin/audit/ResourceTimeline';
 import { toast } from 'sonner';
+import { ListSkeleton } from '../components/skeletons';
 
 /**
  * Audit Log Viewer Page
@@ -454,9 +455,8 @@ export default function AuditLogPage() {
           </div>
 
           {isLoading ? (
-            <div className="text-center py-12">
-              <div className="animate-spin w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full mx-auto"></div>
-              <p className="text-sm text-gray-600 mt-4">Loading audit logs...</p>
+            <div className="p-6">
+              <ListSkeleton items={10} showAvatar={true} />
             </div>
           ) : filteredLogs.length === 0 ? (
             <div className="text-center py-12">

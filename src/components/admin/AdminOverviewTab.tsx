@@ -29,6 +29,7 @@ import {
   generateMockVettingTimeData,
 } from './AdminCharts';
 import { toast } from 'sonner';
+import { TableRowSkeleton } from '../skeletons';
 
 /**
  * Admin Overview Tab
@@ -408,10 +409,29 @@ export function AdminOverviewTab() {
             {/* Queue Table */}
             <div className="overflow-x-auto">
               {isLoading ? (
-                <div className="p-12 flex flex-col items-center justify-center">
-                  <Loader2 className="w-8 h-8 text-blue-600 animate-spin mb-4" />
-                  <p className="text-gray-500">Loading vetting queue...</p>
-                </div>
+                <table className="w-full">
+                  <thead className="bg-gray-50 border-b border-gray-200">
+                    <tr>
+                      <th className="px-6 py-3 text-left">
+                        <input
+                          type="checkbox"
+                          disabled
+                          className="rounded border-gray-300"
+                        />
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">NGO</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Submitted</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">SLA</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Score</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Risk</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Assigned</th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <TableRowSkeleton columns={7} rows={8} showCheckbox={true} showActions={true} />
+                  </tbody>
+                </table>
               ) : vettingRequests.length === 0 ? (
                 <div className="p-12 text-center">
                   <CircleCheck className="w-12 h-12 text-gray-300 mx-auto mb-4" />

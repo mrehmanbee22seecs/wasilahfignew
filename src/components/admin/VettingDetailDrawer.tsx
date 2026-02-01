@@ -6,6 +6,7 @@ import { VerificationChecklist, ChecklistItem } from './VerificationChecklist';
 import { AuditLogEntry, AuditLogEntryData } from './AuditLogEntry';
 import { FileRowData } from './FileRow';
 import { toast } from 'sonner';
+import { FormSkeleton, CardSkeleton, ListSkeleton } from '../skeletons';
 
 /**
  * VettingDetailDrawer Component
@@ -324,7 +325,10 @@ export function VettingDetailDrawer({
           <div className="flex items-center justify-between">
             <div className="flex-1 min-w-0 pr-4">
               {isLoading ? (
-                <div className="h-6 w-48 bg-gray-200 rounded animate-pulse" />
+                <div className="space-y-2">
+                  <div className="h-6 w-48 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+                  <div className="h-4 w-32 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+                </div>
               ) : (
                 <>
                   <h2 id="drawer-title" className="text-gray-900 truncate">
@@ -370,8 +374,18 @@ export function VettingDetailDrawer({
         {/* Drawer Body */}
         <div className="flex-1 overflow-y-auto">
           {isLoading ? (
-            <div className="flex items-center justify-center h-full">
-              <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 p-6">
+              {/* Left Column - Documents (60%) */}
+              <div className="lg:col-span-3 space-y-6">
+                <CardSkeleton showImage={true} lines={4} imageHeight={200} />
+                <ListSkeleton items={5} />
+              </div>
+
+              {/* Right Column - Metadata (40%) */}
+              <div className="lg:col-span-2 space-y-6">
+                <CardSkeleton lines={6} />
+                <FormSkeleton fields={4} showSubmitButton={false} />
+              </div>
             </div>
           ) : vettingData ? (
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 p-6">

@@ -6,6 +6,7 @@ import { ReleaseRequestModal } from '../components/admin/payments/ReleaseRequest
 import { LedgerViewer, LedgerEntry } from '../components/admin/payments/LedgerViewer';
 import { AddNoteModal } from '../components/admin/payments/AddNoteModal';
 import { toast } from 'sonner';
+import { CardSkeleton } from '../components/skeletons';
 
 /**
  * Payments & Finance Page
@@ -403,9 +404,10 @@ export default function PaymentsFinancePage() {
 
         {/* Holds Grid */}
         {isLoading ? (
-          <div className="text-center py-12">
-            <div className="animate-spin w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full mx-auto"></div>
-            <p className="text-sm text-gray-600 mt-4">Loading payment holds...</p>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <CardSkeleton key={i} lines={4} />
+            ))}
           </div>
         ) : filteredHolds.length === 0 ? (
           <div className="text-center py-12 bg-white border border-gray-200 rounded-lg">

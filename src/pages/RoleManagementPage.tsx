@@ -3,6 +3,7 @@ import { Plus, Shield, Users, Search } from 'lucide-react';
 import { RoleCard, Role } from '../components/admin/RoleCard';
 import { CreateRoleModal } from '../components/admin/CreateRoleModal';
 import { toast } from 'sonner';
+import { CardSkeleton } from '../components/skeletons';
 
 /**
  * Role & Team Management Page
@@ -340,9 +341,10 @@ export default function RoleManagementPage() {
 
         {/* Roles Grid */}
         {isLoading ? (
-          <div className="text-center py-12">
-            <div className="animate-spin w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full mx-auto"></div>
-            <p className="text-sm text-gray-600 mt-4">Loading roles...</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <CardSkeleton key={i} lines={4} />
+            ))}
           </div>
         ) : filteredRoles.length === 0 ? (
           <div className="text-center py-12 bg-white border border-gray-200 rounded-lg">
