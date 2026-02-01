@@ -4,6 +4,7 @@ import { CaseCard, CaseData } from '../components/admin/CaseCard';
 import { CaseDetailDrawer } from '../components/admin/CaseDetailDrawer';
 import { toast } from 'sonner';
 import { CardSkeleton } from '../components/skeletons';
+import { VirtualGrid } from '../components/virtual';
 
 /**
  * Case Management Page
@@ -359,11 +360,19 @@ export default function CaseManagementPage() {
             <p className="text-sm text-gray-500 mt-1">Try adjusting your filters</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            {filteredCases.map((caseData) => (
-              <CaseCard key={caseData.caseId} case={caseData} onClick={handleCaseClick} />
-            ))}
-          </div>
+          <VirtualGrid
+            items={filteredCases}
+            height={800}
+            width="100%"
+            columnCount={window.innerWidth >= 1024 ? 2 : 1}
+            rowHeight={240}
+            columnWidth={window.innerWidth >= 1024 ? 600 : 1200}
+            renderItem={(caseData, index, style) => (
+              <div key={caseData.caseId} style={{ ...style, padding: '8px' }}>
+                <CaseCard case={caseData} onClick={handleCaseClick} />
+              </div>
+            )}
+          />
         )}
       </div>
 
