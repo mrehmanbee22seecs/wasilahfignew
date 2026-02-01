@@ -1,0 +1,73 @@
+# Documentation files - Don't trigger deployments for doc changes
+*.md
+!README.md
+docs/
+TASK_*.md
+*_SUMMARY.md
+*_REPORT.md
+*_COMPLETE.md
+*_VERIFICATION*.md
+*_CHECKLIST.md
+DEBUGGING_REPORT.md
+ERROR_FIXES_SUMMARY.md
+EXECUTIVE_SUMMARY.md
+IMPLEMENTATION_COMPLETE.md
+QUICK_SETUP.md
+SKELETON_COMPONENTS_README.md
+TESTING.md
+VERIFICATION_REPORT*.md
+
+# Test files - Don't trigger deployments for test-only changes
+*.test.ts
+*.test.tsx
+*.test.js
+*.test.jsx
+*.spec.ts
+*.spec.tsx
+*.spec.js
+*.spec.jsx
+src/tests/
+__tests__/
+test/
+tests/
+**/__tests__/
+**/*.test.*
+**/*.spec.*
+
+# Test configuration
+vitest.config.ts
+jest.config.js
+.vitest/
+
+# Development files
+.vscode/
+.idea/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.swp
+*.swo
+*~
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# CI/CD (if you add them later)
+.github/workflows/test.yml
+
+# Coverage reports
+coverage/
+.nyc_output/
+*.lcov
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Editor backup files
+*~
+.DS_Store
