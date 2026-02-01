@@ -49,7 +49,25 @@ export const createProjectSchema = z.object({
   path: ['end_date'],
 });
 
-export const updateProjectSchema = createProjectSchema.partial();
+// For updates, we need to create a separate schema without the refine for partial to work
+const projectBaseSchema = z.object({
+  title: z.string().min(5, 'Title must be at least 5 characters').max(200, 'Title is too long'),
+  description: z.string().min(50, 'Description must be at least 50 characters').max(5000, 'Description is too long'),
+  budget: z.number().min(10000, 'Budget must be at least PKR 10,000').max(100000000, 'Budget cannot exceed PKR 100M'),
+  start_date: z.string().refine((date) => new Date(date) >= new Date(), {
+    message: 'Start date must be in the future',
+  }),
+  end_date: z.string(),
+  location: z.string().min(3, 'Location is required'),
+  city: z.string().min(2, 'City is required'),
+  province: provinceSchema,
+  sdg_goals: sdgGoalsSchema,
+  focus_areas: z.array(z.string()).min(1, 'Select at least one focus area'),
+  volunteer_capacity: z.number().min(1, 'Volunteer capacity must be at least 1').max(1000, 'Capacity is too high'),
+  ngo_id: z.string().uuid().optional(),
+});
+
+export const updateProjectSchema = projectBaseSchema.partial();
 
 export const addMilestoneSchema = z.object({
   title: z.string().min(5, 'Title must be at least 5 characters').max(200, 'Title is too long'),

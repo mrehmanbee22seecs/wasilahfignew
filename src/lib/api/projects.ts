@@ -1,5 +1,5 @@
 import { supabase } from '../supabase';
-import { ApiResponse, PaginationParams, wrapApiCall, withPagination } from './base';
+import { ApiResponse, PaginationParams, wrapApiCall, wrapApiCallWithRateLimit, withPagination } from './base';
 
 export interface Project {
   id: string;
@@ -86,8 +86,8 @@ class ProjectsApi {
       return { success: false, error: 'Not authenticated', code: 'AUTH_ERROR' };
     }
 
-    return wrapApiCall(
-      supabase.from('projects').insert({
+    return wrapApiCallWithRateLimit(
+      () => supabase.from('projects').insert({
         ...input,
         created_by: user.user.id,
         corporate_id: user.user.id,
@@ -98,7 +98,8 @@ class ProjectsApi {
         beneficiaries_count: 0,
         media_urls: [],
         milestones: [],
-      }).select().single()
+      }).select().single(),
+      'createProject'
     );
   }
 
@@ -158,19 +159,21 @@ class ProjectsApi {
   }
 
   async update(id: string, input: UpdateProjectInput): Promise<ApiResponse<Project>> {
-    return wrapApiCall(
-      supabase
+    return wrapApiCallWithRateLimit(
+      () => supabase
         .from('projects')
         .update(input)
         .eq('id', id)
         .select()
-        .single()
+        .single(),
+      'updateProject'
     );
   }
 
   async delete(id: string): Promise<ApiResponse<void>> {
-    return wrapApiCall(
-      supabase.from('projects').delete().eq('id', id)
+    return wrapApiCallWithRateLimit(
+      () => supabase.from('projects').delete().eq('id', id),
+      'deleteProject'
     );
   }
 

@@ -1,5 +1,11 @@
 import { supabase } from '../supabase';
 import { PostgrestError } from '@supabase/supabase-js';
+import { 
+  checkRateLimit, 
+  recordAttempt, 
+  getIdentifier 
+} from '../rateLimit/rateLimiter';
+import { RateLimitError } from '../errors/types';
 
 export interface ApiResponse<T = any> {
   success: boolean;
@@ -176,3 +182,69 @@ export async function checkPermission(
   const allowedRoles = permissions[resource]?.[action] || [];
   return allowedRoles.includes(profile.role);
 }
+
+/**
+ * Wraps an API call with rate limiting
+ * @param apiCall The API call to wrap
+ * @param rateLimitKey The rate limit endpoint key (e.g., 'createProject')
+ * @param options Additional options
+ * @returns ApiResponse with rate limiting applied
+ */
+export async function wrapApiCallWithRateLimit<T>(
+  apiCall: () => Promise<{ data: T | null; error: PostgrestError | null }>,
+  rateLimitKey: string,
+  options: {
+    validateInput?: (input: any) => { success: boolean; errors?: Record<string, string> };
+    transformData?: (data: T) => T;
+  } = {}
+): Promise<ApiResponse<T>> {
+  try {
+    // Get current user for rate limiting
+    const { data: user } = await supabase.auth.getUser();
+    const identifier = user.user ? getIdentifier(user.user.email, user.user.id) : 'anonymous';
+
+    // Check rate limit
+    const rateLimitCheck = checkRateLimit(rateLimitKey, identifier);
+    
+    if (!rateLimitCheck.allowed) {
+      // Rate limit exceeded
+      recordAttempt(rateLimitKey, identifier, false);
+      return {
+        success: false,
+        error: rateLimitCheck.message || 'Too many requests. Please try again later.',
+        code: 'RATE_LIMIT_EXCEEDED',
+      };
+    }
+
+    // Execute API call
+    const { data, error } = await apiCall();
+
+    if (error) {
+      const apiError = handleSupabaseError(error);
+      recordAttempt(rateLimitKey, identifier, false);
+      return {
+        success: false,
+        error: apiError.message,
+        code: apiError.code,
+      };
+    }
+
+    // Success
+    recordAttempt(rateLimitKey, identifier, true);
+    
+    const resultData = options.transformData && data ? options.transformData(data) : data;
+    
+    return {
+      success: true,
+      data: resultData as T,
+    };
+  } catch (error: any) {
+    console.error('API call failed:', error);
+    return {
+      success: false,
+      error: error.message || 'An unexpected error occurred',
+      code: 'NETWORK_ERROR',
+    };
+  }
+}
+
