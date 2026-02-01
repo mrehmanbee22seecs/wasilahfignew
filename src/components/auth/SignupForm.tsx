@@ -3,6 +3,8 @@ import { Mail, Lock, User, Eye, EyeOff, Building2, AlertCircle, Loader, CheckCir
 import { SocialLoginButtons } from './SocialLoginButtons';
 import { signup } from '../../services/authService';
 import { TermsModal } from './TermsModal';
+import { validateInput } from '../../lib/security/inputValidator';
+import { logger } from '../../lib/security/secureLogger';
 
 interface SignupFormProps {
   onSuccess: (email: string) => void;
@@ -49,31 +51,57 @@ export function SignupForm({ onSuccess, onSwitchToLogin }: SignupFormProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validation
+    // Validation with secure input validator
     const newErrors: Record<string, string> = {};
     
+    // Validate full name
+    const nameValidation = validateInput.string(formData.fullName, {
+      minLength: 2,
+      maxLength: 100,
+      allowSpecialChars: true
+    });
     if (!formData.fullName.trim()) {
       newErrors.fullName = 'Please enter your full name.';
+    } else if (!nameValidation.valid) {
+      newErrors.fullName = nameValidation.errors[0] || 'Invalid name format.';
     }
     
+    // Validate email
+    const emailValidation = validateInput.email(formData.email);
     if (!formData.email) {
       newErrors.email = 'Please enter your email address.';
-    } else if (!validateEmail(formData.email)) {
-      newErrors.email = 'Please enter a valid email address.';
+    } else if (!emailValidation.valid) {
+      newErrors.email = emailValidation.errors[0] || 'Please enter a valid email address.';
     }
     
+    // Validate password
     if (!formData.password) {
       newErrors.password = 'Please create a password.';
     } else if (formData.password.length < 8) {
       newErrors.password = 'Password must be at least 8 characters.';
     }
     
+    // Validate confirm password
     if (!formData.confirmPassword) {
       newErrors.confirmPassword = 'Please confirm your password.';
     } else if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = 'Passwords don\'t match.';
     }
     
+    // Validate company name if provided
+    let companyValidation = null;
+    if (formData.companyName.trim()) {
+      companyValidation = validateInput.string(formData.companyName, {
+        minLength: 2,
+        maxLength: 200,
+        allowSpecialChars: true
+      });
+      if (!companyValidation.valid) {
+        newErrors.companyName = companyValidation.errors[0] || 'Invalid company name.';
+      }
+    }
+    
+    // Validate terms acceptance
     if (!formData.acceptTerms) {
       newErrors.acceptTerms = 'You must accept the Terms & Conditions to continue.';
     }
@@ -87,12 +115,12 @@ export function SignupForm({ onSuccess, onSwitchToLogin }: SignupFormProps) {
     setErrors({});
 
     try {
-      // Real Supabase signup
+      // Real Supabase signup with sanitized inputs
       const result = await signup({
-        email: formData.email,
-        password: formData.password,
-        fullName: formData.fullName,
-        companyName: formData.companyName || undefined
+        email: emailValidation.sanitized,
+        password: formData.password, // Don't sanitize password
+        fullName: nameValidation.sanitized,
+        companyName: companyValidation?.sanitized || formData.companyName || undefined
       });
       
       if (!result.success) {
@@ -102,9 +130,10 @@ export function SignupForm({ onSuccess, onSwitchToLogin }: SignupFormProps) {
         return;
       }
       
-      // Pass email to parent for verification step
-      onSuccess(formData.email);
+      // Pass sanitized email to parent for verification step
+      onSuccess(emailValidation.sanitized);
     } catch (error) {
+      logger.error('Signup error', { error });
       setErrors({
         general: 'An unexpected error occurred. Please try again.'
       });
