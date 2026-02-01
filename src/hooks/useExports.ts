@@ -138,6 +138,28 @@ function generateMockData(entityType: string, count: number = 100): any[] {
 }
 
 /**
+ * Update export job progress
+ */
+async function updateProgress(
+  job: ExportJob,
+  start: number,
+  end: number,
+  setExportHistory: React.Dispatch<React.SetStateAction<ExportJob[]>>
+): Promise<void> {
+  const steps = 5;
+  const increment = (end - start) / steps;
+  
+  for (let i = 0; i <= steps; i++) {
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    job.progress = start + (increment * i);
+    job.processedRecords = Math.floor((job.totalRecords * job.progress) / 100);
+    setExportHistory((prev) =>
+      prev.map((j) => (j.id === job.id ? { ...job } : j))
+    );
+  }
+}
+
+/**
  * Custom hook for export management
  */
 export function useExports() {
@@ -208,7 +230,6 @@ export function useExports() {
         }
 
         // Generate export based on format
-        let content: string | null = null;
         let filename: string;
         let fileSize: number;
 
@@ -219,15 +240,8 @@ export function useExports() {
           // Prepare multi-sheet data
           const sheets = prepareEntitySheets(config.entityType, filteredData, config);
           
-          // Simulate processing progress
-          for (let i = 0; i <= 80; i += 20) {
-            await new Promise((resolve) => setTimeout(resolve, 100));
-            job.progress = i;
-            job.processedRecords = Math.floor((filteredData.length * i) / 100);
-            setExportHistory((prev) =>
-              prev.map((j) => (j.id === job.id ? { ...job } : j))
-            );
-          }
+          // Update progress
+          await updateProgress(job, 0, 80, setExportHistory);
           
           // Export Excel file
           await exportExcelToDownload({
@@ -240,66 +254,35 @@ export function useExports() {
           // Estimate file size (Excel files are typically larger than CSV)
           fileSize = estimateFileSize(filteredData.length, selectedColumns.length, 'excel');
           
-        } else if (config.format === 'csv') {
-          content = generateCSV(filteredData, selectedColumns);
-          filename = generateFilename(config.entityType, 'csv');
-          fileSize = new Blob([content]).size;
-          
-          // Simulate processing progress
-          for (let i = 0; i <= 80; i += 20) {
-            await new Promise((resolve) => setTimeout(resolve, 100));
-            job.progress = i;
-            job.processedRecords = Math.floor((filteredData.length * i) / 100);
-            setExportHistory((prev) =>
-              prev.map((j) => (j.id === job.id ? { ...job } : j))
-            );
-          }
-          
-          // Download the file
-          const mimeType = getMimeType('csv');
-          downloadFile(content, filename, mimeType);
-          
-        } else if (config.format === 'json') {
-          content = generateJSON(filteredData, selectedColumns);
-          filename = generateFilename(config.entityType, 'json');
-          fileSize = new Blob([content]).size;
-          
-          // Simulate processing progress
-          for (let i = 0; i <= 80; i += 20) {
-            await new Promise((resolve) => setTimeout(resolve, 100));
-            job.progress = i;
-            job.processedRecords = Math.floor((filteredData.length * i) / 100);
-            setExportHistory((prev) =>
-              prev.map((j) => (j.id === job.id ? { ...job } : j))
-            );
-          }
-          
-          // Download the file
-          const mimeType = getMimeType('json');
-          downloadFile(content, filename, mimeType);
-          
-        } else if (config.format === 'pdf') {
-          // For PDF, we'll use JSON for now (would need jsPDF library in production)
-          content = generateJSON(filteredData, selectedColumns);
-          filename = generateFilename(config.entityType, 'json');
-          fileSize = new Blob([content]).size;
-          toast.info('PDF format using JSON for demo. Add jsPDF library for real PDFs.');
-          
-          // Simulate processing progress
-          for (let i = 0; i <= 80; i += 20) {
-            await new Promise((resolve) => setTimeout(resolve, 100));
-            job.progress = i;
-            job.processedRecords = Math.floor((filteredData.length * i) / 100);
-            setExportHistory((prev) =>
-              prev.map((j) => (j.id === job.id ? { ...job } : j))
-            );
-          }
-          
-          // Download the file
-          const mimeType = getMimeType('json');
-          downloadFile(content, filename, mimeType);
         } else {
-          throw new Error(`Unsupported format: ${config.format}`);
+          // Handle CSV, JSON, PDF formats
+          let content: string;
+          let mimeType: string;
+          
+          if (config.format === 'csv') {
+            content = generateCSV(filteredData, selectedColumns);
+            filename = generateFilename(config.entityType, 'csv');
+            mimeType = getMimeType('csv');
+          } else if (config.format === 'json') {
+            content = generateJSON(filteredData, selectedColumns);
+            filename = generateFilename(config.entityType, 'json');
+            mimeType = getMimeType('json');
+          } else if (config.format === 'pdf') {
+            content = generateJSON(filteredData, selectedColumns);
+            filename = generateFilename(config.entityType, 'json');
+            mimeType = getMimeType('json');
+            toast.info('PDF format using JSON for demo. Add jsPDF library for real PDFs.');
+          } else {
+            throw new Error(`Unsupported format: ${config.format}`);
+          }
+          
+          fileSize = new Blob([content]).size;
+          
+          // Update progress
+          await updateProgress(job, 0, 80, setExportHistory);
+          
+          // Download the file
+          downloadFile(content, filename, mimeType);
         }
 
         // Complete the job

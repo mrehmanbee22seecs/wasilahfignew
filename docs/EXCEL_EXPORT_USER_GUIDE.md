@@ -334,7 +334,7 @@ If you encounter issues:
 ## Frequently Asked Questions
 
 **Q: How many rows can I export?**
-A: Up to 10,000 rows per export. Apply filters for larger datasets.
+A: Technically, Excel supports up to 1,048,576 rows. However, for optimal performance and file size, we recommend keeping exports under 10,000 rows by applying filters. Larger exports may take longer to generate and download.
 
 **Q: Can I schedule automatic exports?**
 A: Not currently, but planned for future release.

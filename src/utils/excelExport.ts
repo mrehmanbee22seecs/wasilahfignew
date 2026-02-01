@@ -199,14 +199,22 @@ async function addSummaryRow(
   
   // Style summary row
   summaryRow.eachCell((cell, colNumber) => {
-    // Merge summary row style with existing cell style
-    Object.assign(cell.style, STYLES.summaryRow);
+    // Preserve existing numFmt if present, only add visual styles
+    const existingNumFmt = cell.numFmt;
+    
+    // Apply summary row visual styles
+    cell.font = STYLES.summaryRow.font;
+    cell.fill = STYLES.summaryRow.fill;
+    cell.border = STYLES.summaryRow.border;
     
     // Apply column-specific formatting to formula results
     const column = config.columns[colNumber - 1]; // colNumber is 1-indexed
     
     if (column?.format) {
       applyFormat(cell, column.format);
+    } else if (existingNumFmt) {
+      // Restore existing format if no column format specified
+      cell.numFmt = existingNumFmt;
     }
   });
 }
@@ -376,13 +384,28 @@ export function prepareEntitySheets(
         name: entityType,
         data,
         columns: Object.keys(data[0] || {}).map((key) => ({
-          header: key.charAt(0).toUpperCase() + key.slice(1),
+          header: formatHeaderName(key),
           key,
         })),
       });
   }
   
   return sheets;
+}
+
+/**
+ * Format a key name into a proper header (converts snake_case and camelCase to Title Case)
+ */
+function formatHeaderName(key: string): string {
+  return key
+    // Insert space before capital letters (camelCase)
+    .replace(/([A-Z])/g, ' $1')
+    // Replace underscores with spaces (snake_case)
+    .replace(/_/g, ' ')
+    // Capitalize first letter of each word
+    .replace(/\b\w/g, (char) => char.toUpperCase())
+    // Trim any leading/trailing spaces
+    .trim();
 }
 
 // Entity-specific sheet preparation functions
