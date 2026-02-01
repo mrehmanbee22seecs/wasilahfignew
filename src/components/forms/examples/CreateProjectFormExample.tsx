@@ -195,10 +195,11 @@ export function CreateProjectFormExample({ onSubmit }: CreateProjectFormProps) {
             Focus Areas <span className="text-red-500">*</span>
           </label>
           <MultiSelectChips
+            label=""
+            name="focus_areas"
             options={focusAreaOptions}
-            selectedIds={form.values.focus_areas || []}
+            selected={form.values.focus_areas || []}
             onChange={(areas: string[]) => form.setFieldValue('focus_areas', areas)}
-            placeholder="Select focus areas"
           />
           {form.getFieldError('focus_areas') && form.touched.focus_areas && (
             <p className="text-xs text-red-600 mt-1">{form.getFieldError('focus_areas')}</p>

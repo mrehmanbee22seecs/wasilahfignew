@@ -383,7 +383,7 @@ export function AppContent() {
       />
       
       {/* Page Switcher for Quick Access */}
-      <PageSwitcher currentPage={currentPage} onNavigate={setCurrentPage} />
+      <PageSwitcher currentPage={currentPage} onNavigate={(page) => setCurrentPage(page as PageType)} />
     </div>
   );
 }

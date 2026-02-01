@@ -393,7 +393,7 @@ export function ProfilePhotoCropper({ onImageCropped, currentImage }: ProfilePho
       <canvas ref={canvasRef} className="hidden" />
 
       {/* CSS for range slider */}
-      <style jsx>{`
+      <style>{`
         .slider::-webkit-slider-thumb {
           appearance: none;
           width: 16px;
