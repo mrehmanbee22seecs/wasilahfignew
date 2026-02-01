@@ -1,5 +1,5 @@
 import { supabase } from '../supabase';
-import { wrapApiCall } from './base';
+import { wrapApiCall, wrapApiCallWithRateLimit } from './base';
 import type { ApiResponse, PaginatedResponse } from './base';
 
 export interface VolunteerApplication {
@@ -104,8 +104,8 @@ class ApplicationsApi {
   async createApplication(data: CreateApplicationRequest): Promise<ApiResponse<VolunteerApplication>> {
     const { data: { user } } = await supabase.auth.getUser();
 
-    return wrapApiCall(
-      supabase
+    return wrapApiCallWithRateLimit(
+      () => supabase
         .from('volunteer_applications')
         .insert([{
           ...data,
@@ -113,7 +113,8 @@ class ApplicationsApi {
           status: 'pending',
         }])
         .select()
-        .single()
+        .single(),
+      'createApplication'
     );
   }
 
@@ -124,8 +125,8 @@ class ApplicationsApi {
   ): Promise<ApiResponse<VolunteerApplication>> {
     const { data: { user } } = await supabase.auth.getUser();
 
-    return wrapApiCall(
-      supabase
+    return wrapApiCallWithRateLimit(
+      () => supabase
         .from('volunteer_applications')
         .update({
           status: data.status,
@@ -137,7 +138,8 @@ class ApplicationsApi {
         })
         .eq('id', id)
         .select()
-        .single()
+        .single(),
+      'adminVetting'
     );
   }
 

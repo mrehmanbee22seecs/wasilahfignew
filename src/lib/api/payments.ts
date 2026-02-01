@@ -1,5 +1,5 @@
 import { supabase } from '../supabase';
-import { wrapApiCall } from './base';
+import { wrapApiCall, wrapApiCallWithRateLimit } from './base';
 import type { ApiResponse, PaginatedResponse } from './base';
 
 export interface PaymentApproval {
@@ -105,8 +105,8 @@ class PaymentsApi {
 
   // Create payment approval request
   async createPaymentApproval(data: PaymentRequest): Promise<ApiResponse<PaymentApproval>> {
-    return wrapApiCall(
-      supabase
+    return wrapApiCallWithRateLimit(
+      () => supabase
         .from('payment_approvals')
         .insert([{
           ...data,
@@ -114,7 +114,8 @@ class PaymentsApi {
           urgency: data.urgency || 'medium',
         }])
         .select()
-        .single()
+        .single(),
+      'createPayment'
     );
   }
 
@@ -125,8 +126,8 @@ class PaymentsApi {
   ): Promise<ApiResponse<PaymentApproval>> {
     const { data: { user } } = await supabase.auth.getUser();
 
-    return wrapApiCall(
-      supabase
+    return wrapApiCallWithRateLimit(
+      () => supabase
         .from('payment_approvals')
         .update({
           status: 'approved',
@@ -139,7 +140,8 @@ class PaymentsApi {
         })
         .eq('id', id)
         .select()
-        .single()
+        .single(),
+      'adminVetting'
     );
   }
 
@@ -150,8 +152,8 @@ class PaymentsApi {
   ): Promise<ApiResponse<PaymentApproval>> {
     const { data: { user } } = await supabase.auth.getUser();
 
-    return wrapApiCall(
-      supabase
+    return wrapApiCallWithRateLimit(
+      () => supabase
         .from('payment_approvals')
         .update({
           status: 'rejected',
@@ -162,7 +164,8 @@ class PaymentsApi {
         })
         .eq('id', id)
         .select()
-        .single()
+        .single(),
+      'adminVetting'
     );
   }
 
