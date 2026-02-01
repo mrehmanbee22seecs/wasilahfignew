@@ -9,6 +9,10 @@ import {
   getMimeType,
   estimateFileSize,
 } from '../utils/exportFormatters';
+import { 
+  exportExcelToDownload, 
+  prepareEntitySheets 
+} from '../utils/excelExport';
 import { getColumnsByEntityType } from '../components/exports/columnDefinitions';
 import { projectsApi } from '../lib/api/projects';
 import { volunteersApi } from '../lib/api/volunteers';
@@ -204,37 +208,98 @@ export function useExports() {
         }
 
         // Generate export based on format
-        let content: string;
+        let content: string | null = null;
         let filename: string;
+        let fileSize: number;
 
-        if (config.format === 'csv') {
+        if (config.format === 'excel') {
+          // Use real Excel export with multi-sheet support
+          filename = generateFilename(config.entityType, 'excel');
+          
+          // Prepare multi-sheet data
+          const sheets = prepareEntitySheets(config.entityType, filteredData, config);
+          
+          // Simulate processing progress
+          for (let i = 0; i <= 80; i += 20) {
+            await new Promise((resolve) => setTimeout(resolve, 100));
+            job.progress = i;
+            job.processedRecords = Math.floor((filteredData.length * i) / 100);
+            setExportHistory((prev) =>
+              prev.map((j) => (j.id === job.id ? { ...job } : j))
+            );
+          }
+          
+          // Export Excel file
+          await exportExcelToDownload({
+            sheets,
+            filename,
+            creator: job.createdBy.name,
+            includeAnalytics: true,
+          });
+          
+          // Estimate file size (Excel files are typically larger than CSV)
+          fileSize = estimateFileSize(filteredData.length, selectedColumns.length, 'excel');
+          
+        } else if (config.format === 'csv') {
           content = generateCSV(filteredData, selectedColumns);
           filename = generateFilename(config.entityType, 'csv');
+          fileSize = new Blob([content]).size;
+          
+          // Simulate processing progress
+          for (let i = 0; i <= 80; i += 20) {
+            await new Promise((resolve) => setTimeout(resolve, 100));
+            job.progress = i;
+            job.processedRecords = Math.floor((filteredData.length * i) / 100);
+            setExportHistory((prev) =>
+              prev.map((j) => (j.id === job.id ? { ...job } : j))
+            );
+          }
+          
+          // Download the file
+          const mimeType = getMimeType('csv');
+          downloadFile(content, filename, mimeType);
+          
         } else if (config.format === 'json') {
           content = generateJSON(filteredData, selectedColumns);
           filename = generateFilename(config.entityType, 'json');
-        } else if (config.format === 'excel') {
-          // For Excel, we'll use CSV for now (would need xlsx library in production)
-          content = generateCSV(filteredData, selectedColumns);
-          filename = generateFilename(config.entityType, 'csv');
-          toast.info('Excel format using CSV for demo. Add xlsx library for real Excel files.');
+          fileSize = new Blob([content]).size;
+          
+          // Simulate processing progress
+          for (let i = 0; i <= 80; i += 20) {
+            await new Promise((resolve) => setTimeout(resolve, 100));
+            job.progress = i;
+            job.processedRecords = Math.floor((filteredData.length * i) / 100);
+            setExportHistory((prev) =>
+              prev.map((j) => (j.id === job.id ? { ...job } : j))
+            );
+          }
+          
+          // Download the file
+          const mimeType = getMimeType('json');
+          downloadFile(content, filename, mimeType);
+          
         } else if (config.format === 'pdf') {
           // For PDF, we'll use JSON for now (would need jsPDF library in production)
           content = generateJSON(filteredData, selectedColumns);
           filename = generateFilename(config.entityType, 'json');
+          fileSize = new Blob([content]).size;
           toast.info('PDF format using JSON for demo. Add jsPDF library for real PDFs.');
+          
+          // Simulate processing progress
+          for (let i = 0; i <= 80; i += 20) {
+            await new Promise((resolve) => setTimeout(resolve, 100));
+            job.progress = i;
+            job.processedRecords = Math.floor((filteredData.length * i) / 100);
+            setExportHistory((prev) =>
+              prev.map((j) => (j.id === job.id ? { ...job } : j))
+            );
+          }
+          
+          // Download the file
+          const mimeType = getMimeType('json');
+          downloadFile(content, filename, mimeType);
         } else {
           throw new Error(`Unsupported format: ${config.format}`);
-        }
-
-        // Simulate processing progress
-        for (let i = 0; i <= 100; i += 20) {
-          await new Promise((resolve) => setTimeout(resolve, 100));
-          job.progress = i;
-          job.processedRecords = Math.floor((filteredData.length * i) / 100);
-          setExportHistory((prev) =>
-            prev.map((j) => (j.id === job.id ? { ...job } : j))
-          );
         }
 
         // Complete the job
@@ -242,16 +307,12 @@ export function useExports() {
         job.progress = 100;
         job.processedRecords = filteredData.length;
         job.completedAt = new Date().toISOString();
-        job.fileSize = new Blob([content]).size;
+        job.fileSize = fileSize;
         job.expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(); // 7 days
 
         setExportHistory((prev) =>
           prev.map((j) => (j.id === job.id ? { ...job } : j))
         );
-
-        // Download the file
-        const mimeType = getMimeType(config.format === 'excel' ? 'csv' : config.format === 'pdf' ? 'json' : config.format);
-        downloadFile(content, filename, mimeType);
 
         // Email delivery simulation
         if (config.emailDelivery?.enabled) {
