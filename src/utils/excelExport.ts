@@ -133,11 +133,11 @@ async function addWorksheet(
     
     // Apply alternating row colors
     const rowStyle = index % 2 === 0 ? STYLES.evenRow : STYLES.oddRow;
-    row.eachCell((cell) => {
+    row.eachCell((cell, colNumber) => {
       cell.fill = rowStyle.fill;
       
-      // Apply column-specific formatting
-      const column = config.columns.find((col) => col.key === cell.address.replace(/\d+/g, '').toLowerCase());
+      // Apply column-specific formatting based on column index
+      const column = config.columns[colNumber - 1]; // colNumber is 1-indexed
       if (column?.format) {
         applyFormat(cell, column.format);
       }
@@ -164,12 +164,11 @@ async function addSummaryRow(
   config: ExcelSheetConfig
 ): Promise<void> {
   const dataRowCount = config.data.length;
-  const summaryRowNum = dataRowCount + 2; // +1 for header, +1 for blank row
   
   // Add blank row before summary
-  worksheet.addRow([]);
+  worksheet.addRow({});
   
-  // Create summary row data
+  // Create summary row as object with keys matching column definitions
   const summaryData: any = {};
   
   config.columns.forEach((col, colIndex) => {
@@ -199,14 +198,12 @@ async function addSummaryRow(
   const summaryRow = worksheet.addRow(summaryData);
   
   // Style summary row
-  summaryRow.eachCell((cell) => {
-    cell.style = STYLES.summaryRow;
+  summaryRow.eachCell((cell, colNumber) => {
+    // Merge summary row style with existing cell style
+    Object.assign(cell.style, STYLES.summaryRow);
     
     // Apply column-specific formatting to formula results
-    const column = config.columns.find((col) => {
-      const cellCol = cell.address.replace(/\d+/g, '').toLowerCase();
-      return col.key.toLowerCase() === cellCol || col.key.toLowerCase().startsWith(cellCol);
-    });
+    const column = config.columns[colNumber - 1]; // colNumber is 1-indexed
     
     if (column?.format) {
       applyFormat(cell, column.format);
