@@ -61,7 +61,7 @@ export function ErrorFallback({ error, resetError, errorInfo }: ErrorFallbackPro
         </div>
 
         {/* Error details toggle */}
-        {(import.meta.env.DEV || process.env.NODE_ENV === 'development') && (
+        {import.meta.env?.DEV && (
           <div className="border-t pt-6">
             <button
               onClick={() => setShowDetails(!showDetails)}

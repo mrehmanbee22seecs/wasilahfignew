@@ -99,7 +99,9 @@ export function CreateProjectModal({
         volunteer_target: parseInt(volunteerTarget) || 0,
         delivery_mode: deliveryMode,
         budget: parseFloat(budget) || 0,
-        budget_breakdown: budgetBreakdown,
+        budget_breakdown: budgetBreakdown.filter((b): b is BudgetBreakdown => 
+          Boolean(b.category && b.amount > 0 && b.notes !== undefined)
+        ),
         approvers
       };
       
@@ -174,11 +176,12 @@ export function CreateProjectModal({
       volunteer_target: parseInt(volunteerTarget) || 0,
       delivery_mode: deliveryMode,
       budget: parseFloat(budget),
-      budget_breakdown: budgetBreakdown.filter(b => b.category && b.amount > 0),
+      budget_breakdown: budgetBreakdown.filter((b): b is BudgetBreakdown => 
+        Boolean(b.category && b.amount > 0 && b.notes !== undefined)
+      ),
       approvers: approvers.filter(a => a.name && a.email),
       media_ids: imageFiles.filter(f => f.status === 'success').map(f => f.id),
-      documents_ids: documentFiles.filter(f => f.status === 'success').map(f => f.id),
-      video_url: videoUrl
+      documents_ids: documentFiles.filter(f => f.status === 'success').map(f => f.id)
     };
     
     onCreate(projectData);

@@ -16,7 +16,7 @@ export function DocumentPreviewModal({ isOpen, onClose, document }: DocumentPrev
   const isVideo = document.mime_type.startsWith('video/');
 
   const handleDownload = () => {
-    const link = document.createElement('a');
+    const link = window.document.createElement('a');
     link.href = document.thumbnail_url || document.storage_path;
     link.download = document.filename;
     link.click();
