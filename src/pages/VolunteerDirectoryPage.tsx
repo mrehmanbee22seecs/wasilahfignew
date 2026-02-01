@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { DirectoryHero } from '../components/volunteer-directory/DirectoryHero';
 import { FilterSidebar } from '../components/volunteer-directory/FilterSidebar';
 import { VolunteerGrid } from '../components/volunteer-directory/VolunteerGrid';
+import { ExportButton } from '../components/exports/ExportButton';
 
 interface VolunteerDirectoryPageProps {
   onNavigateToProfile: (volunteerId: string) => void;
@@ -280,6 +281,11 @@ export function VolunteerDirectoryPage({ onNavigateToProfile }: VolunteerDirecto
                   Showing <span className="text-slate-900">{filteredVolunteers.length}</span> of{' '}
                   <span className="text-slate-900">{allVolunteers.length}</span> volunteers
                 </p>
+                <ExportButton 
+                  entityType="volunteers" 
+                  variant="secondary"
+                  showHistory={true}
+                />
               </div>
 
               <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">

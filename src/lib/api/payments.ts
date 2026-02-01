@@ -276,6 +276,42 @@ class PaymentsApi {
         .select()
     );
   }
+
+  /**
+   * Export payments data for CSV/Excel export
+   * Fetches all payment approvals matching filters without pagination for export purposes
+   */
+  async exportData(filters?: {
+    status?: string;
+    project_id?: string;
+    corporate_id?: string;
+  }): Promise<ApiResponse<PaymentApproval[]>> {
+    let query = supabase
+      .from('payment_approvals')
+      .select(`
+        *,
+        project:projects!project_id(title),
+        corporate:profiles!corporate_id(display_name, organization_name)
+      `)
+      .order('created_at', { ascending: false });
+
+    if (filters?.status) {
+      query = query.eq('status', filters.status);
+    }
+
+    if (filters?.project_id) {
+      query = query.eq('project_id', filters.project_id);
+    }
+
+    if (filters?.corporate_id) {
+      query = query.eq('corporate_id', filters.corporate_id);
+    }
+
+    // Limit to reasonable export size (max 10,000 records)
+    query = query.limit(10000);
+
+    return wrapApiCall(query);
+  }
 }
 
 export const paymentsApi = new PaymentsApi();

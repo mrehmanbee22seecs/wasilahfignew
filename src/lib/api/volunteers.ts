@@ -370,6 +370,55 @@ class VolunteersApi {
       supabase.from('certificates').insert(certificateData).select().single()
     );
   }
+
+  /**
+   * Export volunteers data for CSV/Excel export
+   * Fetches all volunteers matching filters without pagination for export purposes
+   */
+  async exportData(filters: VolunteerFilters = {}): Promise<ApiResponse<Volunteer[]>> {
+    let query = supabase
+      .from('profiles')
+      .select('*')
+      .eq('role', 'volunteer');
+
+    // Apply the same filters as list()
+    if (filters.city) {
+      query = query.eq('city', filters.city);
+    }
+
+    if (filters.province) {
+      query = query.eq('province', filters.province);
+    }
+
+    if (filters.interests && filters.interests.length > 0) {
+      query = query.overlaps('interests', filters.interests);
+    }
+
+    if (filters.sdg_goals && filters.sdg_goals.length > 0) {
+      query = query.overlaps('sdg_goals', filters.sdg_goals);
+    }
+
+    if (filters.skills && filters.skills.length > 0) {
+      query = query.overlaps('skills', filters.skills);
+    }
+
+    if (filters.is_verified !== undefined) {
+      query = query.eq('is_verified', filters.is_verified);
+    }
+
+    if (filters.background_check_status) {
+      query = query.eq('background_check_status', filters.background_check_status);
+    }
+
+    if (filters.search) {
+      query = query.or(`display_name.ilike.%${filters.search}%,email.ilike.%${filters.search}%`);
+    }
+
+    // Limit to reasonable export size (max 10,000 records)
+    query = query.limit(10000);
+
+    return wrapApiCall(query);
+  }
 }
 
 export const volunteersApi = new VolunteersApi();

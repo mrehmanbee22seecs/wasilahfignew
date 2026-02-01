@@ -67,7 +67,7 @@
  * @since 2026-01-31
  */
 
-import { UseQueryResult } from '@tanstack/react-query';
+import { UseQueryResult, useQuery } from '@tanstack/react-query';
 import {
   adminApi,
   AdminUser,

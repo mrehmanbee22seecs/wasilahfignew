@@ -291,6 +291,54 @@ class ProjectsApi {
 
     return { success: true, data: stats };
   }
+
+  /**
+   * Export projects data for CSV/Excel export
+   * Fetches all projects matching filters without pagination for export purposes
+   */
+  async exportData(filters: ProjectFilters = {}): Promise<ApiResponse<Project[]>> {
+    let query = supabase
+      .from('projects')
+      .select(`
+        *,
+        corporate:profiles!corporate_id(id, display_name, organization_name),
+        ngo:organizations!ngo_id(id, name)
+      `);
+
+    // Apply the same filters as list()
+    if (filters.status && filters.status.length > 0) {
+      query = query.in('status', filters.status);
+    }
+
+    if (filters.corporate_id) {
+      query = query.eq('corporate_id', filters.corporate_id);
+    }
+
+    if (filters.ngo_id) {
+      query = query.eq('ngo_id', filters.ngo_id);
+    }
+
+    if (filters.city) {
+      query = query.eq('city', filters.city);
+    }
+
+    if (filters.province) {
+      query = query.eq('province', filters.province);
+    }
+
+    if (filters.sdg_goals && filters.sdg_goals.length > 0) {
+      query = query.overlaps('sdg_goals', filters.sdg_goals);
+    }
+
+    if (filters.search) {
+      query = query.or(`title.ilike.%${filters.search}%,description.ilike.%${filters.search}%`);
+    }
+
+    // Limit to reasonable export size (max 10,000 records)
+    query = query.limit(10000);
+
+    return wrapApiCall(query);
+  }
 }
 
 export const projectsApi = new ProjectsApi();
