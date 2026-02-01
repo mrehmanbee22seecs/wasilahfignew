@@ -7,6 +7,7 @@ import { ResourceTimeline, TimelineEvent } from '../components/admin/audit/Resou
 import { ExportButton } from '../components/exports/ExportButton';
 import { toast } from 'sonner';
 import { ListSkeleton } from '../components/skeletons';
+import { VirtualList } from '../components/virtual';
 
 /**
  * Audit Log Viewer Page
@@ -454,21 +455,17 @@ export default function AuditLogPage() {
             </div>
           ) : (
             <div className="p-6">
-              <div className="space-y-4">
-                {filteredLogs.map((entry) => (
-                  <AuditLogEntry key={entry.id} entry={entry} />
-                ))}
-              </div>
-
-              {/* Load More */}
-              <div className="mt-6 text-center">
-                <button
-                  onClick={() => toast.info('Load more functionality would be implemented here')}
-                  className="px-6 py-2 text-sm text-blue-700 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  Load More
-                </button>
-              </div>
+              <VirtualList
+                items={filteredLogs}
+                height={600}
+                itemHeight={120}
+                renderItem={(entry, index, style) => (
+                  <div key={entry.id} style={{ ...style, padding: '0.5rem 0' }}>
+                    <AuditLogEntry entry={entry} />
+                  </div>
+                )}
+                className="audit-log-virtual-list"
+              />
             </div>
           )}
         </div>
