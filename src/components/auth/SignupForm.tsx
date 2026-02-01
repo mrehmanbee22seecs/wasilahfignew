@@ -134,7 +134,7 @@ export function SignupForm({ onSuccess, onSwitchToLogin }: SignupFormProps) {
       onSuccess(emailValidation.sanitized);
     } catch (err) {
       const error = err instanceof Error ? err : new Error('Unknown error');
-      logger.error('Signup error', { error: error.message });
+      logger.error('Signup error', error);
       setErrors({
         general: 'An unexpected error occurred. Please try again.'
       });

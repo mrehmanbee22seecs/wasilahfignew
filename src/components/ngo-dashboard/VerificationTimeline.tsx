@@ -6,7 +6,7 @@ export function VerificationTimeline({ timeline, currentStatus }: VerificationTi
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
 
   const toggleExpanded = (id: string) => {
-    setExpandedItems(prev => {
+    setExpandedItems((prev: Set<string>) => {
       const next = new Set(prev);
       if (next.has(id)) {
         next.delete(id);

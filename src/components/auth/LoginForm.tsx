@@ -94,7 +94,7 @@ export function LoginForm({ onSuccess, onSwitchToSignup, onForgotPassword }: Log
       onSuccess();
     } catch (err) {
       const error = err instanceof Error ? err : new Error('Unknown error');
-      logger.error('Login error', { error: error.message });
+      logger.error('Login error', error);
       setErrors({
         general: 'An unexpected error occurred. Please try again.'
       });
