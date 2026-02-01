@@ -54,8 +54,6 @@ export function VirtualList<T>({
         rowCount={items.length}
         rowHeight={itemHeight}
         rowProps={{ items }}
-        defaultHeight={height}
-        defaultWidth={width}
         overscanCount={overscanCount}
       />
     </div>

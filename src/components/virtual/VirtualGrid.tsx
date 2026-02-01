@@ -72,8 +72,6 @@ export function VirtualGrid<T>({
         columnWidth={columnWidth}
         rowCount={rowCount}
         rowHeight={rowHeight}
-        defaultHeight={height}
-        defaultWidth={width}
         overscanCount={overscanRowCount}
       />
     </div>
