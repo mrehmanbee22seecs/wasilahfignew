@@ -2,6 +2,7 @@ import React from 'react';
 import { X, Clock, Calendar, Share2, Copy, Check } from 'lucide-react';
 import { TagBadge } from './TagBadge';
 import type { Article } from '../../types/resources';
+import { useSanitizedHTML } from '../../lib/security/sanitize';
 
 interface ArticleDetailViewProps {
   article: Article;
@@ -65,6 +66,10 @@ export function ArticleDetailView({ article, onClose, relatedArticles = [] }: Ar
     
     return html;
   };
+
+  // SECURITY: Sanitize markdown-generated HTML to prevent XSS attacks
+  // Uses DOMPurify with markdown profile to allow safe HTML tags while blocking scripts
+  const sanitizedContent = useSanitizedHTML(renderMarkdown(article.content), 'markdown');
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 overflow-y-auto">
@@ -167,6 +172,7 @@ export function ArticleDetailView({ article, onClose, relatedArticles = [] }: Ar
             </div>
 
             {/* Article Body - Using prose styling */}
+            {/* SECURITY: Content is sanitized with DOMPurify before rendering */}
             <div 
               className="prose prose-slate max-w-none
                 prose-headings:text-slate-900 prose-headings:font-bold
@@ -183,7 +189,7 @@ export function ArticleDetailView({ article, onClose, relatedArticles = [] }: Ar
                 prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-slate-600
                 prose-code:bg-slate-100 prose-code:px-1 prose-code:py-0.5 prose-code:rounded
                 prose-img:rounded-lg prose-img:shadow-lg"
-              dangerouslySetInnerHTML={{ __html: renderMarkdown(article.content) }}
+              dangerouslySetInnerHTML={{ __html: sanitizedContent }}
             />
           </article>
 

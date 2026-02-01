@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { X, Monitor, Tablet, Smartphone, Eye, Globe } from 'lucide-react';
+import { useSanitizedHTML } from '../../lib/security/sanitize';
 
 /**
  * PreviewModal - Content preview in different viewports
@@ -9,6 +10,7 @@ import { X, Monitor, Tablet, Smartphone, Eye, Globe } from 'lucide-react';
  * - "Preview as published" rendering
  * - Sample site data context
  * - Full-screen modal
+ * - SECURITY: All HTML content is sanitized with DOMPurify
  * 
  * @accessibility Keyboard accessible, focus trap, ESC to close
  */
@@ -40,6 +42,10 @@ export function PreviewModal({
 }: PreviewModalProps) {
   const [device, setDevice] = useState<PreviewDevice>('desktop');
   const [withContext, setWithContext] = useState(showSiteContext);
+
+  // SECURITY: Sanitize CMS content to prevent XSS attacks
+  // Uses 'relaxed' profile as this is admin-created content with more formatting needs
+  const sanitizedBody = useSanitizedHTML(content.body, 'relaxed');
 
   if (!isOpen) return null;
 
@@ -231,9 +237,10 @@ export function PreviewModal({
               )}
 
               {/* Body Content */}
+              {/* SECURITY: Content is sanitized with DOMPurify before rendering */}
               <div
                 className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-p:text-gray-700 prose-a:text-blue-600 prose-strong:text-gray-900"
-                dangerouslySetInnerHTML={{ __html: content.body }}
+                dangerouslySetInnerHTML={{ __html: sanitizedBody }}
               />
 
               {/* Social Share (if context enabled) */}
