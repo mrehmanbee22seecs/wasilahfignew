@@ -8,6 +8,13 @@ import {
   FileCheck 
 } from 'lucide-react';
 
+// Brand colors matching the logo
+const BRAND = {
+  navy: '#1B2A4E',
+  teal: '#2EC4B6',
+  cream: '#F5EFE6',
+};
+
 export function ProcessFlow() {
   const steps = [
     {
@@ -49,47 +56,61 @@ export function ProcessFlow() {
   ];
 
   return (
-    <section className="py-24 bg-gradient-to-br from-slate-50 via-blue-50 to-slate-50">
+    <section className="py-24 bg-white">
       <div className="max-w-7xl mx-auto px-6">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 border border-emerald-200 rounded-full text-emerald-700 mb-4">
-            <span>Our Process</span>
+          <div 
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-4"
+            style={{ backgroundColor: `${BRAND.teal}15`, color: BRAND.teal }}
+          >
+            <span className="font-medium">Our Process</span>
           </div>
-          <h2 className="text-slate-900 mb-4">
+          <h2 
+            className="text-3xl sm:text-4xl font-bold mb-4"
+            style={{ color: BRAND.navy }}
+          >
             How Wasilah Works
           </h2>
-          <p className="text-slate-600 max-w-2xl mx-auto">
+          <p className="text-gray-600 max-w-2xl mx-auto text-lg">
             A structured, transparent approach to CSR operations that delivers results
           </p>
         </div>
 
         {/* Process Steps */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 relative">
-          {/* Connecting lines for desktop */}
-          <div className="hidden lg:block absolute top-20 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-200 via-emerald-200 to-blue-200 -z-0" 
-               style={{ width: 'calc(100% - 12rem)', margin: '0 6rem' }} />
-          
           {steps.map((step, index) => (
             <div
               key={index}
-              className="relative bg-white rounded-xl p-8 border border-slate-200 hover:border-blue-300 transition-all duration-300 hover:shadow-lg group"
+              className="relative bg-white rounded-2xl p-8 border border-gray-100 hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 group"
             >
               {/* Step Number Badge */}
-              <div className="absolute -top-4 -left-4 w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-700 text-white rounded-xl flex items-center justify-center shadow-lg">
+              <div 
+                className="absolute -top-4 -left-4 w-12 h-12 text-white rounded-xl flex items-center justify-center shadow-lg font-bold"
+                style={{ backgroundColor: index % 2 === 0 ? BRAND.teal : BRAND.navy }}
+              >
                 {step.number}
               </div>
 
               {/* Icon */}
-              <div className="w-14 h-14 bg-blue-50 rounded-xl flex items-center justify-center mb-6 text-blue-600 group-hover:bg-blue-100 transition-colors">
+              <div 
+                className="w-14 h-14 rounded-xl flex items-center justify-center mb-6 transition-all duration-300 group-hover:scale-110"
+                style={{ 
+                  backgroundColor: `${BRAND.navy}10`,
+                  color: BRAND.navy
+                }}
+              >
                 {step.icon}
               </div>
 
               {/* Content */}
-              <h3 className="text-slate-900 mb-3">
+              <h3 
+                className="text-lg font-semibold mb-3"
+                style={{ color: BRAND.navy }}
+              >
                 {step.title}
               </h3>
-              <p className="text-slate-600 leading-relaxed">
+              <p className="text-gray-600 leading-relaxed">
                 {step.description}
               </p>
             </div>
