@@ -160,6 +160,8 @@ export type {
   UseBulkDeleteReturn,
   UseCreateAuditLogReturn,
 } from './useAdminMutations';
+
+export {
   usePayments,
   usePayment,
   usePaymentsByProject,
