@@ -10,6 +10,7 @@ export type ErrorCategory =
   | 'form'
   | 'file'
   | 'payment'
+  | 'ratelimit'
   | 'unknown';
 
 export interface ErrorContext {
@@ -87,6 +88,8 @@ export class BaseError extends Error implements AppError {
         return 'File upload failed. Please try again.';
       case 'payment':
         return 'Payment processing failed. Please try again or contact support.';
+      case 'ratelimit':
+        return 'Too many attempts. Please wait a moment before trying again.';
       default:
         return 'Something went wrong. Please try again.';
     }
@@ -241,5 +244,27 @@ export class PaymentError extends BaseError {
     });
     this.name = 'PaymentError';
     this.transactionId = transactionId;
+  }
+}
+
+export class RateLimitError extends BaseError {
+  retryAfter?: number; // seconds
+  endpoint?: string;
+
+  constructor(
+    message: string,
+    retryAfter?: number,
+    options?: { code?: string; context?: ErrorContext; userMessage?: string; endpoint?: string }
+  ) {
+    super(message, 'ratelimit', 'medium', {
+      code: options?.code || 'RATE_LIMIT_EXCEEDED',
+      context: options?.context,
+      userMessage: options?.userMessage || message,
+      recoverable: true,
+      retryable: true,
+    });
+    this.name = 'RateLimitError';
+    this.retryAfter = retryAfter;
+    this.endpoint = options?.endpoint;
   }
 }

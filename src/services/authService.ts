@@ -18,6 +18,12 @@ import { AuthEvents } from './analyticsService';
 import { getMaskedEmailForLogging } from '../utils/emailMasking';
 import { projectId, publicAnonKey } from '../utils/supabase/info';
 import { supabase } from '../lib/supabase';
+import { 
+  checkRateLimit as checkClientRateLimit, 
+  recordAttempt, 
+  getIdentifier 
+} from '../lib/rateLimit/rateLimiter';
+import { RateLimitError } from '../lib/errors/types';
 
 // Export the supabase client from lib for consistency
 export { supabase } from '../lib/supabase';
@@ -120,41 +126,28 @@ async function trackAuthEvent(
 }
 
 /**
- * Checks rate limit for an action
+ * Checks rate limit for an action using client-side rate limiter
  */
-async function checkRateLimit(
-  identifier: string,
-  identifierType: 'email' | 'user_id' | 'ip_address',
-  actionType: 'otp_resend' | 'otp_verify' | 'login_attempt' | 'password_reset' | 'signup_attempt',
-  maxAttempts: number = 5,
-  windowMinutes: number = 60
-): Promise<AuthResponse> {
+function checkRateLimit(
+  email: string,
+  endpoint: 'login' | 'signup' | 'passwordReset' | 'otpVerify'
+): { allowed: boolean; error?: string; code?: string } {
   try {
-    const { data, error } = await supabase.rpc('check_rate_limit', {
-      p_identifier: identifier,
-      p_identifier_type: identifierType,
-      p_action_type: actionType,
-      p_max_attempts: maxAttempts,
-      p_window_minutes: windowMinutes
-    });
-
-    if (error) {
-      console.error('Rate limit check error:', error);
-      return { success: true }; // Allow on error to not block users
-    }
-
-    if (!data.allowed) {
+    const identifier = getIdentifier(email);
+    const result = checkClientRateLimit(endpoint, identifier);
+    
+    if (!result.allowed) {
       return {
-        success: false,
-        error: `Too many attempts. Please try again in ${Math.ceil(data.retry_after / 60)} minutes.`,
+        allowed: false,
+        error: result.message || 'Too many attempts. Please try again later.',
         code: 'RATE_LIMIT_EXCEEDED'
       };
     }
-
-    return { success: true, data: { attemptsLeft: data.attempts_left } };
+    
+    return { allowed: true };
   } catch (err) {
     console.error('Rate limit check failed:', err);
-    return { success: true }; // Allow on error
+    return { allowed: true }; // Allow on error to not block users
   }
 }
 
@@ -167,17 +160,20 @@ export async function signup(data: SignupData): Promise<AuthResponse<{ user: Use
     // Track signup started
     AuthEvents.signupStarted();
     
+    const identifier = getIdentifier(data.email);
+    
     // Check rate limit
-    const rateLimit = await checkRateLimit(data.email, 'email', 'signup_attempt', 3, 60);
-    if (!rateLimit.success) {
+    const rateLimit = checkRateLimit(data.email, 'signup');
+    if (!rateLimit.allowed) {
       AuthEvents.signupFailed(rateLimit.error || 'Rate limit');
-      return rateLimit;
+      return { success: false, error: rateLimit.error, code: rateLimit.code };
     }
 
     // Execute reCAPTCHA
     const recaptchaResult = await executeRecaptcha('signup');
     if (!recaptchaResult.success) {
       AuthEvents.signupFailed('reCAPTCHA failed');
+      recordAttempt('signup', identifier, false);
       return { success: false, error: 'Security verification failed. Please try again.', code: 'RECAPTCHA_ERROR' };
     }
 
@@ -200,11 +196,13 @@ export async function signup(data: SignupData): Promise<AuthResponse<{ user: Use
       const { message, code } = mapAuthError(error);
       await trackAuthEvent(null, 'signup', { success: false, error: message });
       AuthEvents.signupFailed(message);
+      recordAttempt('signup', identifier, false);
       return { success: false, error: message, code };
     }
 
     if (!authData.user) {
       AuthEvents.signupFailed('No user returned');
+      recordAttempt('signup', identifier, false);
       return { success: false, error: 'Failed to create account. Please try again.', code: 'SIGNUP_FAILED' };
     }
 
@@ -212,6 +210,7 @@ export async function signup(data: SignupData): Promise<AuthResponse<{ user: Use
     await trackAuthEvent(authData.user.id, 'signup', { success: true });
     AuthEvents.signupCompleted('email');
     AuthEvents.verificationEmailSent();
+    recordAttempt('signup', identifier, true);
 
     // Send verification email
     await trackAuthEvent(authData.user.id, 'email_verification_sent', { success: true });
@@ -226,6 +225,7 @@ export async function signup(data: SignupData): Promise<AuthResponse<{ user: Use
   } catch (err: any) {
     console.error('Signup error:', err);
     AuthEvents.signupFailed('Unexpected error');
+    recordAttempt('signup', getIdentifier(data.email), false);
     return {
       success: false,
       error: 'An unexpected error occurred. Please try again.',
@@ -240,15 +240,18 @@ export async function signup(data: SignupData): Promise<AuthResponse<{ user: Use
 
 export async function login(data: LoginData): Promise<AuthResponse<{ user: User; session: Session }>> {
   try {
+    const identifier = getIdentifier(data.email);
+    
     // Check rate limit
-    const rateLimit = await checkRateLimit(data.email, 'email', 'login_attempt', 10, 15);
-    if (!rateLimit.success) {
-      return rateLimit;
+    const rateLimit = checkRateLimit(data.email, 'login');
+    if (!rateLimit.allowed) {
+      return { success: false, error: rateLimit.error, code: rateLimit.code };
     }
 
     // Execute reCAPTCHA
     const recaptchaToken = await executeRecaptcha();
     if (!recaptchaToken) {
+      recordAttempt('login', identifier, false);
       return { success: false, error: 'Please complete the reCAPTCHA.', code: 'RECAPTCHA_ERROR' };
     }
 
@@ -261,10 +264,12 @@ export async function login(data: LoginData): Promise<AuthResponse<{ user: User;
     if (error) {
       const { message, code } = mapAuthError(error);
       await trackAuthEvent(null, 'login', { success: false, error: message });
+      recordAttempt('login', identifier, false);
       return { success: false, error: message, code };
     }
 
     if (!authData.user || !authData.session) {
+      recordAttempt('login', identifier, false);
       return { success: false, error: 'Login failed. Please try again.', code: 'LOGIN_FAILED' };
     }
 
@@ -276,6 +281,7 @@ export async function login(data: LoginData): Promise<AuthResponse<{ user: User;
 
     // Track successful login
     await trackAuthEvent(authData.user.id, 'login', { success: true });
+    recordAttempt('login', identifier, true);
 
     return {
       success: true,
@@ -286,6 +292,7 @@ export async function login(data: LoginData): Promise<AuthResponse<{ user: User;
     };
   } catch (err: any) {
     console.error('Login error:', err);
+    recordAttempt('login', getIdentifier(data.email), false);
     return {
       success: false,
       error: 'An unexpected error occurred. Please try again.',
@@ -300,10 +307,12 @@ export async function login(data: LoginData): Promise<AuthResponse<{ user: User;
 
 export async function verifyOTP(data: OTPVerifyData): Promise<AuthResponse<{ user: User; session: Session }>> {
   try {
+    const identifier = getIdentifier(data.email);
+    
     // Check rate limit
-    const rateLimit = await checkRateLimit(data.email, 'email', 'otp_verify', 10, 60);
-    if (!rateLimit.success) {
-      return rateLimit;
+    const rateLimit = checkRateLimit(data.email, 'otpVerify');
+    if (!rateLimit.allowed) {
+      return { success: false, error: rateLimit.error, code: rateLimit.code };
     }
 
     // Verify OTP with Supabase
@@ -315,15 +324,18 @@ export async function verifyOTP(data: OTPVerifyData): Promise<AuthResponse<{ use
 
     if (error) {
       const { message, code } = mapAuthError(error);
+      recordAttempt('otpVerify', identifier, false);
       return { success: false, error: message, code };
     }
 
     if (!authData.user || !authData.session) {
+      recordAttempt('otpVerify', identifier, false);
       return { success: false, error: 'Verification failed. Please try again.', code: 'VERIFICATION_FAILED' };
     }
 
     // Track successful verification
     await trackAuthEvent(authData.user.id, 'email_verified', { success: true });
+    recordAttempt('otpVerify', identifier, true);
 
     return {
       success: true,
@@ -334,6 +346,7 @@ export async function verifyOTP(data: OTPVerifyData): Promise<AuthResponse<{ use
     };
   } catch (err: any) {
     console.error('OTP verification error:', err);
+    recordAttempt('otpVerify', getIdentifier(data.email), false);
     return {
       success: false,
       error: 'An unexpected error occurred. Please try again.',
@@ -348,10 +361,12 @@ export async function verifyOTP(data: OTPVerifyData): Promise<AuthResponse<{ use
 
 export async function resendOTP(email: string, type: 'signup' | 'recovery' = 'signup'): Promise<AuthResponse> {
   try {
+    const identifier = getIdentifier(email);
+    
     // Check rate limit (max 3 resends per hour)
-    const rateLimit = await checkRateLimit(email, 'email', 'otp_resend', 3, 60);
-    if (!rateLimit.success) {
-      return rateLimit;
+    const rateLimit = checkRateLimit(email, 'passwordReset'); // Use passwordReset limits for OTP resend
+    if (!rateLimit.allowed) {
+      return { success: false, error: rateLimit.error, code: rateLimit.code };
     }
 
     // Resend OTP
@@ -362,18 +377,21 @@ export async function resendOTP(email: string, type: 'signup' | 'recovery' = 'si
 
     if (error) {
       const { message, code } = mapAuthError(error);
+      recordAttempt('passwordReset', identifier, false);
       return { success: false, error: message, code };
     }
 
+    recordAttempt('passwordReset', identifier, true);
     return {
       success: true,
       data: {
         cooldownSeconds: 30,
-        attemptsLeft: rateLimit.data?.attemptsLeft || 0,
+        attemptsLeft: 0,
       }
     };
   } catch (err: any) {
     console.error('Resend OTP error:', err);
+    recordAttempt('passwordReset', getIdentifier(email), false);
     return {
       success: false,
       error: 'Failed to resend code. Please try again.',
@@ -388,10 +406,12 @@ export async function resendOTP(email: string, type: 'signup' | 'recovery' = 'si
 
 export async function resetPassword(email: string): Promise<AuthResponse> {
   try {
+    const identifier = getIdentifier(email);
+    
     // Check rate limit
-    const rateLimit = await checkRateLimit(email, 'email', 'password_reset', 3, 60);
-    if (!rateLimit.success) {
-      return rateLimit;
+    const rateLimit = checkRateLimit(email, 'passwordReset');
+    if (!rateLimit.allowed) {
+      return { success: false, error: rateLimit.error, code: rateLimit.code };
     }
 
     // Send password reset email
@@ -401,12 +421,15 @@ export async function resetPassword(email: string): Promise<AuthResponse> {
 
     if (error) {
       const { message, code } = mapAuthError(error);
+      recordAttempt('passwordReset', identifier, false);
       return { success: false, error: message, code };
     }
 
+    recordAttempt('passwordReset', identifier, true);
     return { success: true };
   } catch (err: any) {
     console.error('Password reset error:', err);
+    recordAttempt('passwordReset', getIdentifier(email), false);
     return {
       success: false,
       error: 'Failed to send reset email. Please try again.',
