@@ -110,16 +110,7 @@ function validateString(input: string, options: {
     sanitized = sanitized.substring(0, options.maxLength);
   }
   
-  // Special characters
-  if (!options.allowSpecialChars) {
-    sanitized = sanitized.replace(/[<>\"']/g, '');
-  }
-  
-  // Pattern matching
-  if (options.pattern && !options.pattern.test(sanitized)) {
-    errors.push('Input does not match required format');
-  }
-  
+  // Check for security issues BEFORE sanitizing (so we can detect them)
   // Check for SQL injection
   if (SQL_INJECTION_PATTERNS.some(pattern => pattern.test(sanitized))) {
     errors.push('Potential SQL injection detected');
@@ -133,6 +124,16 @@ function validateString(input: string, options: {
   // Check for XSS
   if (XSS_PATTERNS.some(pattern => pattern.test(sanitized))) {
     errors.push('Potential XSS attack detected');
+  }
+  
+  // Sanitize special characters AFTER checking (so we can remove them if needed)
+  if (!options.allowSpecialChars) {
+    sanitized = sanitized.replace(/[<>\"']/g, '');
+  }
+  
+  // Pattern matching
+  if (options.pattern && !options.pattern.test(sanitized)) {
+    errors.push('Input does not match required format');
   }
   
   return {
@@ -393,9 +394,15 @@ export function sanitizeObject<T extends Record<string, any>>(obj: T): T {
     } else if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
       sanitized[key] = sanitizeObject(value);
     } else if (Array.isArray(value)) {
-      sanitized[key] = value.map(item => 
-        typeof item === 'object' ? sanitizeObject(item) : item
-      );
+      sanitized[key] = value.map(item => {
+        if (typeof item === 'string') {
+          return validateInput.string(item, { allowSpecialChars: false }).sanitized;
+        } else if (typeof item === 'object' && item !== null) {
+          return sanitizeObject(item);
+        } else {
+          return item;
+        }
+      });
     } else {
       sanitized[key] = value;
     }
