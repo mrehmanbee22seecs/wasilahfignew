@@ -5,6 +5,7 @@ import { ApprovalModal } from '../components/admin/ApprovalModal';
 import { ReleaseRequestModal } from '../components/admin/payments/ReleaseRequestModal';
 import { LedgerViewer, LedgerEntry } from '../components/admin/payments/LedgerViewer';
 import { AddNoteModal } from '../components/admin/payments/AddNoteModal';
+import { ExportButton } from '../components/exports/ExportButton';
 import { toast } from 'sonner';
 import { CardSkeleton } from '../components/skeletons';
 
@@ -382,6 +383,11 @@ export default function PaymentsFinancePage() {
               <Filter className="w-4 h-4" />
               <span>Filters</span>
             </button>
+            <ExportButton 
+              entityType="payments" 
+              variant="secondary"
+              showHistory={true}
+            />
           </div>
 
           {showFilters && (

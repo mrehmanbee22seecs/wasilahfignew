@@ -4,6 +4,7 @@ import { CreateProjectModal } from '../components/projects/CreateProjectModal';
 import { ProjectDetailDrawer } from '../components/projects/ProjectDetailDrawer';
 import { ShareProjectModal } from '../components/projects/ShareProjectModal';
 import { EmptyProjectsIllustration, NoResultsIllustration } from '../components/projects/EmptyProjectsIllustration';
+import { ExportButton } from '../components/exports/ExportButton';
 import { mockProjects } from '../data/mockProjects';
 import { SDG_LIST } from '../types/projects';
 import type { Project, ProjectStatus, ProjectFilters, CreateProjectRequest } from '../types/projects';
@@ -364,13 +365,11 @@ export function ProjectsPage() {
             )}
 
             {/* Export */}
-            <button 
-              onClick={() => exportToCSV()}
-              className="flex items-center gap-2 px-4 py-3 border-2 border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors"
-            >
-              <Download className="w-5 h-5" />
-              Export
-            </button>
+            <ExportButton 
+              entityType="projects" 
+              variant="secondary"
+              showHistory={true}
+            />
           </div>
 
           {/* Filter Options */}

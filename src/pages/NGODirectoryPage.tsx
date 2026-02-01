@@ -3,6 +3,7 @@ import { DirectoryHero } from '../components/ngo-directory/DirectoryHero';
 import { FilterSidebar } from '../components/ngo-directory/FilterSidebar';
 import { NGOGrid } from '../components/ngo-directory/NGOGrid';
 import { Pagination } from '../components/ngo-directory/Pagination';
+import { ExportButton } from '../components/exports/ExportButton';
 
 interface NGODirectoryPageProps {
   onNavigateToProfile?: (ngoId: string) => void;
@@ -235,13 +236,18 @@ export function NGODirectoryPage({ onNavigateToProfile }: NGODirectoryPageProps)
       <section className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-6">
           {/* Results Count */}
-          <div className="mb-6">
+          <div className="mb-6 flex items-center justify-between">
             <p className="text-slate-600">
               Showing <span className="text-slate-900">{filteredNGOs.length}</span> NGOs
               {(searchQuery || selectedTags.length > 0 || filters.causes.length > 0 || filters.cities.length > 0 || filters.sizes.length > 0 || filters.verifiedOnly) && (
                 <span> matching your criteria</span>
               )}
             </p>
+            <ExportButton 
+              entityType="ngos" 
+              variant="secondary"
+              showHistory={true}
+            />
           </div>
 
           <div className="grid lg:grid-cols-4 gap-8">

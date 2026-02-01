@@ -4,6 +4,7 @@ import { AuditLogEntry, AuditLogEntryData } from '../components/admin/AuditLogEn
 import { AuditEntryDetailModal, AuditEntry } from '../components/admin/audit/AuditEntryDetailModal';
 import { JSONDiffViewer } from '../components/admin/audit/JSONDiffViewer';
 import { ResourceTimeline, TimelineEvent } from '../components/admin/audit/ResourceTimeline';
+import { ExportButton } from '../components/exports/ExportButton';
 import { toast } from 'sonner';
 import { ListSkeleton } from '../components/skeletons';
 
@@ -290,24 +291,12 @@ export default function AuditLogPage() {
                 Complete immutable audit trail of all system actions
               </p>
             </div>
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => handleExport('csv')}
-                disabled={isExporting || filteredLogs.length === 0}
-                className="inline-flex items-center gap-2 px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 disabled:opacity-50"
-              >
-                <Download className="w-4 h-4" />
-                <span>Export CSV</span>
-              </button>
-              <button
-                onClick={() => handleExport('json')}
-                disabled={isExporting || filteredLogs.length === 0}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
-              >
-                <Download className="w-4 h-4" />
-                <span>Export JSON</span>
-              </button>
-            </div>
+            <ExportButton 
+              entityType="audit_logs" 
+              variant="primary"
+              showHistory={true}
+            />
+          </div>
           </div>
         </div>
       </div>
