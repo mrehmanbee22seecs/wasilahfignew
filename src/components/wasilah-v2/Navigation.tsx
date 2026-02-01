@@ -116,8 +116,7 @@ export function Navigation({ currentPage, onNavigate }: NavigationProps) {
           <div className="flex items-center">
             <button 
               onClick={() => handleMenuClick('home')}
-              className="flex items-center gap-3 hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-lg"
-              style={{ '--tw-ring-color': BRAND_COLORS.teal } as React.CSSProperties}
+              className="flex items-center gap-3 hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2EC4B6] rounded-lg"
               aria-label="Go to homepage"
             >
               <img 

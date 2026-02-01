@@ -92,11 +92,10 @@ export function CSRServicesSection() {
             <div
               key={index}
               className={`relative bg-white rounded-2xl p-8 border-2 hover:shadow-2xl transition-all duration-300 group ${
-                tier.popular ? 'ring-2 ring-offset-4' : ''
+                tier.popular ? 'ring-2 ring-offset-4 ring-[#2EC4B6]' : ''
               }`}
               style={{ 
-                borderColor: `${tier.color}30`,
-                ...(tier.popular && { '--tw-ring-color': BRAND.teal } as React.CSSProperties)
+                borderColor: `${tier.color}30`
               }}
             >
               {tier.popular && (
