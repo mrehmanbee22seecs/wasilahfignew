@@ -1,9 +1,11 @@
 /**
  * Offline Application Queue
- * Stores failed/offline applications in localStorage and retries when online
+ * Stores failed/offline applications in secure storage and retries when online
  */
 
 import type { ApplicationPayload } from '../types/volunteer';
+import { secureStorage } from '../lib/security/secureStorage';
+import { logger } from '../lib/security/secureLogger';
 
 export type QueuedApplication = {
   id: string; // Unique queue ID
@@ -18,14 +20,14 @@ const QUEUE_KEY = 'wasilah_offline_application_queue';
 const MAX_RETRIES = 3;
 
 /**
- * Get all queued applications from localStorage
+ * Get all queued applications from secure storage
  */
 export function getQueuedApplications(): QueuedApplication[] {
   try {
-    const stored = localStorage.getItem(QUEUE_KEY);
-    return stored ? JSON.parse(stored) : [];
+    const stored = secureStorage.getItem<QueuedApplication[]>(QUEUE_KEY);
+    return stored || [];
   } catch (error) {
-    console.error('Error reading offline queue:', error);
+    logger.error('Error reading offline queue', { error });
     return [];
   }
 }
@@ -48,10 +50,10 @@ export function queueApplication(payload: ApplicationPayload): string {
   queue.push(queuedApp);
   
   try {
-    localStorage.setItem(QUEUE_KEY, JSON.stringify(queue));
+    secureStorage.setItem(QUEUE_KEY, queue, { encrypt: true });
     return queueId;
   } catch (error) {
-    console.error('Error saving to offline queue:', error);
+    logger.error('Error saving to offline queue', { error });
     throw new Error('Failed to save application to offline queue');
   }
 }
@@ -68,7 +70,7 @@ export function updateQueuedApplication(
   
   if (index !== -1) {
     queue[index] = { ...queue[index], ...updates };
-    localStorage.setItem(QUEUE_KEY, JSON.stringify(queue));
+    secureStorage.setItem(QUEUE_KEY, queue, { encrypt: true });
   }
 }
 
@@ -78,14 +80,14 @@ export function updateQueuedApplication(
 export function removeFromQueue(queueId: string): void {
   const queue = getQueuedApplications();
   const filtered = queue.filter((app) => app.id !== queueId);
-  localStorage.setItem(QUEUE_KEY, JSON.stringify(filtered));
+  secureStorage.setItem(QUEUE_KEY, filtered, { encrypt: true });
 }
 
 /**
  * Clear the entire queue
  */
 export function clearQueue(): void {
-  localStorage.removeItem(QUEUE_KEY);
+  secureStorage.removeItem(QUEUE_KEY);
 }
 
 /**
@@ -164,12 +166,12 @@ export function setupOnlineListener(
   onOffline: () => void
 ): () => void {
   const handleOnline = () => {
-    console.log('[Offline Queue] Browser is online, retrying pending applications...');
+    logger.info('Browser is online, retrying pending applications');
     onOnline();
   };
 
   const handleOffline = () => {
-    console.log('[Offline Queue] Browser is offline');
+    logger.info('Browser is offline');
     onOffline();
   };
 

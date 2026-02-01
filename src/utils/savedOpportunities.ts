@@ -1,7 +1,10 @@
 /**
  * Saved Opportunities Persistence
- * Manages saved opportunities in localStorage with user-specific keys
+ * Manages saved opportunities in secure storage with user-specific keys
  */
+
+import { secureStorage } from '../lib/security/secureStorage';
+import { logger } from '../lib/security/secureLogger';
 
 const STORAGE_KEY_PREFIX = 'wasilah_saved_opportunities';
 
@@ -13,28 +16,28 @@ function getStorageKey(userId: string): string {
 }
 
 /**
- * Load saved opportunity IDs from localStorage
+ * Load saved opportunity IDs from secure storage
  */
 export function loadSavedOpportunities(userId: string): string[] {
   try {
     const key = getStorageKey(userId);
-    const stored = localStorage.getItem(key);
-    return stored ? JSON.parse(stored) : [];
+    const stored = secureStorage.getItem<string[]>(key);
+    return stored || [];
   } catch (error) {
-    console.error('Error loading saved opportunities:', error);
+    logger.error('Error loading saved opportunities', { error, userId });
     return [];
   }
 }
 
 /**
- * Save opportunity IDs to localStorage
+ * Save opportunity IDs to secure storage
  */
 export function saveSavedOpportunities(userId: string, opportunityIds: string[]): void {
   try {
     const key = getStorageKey(userId);
-    localStorage.setItem(key, JSON.stringify(opportunityIds));
+    secureStorage.setItem(key, opportunityIds, { encrypt: false });
   } catch (error) {
-    console.error('Error saving opportunities:', error);
+    logger.error('Error saving opportunities', { error, userId });
     throw new Error('Failed to save opportunities to storage');
   }
 }
@@ -93,7 +96,7 @@ export function getSavedCount(userId: string): number {
  */
 export function migrateSavedOpportunities(userId: string): void {
   try {
-    // Check for old format without user ID
+    // Check for old format without user ID in localStorage
     const oldKey = 'wasilah_saved_opportunities';
     const oldData = localStorage.getItem(oldKey);
     
@@ -102,14 +105,14 @@ export function migrateSavedOpportunities(userId: string): void {
       const newKey = getStorageKey(userId);
       
       // Only migrate if new key doesn't exist
-      if (!localStorage.getItem(newKey)) {
-        localStorage.setItem(newKey, oldData);
+      if (!secureStorage.hasItem(newKey)) {
+        secureStorage.setItem(newKey, parsed, { encrypt: false });
       }
       
       // Remove old key
       localStorage.removeItem(oldKey);
     }
   } catch (error) {
-    console.error('Error migrating saved opportunities:', error);
+    logger.error('Error migrating saved opportunities', { error, userId });
   }
 }
