@@ -132,8 +132,9 @@ export function SignupForm({ onSuccess, onSwitchToLogin }: SignupFormProps) {
       
       // Pass sanitized email to parent for verification step
       onSuccess(emailValidation.sanitized);
-    } catch (error) {
-      logger.error('Signup error', { error });
+    } catch (err) {
+      const error = err instanceof Error ? err : new Error('Unknown error');
+      logger.error('Signup error', error);
       setErrors({
         general: 'An unexpected error occurred. Please try again.'
       });
@@ -184,7 +185,7 @@ export function SignupForm({ onSuccess, onSwitchToLogin }: SignupFormProps) {
                 type="text"
                 id="fullName"
                 value={formData.fullName}
-                onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, fullName: e.target.value })}
                 className={`w-full pl-12 pr-4 py-3 rounded-lg border-2 transition-colors
                   ${errors.fullName ? 'border-red-500' : 'border-slate-300 focus:border-teal-600 focus:ring-2 focus:ring-teal-100'}
                 `}
@@ -214,7 +215,7 @@ export function SignupForm({ onSuccess, onSwitchToLogin }: SignupFormProps) {
                 type="email"
                 id="email"
                 value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, email: e.target.value })}
                 className={`w-full pl-12 pr-4 py-3 rounded-lg border-2 transition-colors
                   ${errors.email ? 'border-red-500' : 'border-slate-300 focus:border-teal-600 focus:ring-2 focus:ring-teal-100'}
                 `}
@@ -243,7 +244,7 @@ export function SignupForm({ onSuccess, onSwitchToLogin }: SignupFormProps) {
                 type={showPassword ? 'text' : 'password'}
                 id="password"
                 value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, password: e.target.value })}
                 className={`w-full pl-12 pr-12 py-3 rounded-lg border-2 transition-colors
                   ${errors.password ? 'border-red-500' : 'border-slate-300 focus:border-teal-600 focus:ring-2 focus:ring-teal-100'}
                 `}
@@ -302,7 +303,7 @@ export function SignupForm({ onSuccess, onSwitchToLogin }: SignupFormProps) {
                 type={showConfirmPassword ? 'text' : 'password'}
                 id="confirmPassword"
                 value={formData.confirmPassword}
-                onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, confirmPassword: e.target.value })}
                 className={`w-full pl-12 pr-12 py-3 rounded-lg border-2 transition-colors
                   ${errors.confirmPassword ? 'border-red-500' : passwordsMatch ? 'border-green-500' : 'border-slate-300 focus:border-teal-600 focus:ring-2 focus:ring-teal-100'}
                 `}

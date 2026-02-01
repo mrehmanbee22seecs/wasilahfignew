@@ -74,7 +74,7 @@ export function SessionTimeoutProvider({
       // Redirect to auth page after logout
       window.location.href = '/auth?timeout=true';
     } catch (error) {
-      logger.error('Error during timeout logout', { error });
+      logger.error('Error during timeout logout', error as Error);
     }
   }, [signOut]);
 

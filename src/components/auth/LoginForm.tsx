@@ -92,8 +92,9 @@ export function LoginForm({ onSuccess, onSwitchToSignup, onForgotPassword }: Log
       AuthEvents.loginCompleted('email');
       
       onSuccess();
-    } catch (error) {
-      logger.error('Login error', { error });
+    } catch (err) {
+      const error = err instanceof Error ? err : new Error('Unknown error');
+      logger.error('Login error', error);
       setErrors({
         general: 'An unexpected error occurred. Please try again.'
       });
@@ -141,7 +142,7 @@ export function LoginForm({ onSuccess, onSwitchToSignup, onForgotPassword }: Log
                 type="email"
                 id="email"
                 value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, email: e.target.value })}
                 className={`w-full pl-12 pr-4 py-3 rounded-lg border-2 transition-colors
                   ${errors.email 
                     ? 'border-red-500 focus:border-red-600 focus:ring-2 focus:ring-red-100' 
@@ -175,8 +176,8 @@ export function LoginForm({ onSuccess, onSwitchToSignup, onForgotPassword }: Log
                 type={showPassword ? 'text' : 'password'}
                 id="password"
                 value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                onKeyDown={(e) => e.key === 'Enter' && handleSubmit(e)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, password: e.target.value })}
+                onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => e.key === 'Enter' && handleSubmit(e)}
                 className={`w-full pl-12 pr-12 py-3 rounded-lg border-2 transition-colors
                   ${errors.password 
                     ? 'border-red-500 focus:border-red-600 focus:ring-2 focus:ring-red-100' 
@@ -214,7 +215,7 @@ export function LoginForm({ onSuccess, onSwitchToSignup, onForgotPassword }: Log
               <input
                 type="checkbox"
                 checked={formData.rememberMe}
-                onChange={(e) => setFormData({ ...formData, rememberMe: e.target.checked })}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, rememberMe: e.target.checked })}
                 className="w-4 h-4 rounded border-slate-300 text-teal-600 focus:ring-2 focus:ring-teal-100 focus:ring-offset-0"
                 disabled={isLoading}
               />

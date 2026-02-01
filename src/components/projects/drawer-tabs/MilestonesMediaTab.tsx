@@ -216,14 +216,14 @@ export function MilestonesMediaTab({ projectId }: MilestonesMediaTabProps) {
       setSelectedMilestoneForEvidence(milestone.id);
       setUploadEvidenceOpen(true);
     } else {
-      setMilestones(prev => prev.map(m =>
+      setMilestones((prev: Milestone[]) => prev.map((m: Milestone) =>
         m.id === milestone.id ? { ...m, status: 'completed' as const, progress: 100 } : m
       ));
     }
   };
 
   const handleEvidenceUploaded = (milestoneId: string) => {
-    setMilestones(prev => prev.map(m =>
+    setMilestones((prev: Milestone[]) => prev.map((m: Milestone) =>
       m.id === milestoneId ? { ...m, status: 'completed' as const, progress: 100 } : m
     ));
     setUploadEvidenceOpen(false);
@@ -244,8 +244,8 @@ export function MilestonesMediaTab({ projectId }: MilestonesMediaTabProps) {
     e.preventDefault();
     if (!draggedMilestone || draggedMilestone === targetId) return;
 
-    const draggedIndex = milestones.findIndex(m => m.id === draggedMilestone);
-    const targetIndex = milestones.findIndex(m => m.id === targetId);
+    const draggedIndex = milestones.findIndex((m: Milestone) => m.id === draggedMilestone);
+    const targetIndex = milestones.findIndex((m: Milestone) => m.id === targetId);
 
     if (draggedIndex === -1 || targetIndex === -1) return;
 
@@ -266,17 +266,17 @@ export function MilestonesMediaTab({ projectId }: MilestonesMediaTabProps) {
   };
 
   // Get all unique tags from media
-  const allTags = Array.from(new Set(media.flatMap(m => m.tags)));
+  const allTags = Array.from(new Set(media.flatMap((m: MediaItem) => m.tags)));
 
   // Filter media
-  let filteredMedia = media.filter(m => {
+  let filteredMedia = media.filter((m: MediaItem) => {
     const typeMatch = mediaFilter === 'all' || m.type === mediaFilter;
     const tagMatch = mediaTagFilter === 'all' || m.tags.includes(mediaTagFilter);
     const permissionMatch = mediaPermissionFilter === 'all' || m.permission === mediaPermissionFilter;
     return typeMatch && tagMatch && permissionMatch;
   });
 
-  const imageAndVideoMedia = filteredMedia.filter(m => m.type === 'image' || m.type === 'video');
+  const imageAndVideoMedia = filteredMedia.filter((m: MediaItem) => m.type === 'image' || m.type === 'video');
 
   const getStatusConfig = (status: Milestone['status']) => {
     switch (status) {
@@ -355,15 +355,15 @@ export function MilestonesMediaTab({ projectId }: MilestonesMediaTabProps) {
           {sortedMilestones.map((milestone) => {
             const statusConfig = getStatusConfig(milestone.status);
             const StatusIcon = statusConfig.icon;
-            const linkedMedia = media.filter(m => m.milestoneId === milestone.id);
+            const linkedMedia = media.filter((m: MediaItem) => m.milestoneId === milestone.id);
 
             return (
               <div
                 key={milestone.id}
                 draggable
-                onDragStart={(e) => handleDragStart(e, milestone.id)}
+                onDragStart={(e: React.DragEvent) => handleDragStart(e, milestone.id)}
                 onDragOver={handleDragOver}
-                onDrop={(e) => handleDrop(e, milestone.id)}
+                onDrop={(e: React.DragEvent) => handleDrop(e, milestone.id)}
                 className={`p-4 bg-white border-2 rounded-xl transition-all cursor-move ${
                   draggedMilestone === milestone.id 
                     ? 'border-teal-300 shadow-lg opacity-50' 
@@ -435,7 +435,7 @@ export function MilestonesMediaTab({ projectId }: MilestonesMediaTabProps) {
                       <div className="mb-3 p-2 bg-slate-50 rounded-lg">
                         <p className="text-xs text-slate-600 mb-1">Expected Deliverables:</p>
                         <ul className="space-y-0.5">
-                          {milestone.deliverables.map((deliverable, idx) => (
+                          {milestone.deliverables.map((deliverable: string, idx: number) => (
                             <li key={idx} className="text-xs text-slate-700 flex items-center gap-1.5">
                               <div className="w-1 h-1 rounded-full bg-slate-400" />
                               {deliverable}
@@ -453,7 +453,7 @@ export function MilestonesMediaTab({ projectId }: MilestonesMediaTabProps) {
                           <p className="text-xs text-teal-900">{linkedMedia.length} media file{linkedMedia.length > 1 ? 's' : ''} attached</p>
                         </div>
                         <div className="flex gap-1 flex-wrap">
-                          {linkedMedia.slice(0, 3).map(m => (
+                          {linkedMedia.slice(0, 3).map((m: MediaItem) => (
                             <span key={m.id} className="text-xs text-teal-700 bg-white px-2 py-0.5 rounded">
                               {m.title.length > 20 ? m.title.substring(0, 20) + '...' : m.title}
                             </span>
@@ -590,7 +590,7 @@ export function MilestonesMediaTab({ projectId }: MilestonesMediaTabProps) {
 
         {/* Media Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-          {filteredMedia.map((item) => {
+          {filteredMedia.map((item: MediaItem) => {
             const PermIcon = getPermissionIcon(item.permission);
             
             return (
@@ -600,7 +600,7 @@ export function MilestonesMediaTab({ projectId }: MilestonesMediaTabProps) {
               >
                 {item.type === 'image' && (
                   <button
-                    onClick={() => openLightbox(imageAndVideoMedia.findIndex(m => m.id === item.id))}
+                    onClick={() => openLightbox(imageAndVideoMedia.findIndex((m: MediaItem) => m.id === item.id))}
                     className="w-full h-full"
                   >
                     <img 
@@ -616,7 +616,7 @@ export function MilestonesMediaTab({ projectId }: MilestonesMediaTabProps) {
 
                 {item.type === 'video' && (
                   <button
-                    onClick={() => openLightbox(imageAndVideoMedia.findIndex(m => m.id === item.id))}
+                    onClick={() => openLightbox(imageAndVideoMedia.findIndex((m: MediaItem) => m.id === item.id))}
                     className="w-full h-full relative"
                   >
                     {item.thumbnail && (
@@ -659,7 +659,7 @@ export function MilestonesMediaTab({ projectId }: MilestonesMediaTabProps) {
                 {/* Tags */}
                 {item.tags.length > 0 && (
                   <div className="absolute top-2 left-2 flex gap-1">
-                    {item.tags.slice(0, 2).map(tag => (
+                    {item.tags.slice(0, 2).map((tag: string) => (
                       <span 
                         key={tag}
                         className="px-2 py-0.5 bg-slate-900/80 text-white text-xs rounded"
@@ -697,8 +697,8 @@ export function MilestonesMediaTab({ projectId }: MilestonesMediaTabProps) {
       <AddMilestoneModal
         isOpen={addMilestoneOpen}
         onClose={() => setAddMilestoneOpen(false)}
-        onAdd={(milestone) => {
-          setMilestones(prev => [...prev, { 
+        onAdd={(milestone: any) => {
+          setMilestones((prev: Milestone[]) => [...prev, { 
             ...milestone, 
             id: `ms_${Date.now()}`,
             order: prev.length
@@ -729,7 +729,7 @@ export function MilestonesMediaTab({ projectId }: MilestonesMediaTabProps) {
           setSelectedMilestoneForEvidence(null);
         }}
         milestoneId={selectedMilestoneForEvidence || ''}
-        milestoneName={milestones.find(m => m.id === selectedMilestoneForEvidence)?.title || ''}
+        milestoneName={milestones.find((m: Milestone) => m.id === selectedMilestoneForEvidence)?.title || ''}
         onUploadComplete={handleEvidenceUploaded}
       />
     </div>

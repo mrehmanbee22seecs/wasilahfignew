@@ -13,6 +13,10 @@ import {
   exportExcelToDownload, 
   prepareEntitySheets 
 } from '../utils/excelExport';
+import { 
+  exportPDFToDownload, 
+  prepareEntityPDFTables 
+} from '../utils/pdfExport';
 import { getColumnsByEntityType } from '../components/exports/columnDefinitions';
 import { projectsApi } from '../lib/api/projects';
 import { volunteersApi } from '../lib/api/volunteers';
@@ -231,7 +235,7 @@ export function useExports() {
 
         // Generate export based on format
         let filename: string;
-        let fileSize: number;
+        let fileSize: number = 0;
 
         if (config.format === 'excel') {
           // Use real Excel export with multi-sheet support
@@ -254,8 +258,32 @@ export function useExports() {
           // Estimate file size (Excel files are typically larger than CSV)
           fileSize = estimateFileSize(filteredData.length, selectedColumns.length, 'excel');
           
+        } else if (config.format === 'pdf') {
+          // Use real PDF export with jsPDF
+          filename = generateFilename(config.entityType, 'pdf');
+          
+          // Prepare PDF tables
+          const tables = prepareEntityPDFTables(config.entityType, filteredData, config);
+          
+          // Update progress
+          await updateProgress(job, 0, 80, setExportHistory);
+          
+          // Export PDF file
+          await exportPDFToDownload({
+            title: `${config.entityType.charAt(0).toUpperCase() + config.entityType.slice(1)} Report`,
+            subtitle: `Generated on ${new Date().toLocaleDateString()}`,
+            tables,
+            filename,
+            creator: job.createdBy.name,
+            includeMetadata: config.includeMetadata,
+            orientation: config.entityType === 'payments' ? 'landscape' : 'portrait',
+          });
+          
+          // Estimate file size for PDF
+          fileSize = estimateFileSize(filteredData.length, selectedColumns.length, 'pdf');
+          
         } else {
-          // Handle CSV, JSON, PDF formats
+          // Handle CSV, JSON formats
           let content: string;
           let mimeType: string;
           
@@ -267,11 +295,6 @@ export function useExports() {
             content = generateJSON(filteredData, selectedColumns);
             filename = generateFilename(config.entityType, 'json');
             mimeType = getMimeType('json');
-          } else if (config.format === 'pdf') {
-            content = generateJSON(filteredData, selectedColumns);
-            filename = generateFilename(config.entityType, 'json');
-            mimeType = getMimeType('json');
-            toast.info('PDF format using JSON for demo. Add jsPDF library for real PDFs.');
           } else {
             throw new Error(`Unsupported format: ${config.format}`);
           }

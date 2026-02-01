@@ -121,7 +121,7 @@ export function FileUploader({
         type: file.type,
         status: error ? 'error' : 'uploading',
         progress: error ? 0 : 0,
-        error
+        error: error || undefined
       };
       
       // Start upload simulation if valid

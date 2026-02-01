@@ -67,7 +67,7 @@ export function SearchFiltersBar({
               type="text"
               placeholder="Search by role, NGO, or SDG..."
               value={searchQuery}
-              onChange={(e) => onSearchChange(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => onSearchChange(e.target.value)}
               className="w-full pl-12 pr-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl focus:border-teal-600 focus:outline-none text-slate-900 placeholder-slate-400"
             />
           </div>
@@ -242,7 +242,7 @@ export function SearchFiltersBar({
             <span className="text-slate-600 text-sm">Sort by:</span>
             <select
               value={sortBy}
-              onChange={(e) => onSortChange(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => onSortChange(e.target.value)}
               className="px-4 py-2 bg-white border-2 border-slate-200 rounded-lg focus:border-teal-600 focus:outline-none text-slate-700 cursor-pointer"
             >
               {sortOptions.map((option) => (

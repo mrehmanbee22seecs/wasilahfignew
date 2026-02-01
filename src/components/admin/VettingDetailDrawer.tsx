@@ -384,7 +384,7 @@ export function VettingDetailDrawer({
               {/* Right Column - Metadata (40%) */}
               <div className="lg:col-span-2 space-y-6">
                 <CardSkeleton lines={6} />
-                <FormSkeleton fields={4} showSubmitButton={false} />
+                <FormSkeleton fields={4} showSubmit={false} />
               </div>
             </div>
           ) : vettingData ? (

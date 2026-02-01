@@ -82,7 +82,7 @@ export function AddInvoiceModal({ isOpen, onClose, onAdd }: AddInvoiceModalProps
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
         <div 
           className="bg-white rounded-xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto"
-          onClick={(e) => e.stopPropagation()}
+          onClick={(e: React.MouseEvent) => e.stopPropagation()}
         >
           {/* Header */}
           <div className="flex items-start justify-between p-6 border-b-2 border-slate-200">
@@ -120,7 +120,7 @@ export function AddInvoiceModal({ isOpen, onClose, onAdd }: AddInvoiceModalProps
                     id="invoice-number"
                     type="text"
                     value={formData.number}
-                    onChange={(e) => setFormData({ ...formData, number: e.target.value })}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, number: e.target.value })}
                     placeholder="INV-2026-005"
                     disabled={isSubmitting}
                     className="w-full px-3 py-2 border-2 border-slate-200 rounded-lg focus:border-teal-300 focus:outline-none disabled:opacity-50"
@@ -136,7 +136,7 @@ export function AddInvoiceModal({ isOpen, onClose, onAdd }: AddInvoiceModalProps
                     id="invoice-amount"
                     type="number"
                     value={formData.amount}
-                    onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, amount: e.target.value })}
                     placeholder="0"
                     disabled={isSubmitting}
                     className="w-full px-3 py-2 border-2 border-slate-200 rounded-lg focus:border-teal-300 focus:outline-none disabled:opacity-50"
@@ -154,7 +154,7 @@ export function AddInvoiceModal({ isOpen, onClose, onAdd }: AddInvoiceModalProps
                   id="invoice-vendor"
                   type="text"
                   value={formData.vendor}
-                  onChange={(e) => setFormData({ ...formData, vendor: e.target.value })}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, vendor: e.target.value })}
                   placeholder="Vendor name"
                   disabled={isSubmitting}
                   className="w-full px-3 py-2 border-2 border-slate-200 rounded-lg focus:border-teal-300 focus:outline-none disabled:opacity-50"
@@ -171,7 +171,7 @@ export function AddInvoiceModal({ isOpen, onClose, onAdd }: AddInvoiceModalProps
                   <select
                     id="invoice-category"
                     value={formData.category}
-                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setFormData({ ...formData, category: e.target.value })}
                     disabled={isSubmitting}
                     className="w-full px-3 py-2 border-2 border-slate-200 rounded-lg focus:border-teal-300 focus:outline-none disabled:opacity-50"
                   >
@@ -189,7 +189,7 @@ export function AddInvoiceModal({ isOpen, onClose, onAdd }: AddInvoiceModalProps
                     id="invoice-due-date"
                     type="date"
                     value={formData.dueDate}
-                    onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, dueDate: e.target.value })}
                     disabled={isSubmitting}
                     className="w-full px-3 py-2 border-2 border-slate-200 rounded-lg focus:border-teal-300 focus:outline-none disabled:opacity-50"
                     required

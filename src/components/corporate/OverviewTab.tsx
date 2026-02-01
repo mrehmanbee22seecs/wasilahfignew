@@ -78,7 +78,7 @@ export function OverviewTab({
   const hasMore = displayedCount < filteredProjects.length;
 
   const handleLoadMore = () => {
-    setDisplayedCount(prev => prev + 6);
+    setDisplayedCount((prev: number) => prev + 6);
   };
 
   // Show skeleton loading state
@@ -184,7 +184,7 @@ export function OverviewTab({
                   <input
                     type="text"
                     value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
                     placeholder="Search projects..."
                     className="pl-10 pr-4 py-2 border-2 border-slate-300 rounded-lg focus:border-teal-600 focus:ring-2 focus:ring-teal-100 transition-colors text-sm"
                   />
@@ -243,7 +243,17 @@ export function OverviewTab({
                 {displayedProjects.map((project) => (
                   <ProjectCard
                     key={project.id}
-                    {...project}
+                    id={project.id}
+                    title={project.title}
+                    status={project.status}
+                    ngoName={project.ngoName}
+                    startDate={project.startDate}
+                    endDate={project.endDate}
+                    progress={project.progress}
+                    volunteersCount={project.volunteersCount}
+                    budget={project.budget}
+                    spent={project.spent}
+                    thumbnail={project.thumbnail}
                     onView={onViewProjectDetails}
                     onEdit={onEditProject}
                     onTogglePause={onTogglePauseProject}
@@ -270,7 +280,17 @@ export function OverviewTab({
                     {displayedProjects.map((project) => (
                       <ProjectRow
                         key={project.id}
-                        {...project}
+                        id={project.id}
+                        title={project.title}
+                        status={project.status}
+                        ngoName={project.ngoName}
+                        startDate={project.startDate}
+                        endDate={project.endDate}
+                        progress={project.progress}
+                        volunteersCount={project.volunteersCount}
+                        budget={project.budget}
+                        spent={project.spent}
+                        thumbnail={project.thumbnail}
                         viewMode="table"
                         onViewDetails={onViewProjectDetails}
                         onEdit={onEditProject}
