@@ -8,6 +8,7 @@ import { AddNoteModal } from '../components/admin/payments/AddNoteModal';
 import { ExportButton } from '../components/exports/ExportButton';
 import { toast } from 'sonner';
 import { CardSkeleton } from '../components/skeletons';
+import { VirtualGrid } from '../components/virtual';
 
 /**
  * Payments & Finance Page
@@ -422,21 +423,28 @@ export default function PaymentsFinancePage() {
             <p className="text-sm text-gray-500 mt-1">Try adjusting your filters</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            {filteredHolds.map((hold) => (
-              <PaymentHoldCard
-                key={hold.holdId}
-                hold={hold}
-                onApprove={handleApprove}
-                onReject={handleReject}
-                onViewDetails={handleViewDetails}
-                onRequestRelease={handleRequestRelease}
-                onViewLedger={handleViewLedger}
-                onAddNote={handleAddNote}
-                currentUserId={currentUserId}
-              />
-            ))}
-          </div>
+          <VirtualGrid
+            items={filteredHolds}
+            height={800}
+            width="100%"
+            columnCount={window.innerWidth >= 1024 ? 2 : 1}
+            rowHeight={280}
+            columnWidth={window.innerWidth >= 1024 ? 600 : 1200}
+            renderItem={(hold, index, style) => (
+              <div key={hold.holdId} style={{ ...style, padding: '8px' }}>
+                <PaymentHoldCard
+                  hold={hold}
+                  onApprove={handleApprove}
+                  onReject={handleReject}
+                  onViewDetails={handleViewDetails}
+                  onRequestRelease={handleRequestRelease}
+                  onViewLedger={handleViewLedger}
+                  onAddNote={handleAddNote}
+                  currentUserId={currentUserId}
+                />
+              </div>
+            )}
+          />
         )}
       </div>
 

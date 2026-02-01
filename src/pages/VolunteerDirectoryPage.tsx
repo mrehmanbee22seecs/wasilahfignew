@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { DirectoryHero } from '../components/volunteer-directory/DirectoryHero';
 import { FilterSidebar } from '../components/volunteer-directory/FilterSidebar';
-import { VolunteerGrid } from '../components/volunteer-directory/VolunteerGrid';
+import { VolunteerGrid } from '../components/volunteer-directory/VolunteerGridVirtualized';
 import { ExportButton } from '../components/exports/ExportButton';
 
 interface VolunteerDirectoryPageProps {
@@ -288,12 +288,10 @@ export function VolunteerDirectoryPage({ onNavigateToProfile }: VolunteerDirecto
                 />
               </div>
 
-              <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
-                <VolunteerGrid
-                  volunteers={filteredVolunteers}
-                  onVolunteerClick={onNavigateToProfile}
-                />
-              </div>
+              <VolunteerGrid
+                volunteers={filteredVolunteers}
+                onVolunteerClick={onNavigateToProfile}
+              />
             </div>
           </div>
         </div>
