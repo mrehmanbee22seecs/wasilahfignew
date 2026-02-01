@@ -50,7 +50,7 @@ export function useCertificates() {
 
       const job: CertificateJob = {
         id: `CERT-${Date.now()}`,
-        volunteerId: data.volunteerName, // Should be actual ID in production
+        volunteerId: data.volunteerName, // TODO: Replace with actual volunteer ID when available from API
         volunteerName: data.volunteerName,
         projectName: data.projectName,
         status: 'pending',

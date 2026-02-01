@@ -313,6 +313,11 @@ function addMetadataSection(doc: jsPDF, options: PDFExportOptions, startY: numbe
 }
 
 /**
+ * Threshold for determining if a number should be formatted as currency
+ */
+const CURRENCY_THRESHOLD = 10000;
+
+/**
  * Format cell value for display
  */
 function formatCellValue(value: any): string {
@@ -322,7 +327,7 @@ function formatCellValue(value: any): string {
 
   if (typeof value === 'number') {
     // Check if it's a currency value (large numbers)
-    if (value > 10000) {
+    if (value > CURRENCY_THRESHOLD) {
       return `PKR ${value.toLocaleString()}`;
     }
     return value.toLocaleString();
