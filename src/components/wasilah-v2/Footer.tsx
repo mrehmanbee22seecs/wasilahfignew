@@ -9,7 +9,47 @@ const BRAND = {
   cream: '#F5EFE6',
 };
 
-export function Footer() {
+interface FooterProps {
+  onNavigate?: (page: string) => void;
+}
+
+export function Footer({ onNavigate }: FooterProps) {
+  const handleNavigate = (page: string) => {
+    if (onNavigate) {
+      onNavigate(page);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  const quickLinks = [
+    { label: 'About Us', page: 'about' },
+    { label: 'Contact', page: 'contact' },
+    { label: 'Impact', page: 'impact' },
+    { label: 'Resources', page: 'resources' },
+    { label: 'NGO Directory', page: 'ngo-directory' },
+  ];
+
+  const csrServices = [
+    { label: 'CSR Solutions', page: 'csr-solutions' },
+    { label: 'Corporate Services', page: 'corporate-services' },
+    { label: 'Volunteer Program', page: 'volunteer-program' },
+    { label: 'NGO Partners', page: 'ngo-partners' },
+    { label: 'Opportunities', page: 'opportunities' },
+  ];
+
+  const legalLinks = [
+    { label: 'Privacy Policy', page: 'privacy-policy' },
+    { label: 'Terms of Service', page: 'terms-of-service' },
+    { label: 'Cookie Policy', page: 'cookie-policy' },
+  ];
+
+  const socialLinks = [
+    { icon: Linkedin, label: 'LinkedIn', url: 'https://www.linkedin.com/company/wasilah' },
+    { icon: Instagram, label: 'Instagram', url: 'https://www.instagram.com/wasilah.pk' },
+    { icon: Facebook, label: 'Facebook', url: 'https://www.facebook.com/wasilah.pk' },
+    { icon: Twitter, label: 'Twitter', url: 'https://twitter.com/wasilah_pk' },
+  ];
+
   return (
     <footer style={{ backgroundColor: BRAND.navy }}>
       {/* Main Footer */}
@@ -31,15 +71,12 @@ export function Footer() {
 
             {/* Social Icons */}
             <div className="flex gap-3">
-              {[
-                { icon: Linkedin, label: 'LinkedIn' },
-                { icon: Instagram, label: 'Instagram' },
-                { icon: Facebook, label: 'Facebook' },
-                { icon: Twitter, label: 'Twitter' },
-              ].map(({ icon: Icon, label }) => (
+              {socialLinks.map(({ icon: Icon, label, url }) => (
                 <a 
                   key={label}
-                  href="#" 
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   aria-label={label}
                   className="w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-300 text-gray-300 hover:text-white"
                   style={{ backgroundColor: BRAND.navyLight }}
@@ -60,18 +97,18 @@ export function Footer() {
           <div>
             <h4 className="text-white font-semibold mb-5">Quick Links</h4>
             <ul className="space-y-3">
-              {['About Us', 'Our Team', 'Careers', 'Blog', 'Press Kit'].map((item) => (
-                <li key={item}>
-                  <a 
-                    href="#" 
+              {quickLinks.map((item) => (
+                <li key={item.label}>
+                  <button 
+                    onClick={() => handleNavigate(item.page)}
                     className="text-gray-300 hover:text-white transition-colors inline-flex items-center gap-2 group"
                   >
                     <span 
                       className="w-1.5 h-1.5 rounded-full transition-all duration-300 opacity-0 group-hover:opacity-100"
                       style={{ backgroundColor: BRAND.teal }}
                     />
-                    {item}
-                  </a>
+                    {item.label}
+                  </button>
                 </li>
               ))}
             </ul>
@@ -81,18 +118,18 @@ export function Footer() {
           <div>
             <h4 className="text-white font-semibold mb-5">CSR Services</h4>
             <ul className="space-y-3">
-              {['Bronze Tier', 'Silver Tier', 'Gold Tier', 'Platinum Tier', 'Custom Solutions'].map((item) => (
-                <li key={item}>
-                  <a 
-                    href="#" 
+              {csrServices.map((item) => (
+                <li key={item.label}>
+                  <button 
+                    onClick={() => handleNavigate(item.page)}
                     className="text-gray-300 hover:text-white transition-colors inline-flex items-center gap-2 group"
                   >
                     <span 
                       className="w-1.5 h-1.5 rounded-full transition-all duration-300 opacity-0 group-hover:opacity-100"
                       style={{ backgroundColor: BRAND.teal }}
                     />
-                    {item}
-                  </a>
+                    {item.label}
+                  </button>
                 </li>
               ))}
             </ul>
@@ -161,14 +198,14 @@ export function Footer() {
             © {new Date().getFullYear()} Wasilah. All rights reserved.
           </div>
           <div className="flex gap-6">
-            {['Privacy Policy', 'Terms of Service', 'Cookie Policy'].map((item) => (
-              <a 
-                key={item}
-                href="#" 
+            {legalLinks.map((item) => (
+              <button 
+                key={item.label}
+                onClick={() => handleNavigate(item.page)}
                 className="hover:text-white transition-colors"
               >
-                {item}
-              </a>
+                {item.label}
+              </button>
             ))}
           </div>
         </div>

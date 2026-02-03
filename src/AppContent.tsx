@@ -41,6 +41,12 @@ import { ImpactPage } from "./pages/ImpactPage";
 import { UnauthorizedPage } from "./pages/UnauthorizedPage";
 import { SkeletonsDemo } from "./pages/dev/SkeletonsDemo";
 
+// Legal Pages
+import { PrivacyPolicyPage, TermsOfServicePage, CookiePolicyPage } from "./pages/legal";
+
+// Company Pages
+import { AboutPage } from "./pages/company";
+
 type PageType =
   | "home"
   | "csr-solutions"
@@ -64,7 +70,11 @@ type PageType =
   | "volunteer-profile"
   | "opportunities"
   | "opportunity-detail"
-  | "skeletons-demo";
+  | "skeletons-demo"
+  | "privacy-policy"
+  | "terms-of-service"
+  | "cookie-policy"
+  | "about";
 
 export function AppContent() {
   const [currentPage, setCurrentPage] = useState<PageType>("home");
@@ -281,6 +291,19 @@ export function AppContent() {
         return <UnauthorizedPage onNavigate={(page) => setCurrentPage(page as PageType)} />;
       case "skeletons-demo":
         return <SkeletonsDemo />;
+      case "privacy-policy":
+        return <PrivacyPolicyPage onBack={() => setCurrentPage("home")} />;
+      case "terms-of-service":
+        return <TermsOfServicePage onBack={() => setCurrentPage("home")} />;
+      case "cookie-policy":
+        return <CookiePolicyPage onBack={() => setCurrentPage("home")} />;
+      case "about":
+        return (
+          <AboutPage 
+            onBack={() => setCurrentPage("home")} 
+            onNavigate={(page) => setCurrentPage(page as PageType)}
+          />
+        );
       default:
         return <HomePage />;
     }
@@ -335,7 +358,7 @@ export function AppContent() {
       {/* Render Current Page */}
       {renderPage()}
 
-      <Footer />
+      <Footer onNavigate={(page) => setCurrentPage(page as PageType)} />
       
       {/* Notification Badge - Fixed Position */}
       <div className="fixed top-4 right-4 z-30">

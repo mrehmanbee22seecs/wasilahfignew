@@ -11,6 +11,7 @@ const BRAND_COLORS = {
 interface NavigationProps {
   currentPage: string;
   onNavigate: (page: string) => void;
+  onRequestProposal?: () => void;
 }
 
 interface MenuItem {
@@ -19,11 +20,20 @@ interface MenuItem {
   children?: { label: string; page: string; description?: string }[];
 }
 
-export function Navigation({ currentPage, onNavigate }: NavigationProps) {
+export function Navigation({ currentPage, onNavigate, onRequestProposal }: NavigationProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const handleRequestProposal = () => {
+    if (onRequestProposal) {
+      onRequestProposal();
+    } else {
+      // Default: navigate to contact page
+      onNavigate('contact');
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -207,6 +217,7 @@ export function Navigation({ currentPage, onNavigate }: NavigationProps) {
           {/* CTA Button */}
           <div className="hidden lg:block">
             <button 
+              onClick={handleRequestProposal}
               className="px-6 py-3 text-white font-semibold rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-200"
               style={{ backgroundColor: BRAND_COLORS.navyBlue }}
               onMouseEnter={(e) => e.currentTarget.style.backgroundColor = BRAND_COLORS.teal}
@@ -251,6 +262,7 @@ export function Navigation({ currentPage, onNavigate }: NavigationProps) {
               ))}
               <div className="mt-4 px-4">
                 <button 
+                  onClick={handleRequestProposal}
                   className="w-full px-6 py-3 text-white font-semibold rounded-lg hover:shadow-lg transition-all"
                   style={{ backgroundColor: BRAND_COLORS.navyBlue }}
                 >
