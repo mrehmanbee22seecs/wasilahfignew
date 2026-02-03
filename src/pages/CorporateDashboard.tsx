@@ -20,6 +20,7 @@ import { useRealtimePaymentApprovals } from '../hooks/useRealtimePayments';
 import { useRealtimeActivityFeed } from '../hooks/useRealtimeActivityFeed';
 import { paymentsApi } from '../lib/api/payments';
 import { useCorporateBudgetOverview, useProjectBudgets, useBudgetAlerts, useBudgetForecast } from '../hooks/useBudget';
+import { BRAND } from '../constants/brand';
 
 export function CorporateDashboard({ onNavigateHome }: { onNavigateHome?: () => void }) {
   const { user } = useAuth();
@@ -283,7 +284,7 @@ export function CorporateDashboard({ onNavigateHome }: { onNavigateHome?: () => 
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen" style={{ backgroundColor: BRAND.creamLight }}>
       <div className="flex">
         {/* Navigation */}
         <DashboardNav
@@ -299,22 +300,25 @@ export function CorporateDashboard({ onNavigateHome }: { onNavigateHome?: () => 
         {/* Main Content */}
         <main className="flex-1 min-w-0">
           {/* Mobile Header */}
-          <div className="lg:hidden sticky top-0 z-20 bg-white border-b-2 border-slate-200 px-6 py-4 flex items-center justify-between">
+          <div className="lg:hidden sticky top-0 z-20 bg-white border-b-2 px-6 py-4 flex items-center justify-between" style={{ borderColor: `${BRAND.navy}15` }}>
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-teal-600 to-blue-600 rounded-lg flex items-center justify-center">
+              <div 
+                className="w-10 h-10 rounded-lg flex items-center justify-center"
+                style={{ background: `linear-gradient(135deg, ${BRAND.navy} 0%, ${BRAND.teal} 100%)` }}
+              >
                 <span className="text-white text-xl">W</span>
               </div>
               <div>
-                <div className="text-slate-900">Wasilah</div>
-                <div className="text-slate-600 text-xs">Corporate Portal</div>
+                <div style={{ color: BRAND.navy }}>Wasilah</div>
+                <div className="text-xs" style={{ color: BRAND.gray600 }}>Corporate Portal</div>
               </div>
             </div>
             <button
               onClick={() => setIsMobileNavOpen(true)}
-              className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
               aria-label="Open menu"
             >
-              <Menu className="w-6 h-6 text-slate-600" />
+              <Menu className="w-6 h-6" style={{ color: BRAND.gray600 }} />
             </button>
           </div>
 

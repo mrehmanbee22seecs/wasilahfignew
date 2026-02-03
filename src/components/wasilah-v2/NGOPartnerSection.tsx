@@ -1,6 +1,13 @@
 import React from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
+// Brand colors matching the logo
+const BRAND = {
+  navy: '#1B2A4E',
+  teal: '#2EC4B6',
+  cream: '#F5EFE6',
+};
+
 export function NGOPartnerSection() {
   const partners = [
     'The Citizens Foundation',
@@ -14,14 +21,23 @@ export function NGOPartnerSection() {
   ];
 
   return (
-    <section className="py-20 bg-white border-y border-slate-200">
+    <section className="py-20 bg-white border-y" style={{ borderColor: `${BRAND.navy}10` }}>
       <div className="max-w-7xl mx-auto px-6">
         {/* Section Header */}
         <div className="text-center mb-12">
-          <h2 className="text-slate-900 mb-4">
+          <div 
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-4"
+            style={{ backgroundColor: `${BRAND.teal}15`, color: BRAND.teal }}
+          >
+            <span className="font-medium">Our Partners</span>
+          </div>
+          <h2 
+            className="text-3xl sm:text-4xl font-bold mb-4"
+            style={{ color: BRAND.navy }}
+          >
             Trusted By NGOs Creating Real Impact
           </h2>
-          <p className="text-slate-600 max-w-2xl mx-auto">
+          <p className="text-gray-600 max-w-2xl mx-auto text-lg">
             We partner with Pakistan's most credible and impactful NGOs across health, education, environment, and community development
           </p>
         </div>
@@ -29,11 +45,21 @@ export function NGOPartnerSection() {
         {/* Partners Carousel */}
         <div className="relative">
           <div className="flex items-center justify-between mb-4">
-            <button className="p-2 rounded-full bg-slate-100 hover:bg-slate-200 transition-colors">
-              <ChevronLeft className="w-6 h-6 text-slate-600" />
+            <button 
+              className="p-2 rounded-full transition-colors"
+              style={{ backgroundColor: `${BRAND.navy}08` }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = `${BRAND.teal}20`}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = `${BRAND.navy}08`}
+            >
+              <ChevronLeft className="w-6 h-6" style={{ color: BRAND.navy }} />
             </button>
-            <button className="p-2 rounded-full bg-slate-100 hover:bg-slate-200 transition-colors">
-              <ChevronRight className="w-6 h-6 text-slate-600" />
+            <button 
+              className="p-2 rounded-full transition-colors"
+              style={{ backgroundColor: `${BRAND.navy}08` }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = `${BRAND.teal}20`}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = `${BRAND.navy}08`}
+            >
+              <ChevronRight className="w-6 h-6" style={{ color: BRAND.navy }} />
             </button>
           </div>
 
@@ -41,16 +67,26 @@ export function NGOPartnerSection() {
             {partners.map((partner, index) => (
               <div
                 key={index}
-                className="bg-slate-50 rounded-xl p-8 border border-slate-200 hover:shadow-lg transition-all group cursor-pointer"
+                className="rounded-2xl p-8 border hover:shadow-xl transition-all group cursor-pointer"
+                style={{ 
+                  backgroundColor: BRAND.cream,
+                  borderColor: `${BRAND.navy}10`
+                }}
               >
-                <div className="aspect-square bg-white rounded-lg flex items-center justify-center mb-3 border border-slate-200 group-hover:border-teal-300 transition-colors">
+                <div 
+                  className="aspect-square bg-white rounded-xl flex items-center justify-center mb-3 border transition-all group-hover:shadow-md"
+                  style={{ borderColor: `${BRAND.navy}10` }}
+                >
                   <div className="text-center">
-                    <div className="w-16 h-16 bg-slate-200 rounded-full mx-auto mb-2 flex items-center justify-center">
-                      <span className="text-slate-400 text-xs">LOGO</span>
+                    <div 
+                      className="w-16 h-16 rounded-full mx-auto mb-2 flex items-center justify-center"
+                      style={{ backgroundColor: `${BRAND.navy}08` }}
+                    >
+                      <span className="text-xs font-medium" style={{ color: BRAND.navy }}>LOGO</span>
                     </div>
                   </div>
                 </div>
-                <p className="text-slate-700 text-center text-sm">{partner}</p>
+                <p className="text-center text-sm font-medium" style={{ color: BRAND.navy }}>{partner}</p>
               </div>
             ))}
           </div>
@@ -58,7 +94,10 @@ export function NGOPartnerSection() {
 
         {/* Trust Badge */}
         <div className="mt-12 text-center">
-          <div className="inline-flex items-center gap-2 px-6 py-3 bg-teal-50 border border-teal-200 rounded-full text-teal-700">
+          <div 
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold"
+            style={{ backgroundColor: `${BRAND.teal}15`, color: BRAND.teal }}
+          >
             <span>180+ Verified NGO Partners</span>
           </div>
         </div>

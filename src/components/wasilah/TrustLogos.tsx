@@ -1,5 +1,12 @@
 import React from 'react';
 
+// Brand colors matching the logo
+const BRAND = {
+  navy: '#1B2A4E',
+  teal: '#2EC4B6',
+  cream: '#F5EFE6',
+};
+
 export function TrustLogos() {
   const logos = [
     'Engro Corporation',
@@ -13,23 +20,44 @@ export function TrustLogos() {
   ];
 
   return (
-    <section className="bg-white py-16 border-y border-slate-200">
+    <section 
+      className="py-16 border-y"
+      style={{ 
+        backgroundColor: 'white',
+        borderColor: `${BRAND.navy}10`
+      }}
+    >
       <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-12">
-          <p className="text-slate-500">Trusted by Pakistan's Leading Organizations</p>
+        <div className="text-center mb-10">
+          <p className="text-gray-500 font-medium">Trusted by Pakistan's Leading Organizations</p>
         </div>
         
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-8 items-center">
           {logos.map((logo, index) => (
             <div 
               key={index}
-              className="flex items-center justify-center h-16 grayscale opacity-60 hover:opacity-100 hover:grayscale-0 transition-all duration-300 cursor-pointer"
+              className="flex items-center justify-center h-16 opacity-40 hover:opacity-100 transition-all duration-300 cursor-pointer group"
             >
               <div className="text-center">
-                <div className="w-20 h-12 bg-slate-200 rounded flex items-center justify-center mb-1">
-                  <span className="text-slate-400 text-xs">LOGO</span>
+                <div 
+                  className="w-20 h-12 rounded-lg flex items-center justify-center mb-1 transition-colors duration-300"
+                  style={{ 
+                    backgroundColor: `${BRAND.navy}08`,
+                  }}
+                >
+                  <span 
+                    className="text-xs font-semibold transition-colors duration-300"
+                    style={{ color: BRAND.navy }}
+                  >
+                    LOGO
+                  </span>
                 </div>
-                <p className="text-slate-400 text-xs">{logo.split(' ')[0]}</p>
+                <p 
+                  className="text-xs transition-colors duration-300"
+                  style={{ color: BRAND.navy }}
+                >
+                  {logo.split(' ')[0]}
+                </p>
               </div>
             </div>
           ))}

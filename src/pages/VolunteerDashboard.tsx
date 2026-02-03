@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Menu, X, Home, Shield, Clock, FolderKanban, User, HelpCircle, LogOut, Bell, ArrowLeft } from 'lucide-react';
 import { BackgroundCheckTab } from '../components/volunteer/BackgroundCheckTab';
 import { HoursTrackingTab } from '../components/volunteer/HoursTrackingTab';
+import { BRAND } from '../constants/brand';
 import { 
   MOCK_BACKGROUND_CHECK, 
   BACKGROUND_CHECK_REQUIREMENTS,
@@ -167,9 +168,9 @@ export default function VolunteerDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen" style={{ backgroundColor: BRAND.creamLight }}>
       {/* Mobile Header */}
-      <div className="lg:hidden bg-white border-b-2 border-slate-200 px-4 py-3">
+      <div className="lg:hidden bg-white border-b-2 px-4 py-3" style={{ borderColor: `${BRAND.navy}15` }}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img 
@@ -178,16 +179,17 @@ export default function VolunteerDashboard() {
               className="w-10 h-10 rounded-full"
             />
             <div>
-              <h3 className="text-sm text-slate-900">{volunteerInfo.name}</h3>
-              <span className="text-xs text-gray-600">
+              <h3 className="text-sm" style={{ color: BRAND.navy }}>{volunteerInfo.name}</h3>
+              <span className="text-xs" style={{ color: BRAND.gray600 }}>
                 {volunteerInfo.isVerified ? '✓ Verified' : 'Not verified'}
               </span>
             </div>
           </div>
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="p-2 hover:bg-slate-100 rounded-lg"
+            className="p-2 hover:bg-gray-100 rounded-lg"
             aria-label="Toggle menu"
+            style={{ color: BRAND.navy }}
           >
             {sidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -197,21 +199,22 @@ export default function VolunteerDashboard() {
       <div className="flex">
         {/* Sidebar */}
         <aside className={`
-          fixed lg:sticky top-0 left-0 h-screen w-72 bg-white border-r-2 border-slate-200 z-40
+          fixed lg:sticky top-0 left-0 h-screen w-72 bg-white border-r-2 z-40
           transition-transform duration-300 lg:translate-x-0
           ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-        `}>
+        `} style={{ borderColor: `${BRAND.navy}15` }}>
           <div className="flex flex-col h-full overflow-y-auto">
             {/* Header */}
-            <div className="p-6 border-b-2 border-slate-200">
+            <div className="p-6 border-b-2" style={{ borderColor: `${BRAND.navy}15` }}>
               <div className="flex items-center gap-4 mb-4">
                 <img 
                   src={volunteerInfo.avatar} 
                   alt={volunteerInfo.name}
-                  className="w-16 h-16 rounded-full border-2 border-slate-200"
+                  className="w-16 h-16 rounded-full border-2"
+                  style={{ borderColor: `${BRAND.navy}20` }}
                 />
                 <div className="flex-1">
-                  <h2 className="text-sm text-slate-900 mb-1">{volunteerInfo.name}</h2>
+                  <h2 className="text-sm mb-1" style={{ color: BRAND.navy }}>{volunteerInfo.name}</h2>
                   <span className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-lg text-xs border-2 ${
                     volunteerInfo.isVerified 
                       ? 'bg-green-100 text-green-700 border-green-200'
@@ -224,24 +227,24 @@ export default function VolunteerDashboard() {
 
               {/* Quick Stats */}
               <div className="grid grid-cols-2 gap-3 mb-4">
-                <div className="p-3 bg-slate-50 rounded-lg">
-                  <p className="text-xs text-slate-600 mb-0.5">This Month</p>
-                  <p className="text-lg text-slate-900">{hoursSummary.thisMonth}h</p>
+                <div className="p-3 rounded-lg" style={{ backgroundColor: BRAND.cream }}>
+                  <p className="text-xs mb-0.5" style={{ color: BRAND.gray600 }}>This Month</p>
+                  <p className="text-lg" style={{ color: BRAND.navy }}>{hoursSummary.thisMonth}h</p>
                 </div>
-                <div className="p-3 bg-slate-50 rounded-lg">
-                  <p className="text-xs text-slate-600 mb-0.5">All Time</p>
-                  <p className="text-lg text-slate-900">{hoursSummary.allTime}h</p>
+                <div className="p-3 rounded-lg" style={{ backgroundColor: BRAND.cream }}>
+                  <p className="text-xs mb-0.5" style={{ color: BRAND.gray600 }}>All Time</p>
+                  <p className="text-lg" style={{ color: BRAND.navy }}>{hoursSummary.allTime}h</p>
                 </div>
               </div>
 
               {/* Active Session Indicator */}
               {activeSession && (
-                <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <div className="p-3 rounded-lg border" style={{ backgroundColor: `${BRAND.teal}10`, borderColor: `${BRAND.teal}30` }}>
                   <div className="flex items-center gap-2 mb-1">
-                    <div className="w-2 h-2 bg-blue-600 rounded-full animate-pulse" />
-                    <p className="text-xs text-blue-900 font-medium">Active Session</p>
+                    <div className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: BRAND.teal }} />
+                    <p className="text-xs font-medium" style={{ color: BRAND.navy }}>Active Session</p>
                   </div>
-                  <p className="text-xs text-blue-800">{activeSession.projectName}</p>
+                  <p className="text-xs" style={{ color: BRAND.gray600 }}>{activeSession.projectName}</p>
                 </div>
               )}
             </div>
@@ -259,13 +262,24 @@ export default function VolunteerDashboard() {
                         setActiveTab(tab.id);
                         setSidebarOpen(false);
                       }}
-                      className={`
-                        w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm transition-all
-                        ${isActive 
-                          ? 'bg-gradient-to-r from-teal-600 to-blue-600 text-white shadow-md' 
-                          : 'text-slate-700 hover:bg-slate-100'
+                      className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm transition-all"
+                      style={isActive ? {
+                        background: `linear-gradient(135deg, ${BRAND.navy} 0%, ${BRAND.teal} 100%)`,
+                        color: BRAND.white,
+                        boxShadow: '0 4px 12px rgba(27, 42, 78, 0.3)'
+                      } : {
+                        color: BRAND.navy
+                      }}
+                      onMouseEnter={(e) => {
+                        if (!isActive) {
+                          e.currentTarget.style.backgroundColor = BRAND.cream;
                         }
-                      `}
+                      }}
+                      onMouseLeave={(e) => {
+                        if (!isActive) {
+                          e.currentTarget.style.backgroundColor = 'transparent';
+                        }
+                      }}
                     >
                       <Icon className="w-5 h-5 flex-shrink-0" />
                       <span>{tab.label}</span>
@@ -276,18 +290,19 @@ export default function VolunteerDashboard() {
             </nav>
 
             {/* Footer */}
-            <div className="p-4 border-t-2 border-slate-200 space-y-1">
-              <button className="w-full flex items-center gap-3 px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 rounded-lg transition-colors">
+            <div className="p-4 border-t-2 space-y-1" style={{ borderColor: `${BRAND.navy}15` }}>
+              <button className="w-full flex items-center gap-3 px-4 py-2 text-sm rounded-lg transition-colors hover:bg-gray-100" style={{ color: BRAND.navy }}>
                 <Bell className="w-5 h-5" />
                 Notifications
               </button>
-              <button className="w-full flex items-center gap-3 px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 rounded-lg transition-colors">
+              <button className="w-full flex items-center gap-3 px-4 py-2 text-sm rounded-lg transition-colors hover:bg-gray-100" style={{ color: BRAND.navy }}>
                 <HelpCircle className="w-5 h-5" />
                 Help Center
               </button>
               <button 
                 onClick={() => window.location.href = '/'}
-                className="w-full flex items-center gap-3 px-4 py-2 text-sm text-teal-600 hover:bg-teal-50 rounded-lg transition-colors border-2 border-teal-200"
+                className="w-full flex items-center gap-3 px-4 py-2 text-sm rounded-lg transition-colors border-2"
+                style={{ color: BRAND.teal, borderColor: `${BRAND.teal}30`, backgroundColor: `${BRAND.teal}10` }}
               >
                 <ArrowLeft className="w-5 h-5" />
                 Exit Dashboard
@@ -311,10 +326,10 @@ export default function VolunteerDashboard() {
         {/* Main Content */}
         <main className="flex-1 min-w-0">
           {/* Header */}
-          <div className="bg-white border-b-2 border-slate-200 px-6 py-6 lg:py-8">
+          <div className="bg-white border-b-2 px-6 py-6 lg:py-8" style={{ borderColor: `${BRAND.navy}15` }}>
             <div className="max-w-7xl mx-auto">
-              <h1 className="text-slate-900 mb-1">Volunteer Dashboard</h1>
-              <p className="text-slate-600">
+              <h1 className="mb-1" style={{ color: BRAND.navy }}>Volunteer Dashboard</h1>
+              <p style={{ color: BRAND.gray600 }}>
                 Track your volunteer hours and manage your profile
               </p>
             </div>
@@ -325,8 +340,8 @@ export default function VolunteerDashboard() {
             <div className="max-w-7xl mx-auto">
               {activeTab === 'overview' && (
                 <div>
-                  <h2 className="text-2xl text-gray-900 mb-6">Overview</h2>
-                  <p className="text-gray-600">Welcome to your volunteer dashboard! Get started by checking in to a project or completing your background verification.</p>
+                  <h2 className="text-2xl mb-6" style={{ color: BRAND.navy }}>Overview</h2>
+                  <p style={{ color: BRAND.gray600 }}>Welcome to your volunteer dashboard! Get started by checking in to a project or completing your background verification.</p>
                 </div>
               )}
 
@@ -352,15 +367,15 @@ export default function VolunteerDashboard() {
 
               {activeTab === 'projects' && (
                 <div>
-                  <h2 className="text-2xl text-gray-900 mb-6">My Projects</h2>
-                  <p className="text-gray-600">Your enrolled projects will appear here.</p>
+                  <h2 className="text-2xl mb-6" style={{ color: BRAND.navy }}>My Projects</h2>
+                  <p style={{ color: BRAND.gray600 }}>Your enrolled projects will appear here.</p>
                 </div>
               )}
 
               {activeTab === 'profile' && (
                 <div>
-                  <h2 className="text-2xl text-gray-900 mb-6">Profile Settings</h2>
-                  <p className="text-gray-600">Manage your profile information.</p>
+                  <h2 className="text-2xl mb-6" style={{ color: BRAND.navy }}>Profile Settings</h2>
+                  <p style={{ color: BRAND.gray600 }}>Manage your profile information.</p>
                 </div>
               )}
             </div>

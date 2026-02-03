@@ -27,6 +27,7 @@ import ContentList from './cms/ContentList';
 import ContentEditor from './cms/ContentEditor';
 import TestimonialBlockEditor from './cms/TestimonialBlockEditor';
 import MediaLibrary from './cms/MediaLibrary';
+import { BRAND } from '../constants/brand';
 
 /**
  * Admin Dashboard - Main Container
@@ -211,22 +212,23 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen" style={{ backgroundColor: BRAND.creamLight }}>
       {/* Sidebar */}
       <aside
         className={`${
           sidebarOpen ? 'w-72' : 'w-0'
-        } lg:w-72 bg-white border-r border-gray-200 flex flex-col transition-all duration-300 overflow-hidden fixed lg:relative z-50 h-full`}
+        } lg:w-72 bg-white border-r flex flex-col transition-all duration-300 overflow-hidden fixed lg:relative z-50 h-full`}
+        style={{ borderColor: `${BRAND.navy}15` }}
       >
         {/* Header */}
-        <div className="h-16 border-b border-gray-200 flex items-center justify-between px-6">
+        <div className="h-16 border-b flex items-center justify-between px-6" style={{ borderColor: `${BRAND.navy}15` }}>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-red-600 to-orange-600 rounded-lg flex items-center justify-center">
+            <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: `linear-gradient(135deg, ${BRAND.navy} 0%, ${BRAND.teal} 100%)` }}>
               <span className="text-white font-bold text-lg">W</span>
             </div>
             <div>
-              <h1 className="text-lg font-semibold text-gray-900">Admin</h1>
-              <p className="text-xs text-gray-500">Management Portal</p>
+              <h1 className="text-lg font-semibold" style={{ color: BRAND.navy }}>Admin</h1>
+              <p className="text-xs" style={{ color: BRAND.gray500 }}>Management Portal</p>
             </div>
           </div>
           {isMobile && (
@@ -234,7 +236,7 @@ export default function AdminDashboard() {
               onClick={() => setSidebarOpen(false)}
               className="lg:hidden p-2 hover:bg-gray-100 rounded-lg"
             >
-              <X className="w-5 h-5 text-gray-500" />
+              <X className="w-5 h-5" style={{ color: BRAND.gray500 }} />
             </button>
           )}
         </div>
@@ -257,25 +259,40 @@ export default function AdminDashboard() {
                       handleNavigate(item.id);
                     }
                   }}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
-                    isActive
-                      ? 'bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 text-blue-700'
-                      : 'hover:bg-gray-50 text-gray-700 hover:text-gray-900'
-                  }`}
+                  className="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all"
+                  style={isActive && !hasChildren ? {
+                    background: `linear-gradient(135deg, ${BRAND.navy}10 0%, ${BRAND.teal}10 100%)`,
+                    borderWidth: '1px',
+                    borderStyle: 'solid',
+                    borderColor: `${BRAND.teal}30`,
+                    color: BRAND.navy
+                  } : {
+                    color: BRAND.gray700
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isActive || hasChildren) {
+                      e.currentTarget.style.backgroundColor = BRAND.cream;
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive || hasChildren) {
+                      e.currentTarget.style.backgroundColor = 'transparent';
+                    }
+                  }}
                 >
-                  <Icon className={`w-5 h-5 ${isActive ? 'text-blue-600' : 'text-gray-400'}`} />
+                  <Icon className="w-5 h-5" style={{ color: isActive && !hasChildren ? BRAND.teal : BRAND.gray400 }} />
                   <div className="flex-1 text-left">
-                    <div className={`font-medium text-sm ${isActive ? 'text-blue-900' : 'text-gray-900'}`}>
+                    <div className="font-medium text-sm" style={{ color: isActive && !hasChildren ? BRAND.navy : BRAND.gray900 }}>
                       {item.label}
                     </div>
-                    <div className={`text-xs ${isActive ? 'text-blue-600' : 'text-gray-500'}`}>
+                    <div className="text-xs" style={{ color: isActive && !hasChildren ? BRAND.teal : BRAND.gray500 }}>
                       {item.description}
                     </div>
                   </div>
                   {hasChildren ? (
-                    <ChevronDown className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                    <ChevronDown className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`} style={{ color: BRAND.gray400 }} />
                   ) : (
-                    isActive && <ChevronRight className="w-4 h-4 text-blue-600" />
+                    isActive && <ChevronRight className="w-4 h-4" style={{ color: BRAND.teal }} />
                   )}
                 </button>
 
@@ -290,15 +307,27 @@ export default function AdminDashboard() {
                         <button
                           key={child.id}
                           onClick={() => handleNavigate(child.id)}
-                          className={`w-full flex items-center gap-3 px-4 py-2 rounded-lg transition-all text-sm ${
-                            isChildActive
-                              ? 'bg-blue-100 text-blue-700'
-                              : 'hover:bg-gray-50 text-gray-600 hover:text-gray-900'
-                          }`}
+                          className="w-full flex items-center gap-3 px-4 py-2 rounded-lg transition-all text-sm"
+                          style={isChildActive ? {
+                            backgroundColor: `${BRAND.teal}15`,
+                            color: BRAND.navy
+                          } : {
+                            color: BRAND.gray600
+                          }}
+                          onMouseEnter={(e) => {
+                            if (!isChildActive) {
+                              e.currentTarget.style.backgroundColor = BRAND.cream;
+                            }
+                          }}
+                          onMouseLeave={(e) => {
+                            if (!isChildActive) {
+                              e.currentTarget.style.backgroundColor = 'transparent';
+                            }
+                          }}
                         >
-                          <ChildIcon className={`w-4 h-4 ${isChildActive ? 'text-blue-600' : 'text-gray-400'}`} />
+                          <ChildIcon className="w-4 h-4" style={{ color: isChildActive ? BRAND.teal : BRAND.gray400 }} />
                           <span className="flex-1 text-left">{child.label}</span>
-                          {isChildActive && <div className="w-1.5 h-1.5 bg-blue-600 rounded-full" />}
+                          {isChildActive && <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: BRAND.teal }} />}
                         </button>
                       );
                     })}
@@ -310,21 +339,22 @@ export default function AdminDashboard() {
         </nav>
 
         {/* Footer */}
-        <div className="border-t border-gray-200 p-4 space-y-2">
+        <div className="border-t p-4 space-y-2" style={{ borderColor: `${BRAND.navy}15` }}>
           <button 
             onClick={() => window.location.href = '/'}
-            className="w-full flex items-center gap-3 px-4 py-2 text-sm text-blue-600 hover:bg-blue-50 rounded-lg transition-colors border-2 border-blue-200"
+            className="w-full flex items-center gap-3 px-4 py-2 text-sm rounded-lg transition-colors border-2"
+            style={{ color: BRAND.teal, borderColor: `${BRAND.teal}30`, backgroundColor: `${BRAND.teal}08` }}
           >
             <ArrowLeft className="w-5 h-5" />
             Exit Dashboard
           </button>
           <div className="flex items-center gap-3 px-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+            <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: `linear-gradient(135deg, ${BRAND.navy} 0%, ${BRAND.teal} 100%)` }}>
               <span className="text-white text-xs font-semibold">AD</span>
             </div>
             <div>
-              <div className="text-sm font-medium text-gray-900">Admin User</div>
-              <div className="text-xs text-gray-500">Super Admin</div>
+              <div className="text-sm font-medium" style={{ color: BRAND.navy }}>Admin User</div>
+              <div className="text-xs" style={{ color: BRAND.gray500 }}>Super Admin</div>
             </div>
           </div>
         </div>
@@ -341,21 +371,21 @@ export default function AdminDashboard() {
       {/* Main Content */}
       <main className="flex-1 flex flex-col overflow-hidden">
         {/* Top Bar */}
-        <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6">
+        <header className="h-16 bg-white border-b flex items-center justify-between px-6" style={{ borderColor: `${BRAND.navy}15` }}>
           <div className="flex items-center gap-4">
             {!sidebarOpen && (
               <button
                 onClick={() => setSidebarOpen(true)}
                 className="lg:hidden p-2 hover:bg-gray-100 rounded-lg"
               >
-                <Menu className="w-5 h-5 text-gray-500" />
+                <Menu className="w-5 h-5" style={{ color: BRAND.gray500 }} />
               </button>
             )}
             <div>
-              <h2 className="text-xl font-semibold text-gray-900">
+              <h2 className="text-xl font-semibold" style={{ color: BRAND.navy }}>
                 {navigationItems.find(item => item.id === activeSection)?.label}
               </h2>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm" style={{ color: BRAND.gray500 }}>
                 {navigationItems.find(item => item.id === activeSection)?.description}
               </p>
             </div>

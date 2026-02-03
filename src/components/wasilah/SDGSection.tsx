@@ -19,33 +19,46 @@ import {
   Globe
 } from 'lucide-react';
 
+// Brand colors matching the logo
+const BRAND = {
+  navy: '#1B2A4E',
+  navyLight: '#2A3F6E',
+  teal: '#2EC4B6',
+  cream: '#F5EFE6',
+};
+
 export function SDGSection() {
   const sdgs = [
-    { icon: <Heart className="w-6 h-6" />, title: 'No Poverty', color: 'bg-red-500' },
-    { icon: <Utensils className="w-6 h-6" />, title: 'Zero Hunger', color: 'bg-yellow-600' },
-    { icon: <HeartPulse className="w-6 h-6" />, title: 'Good Health', color: 'bg-green-500' },
-    { icon: <GraduationCap className="w-6 h-6" />, title: 'Quality Education', color: 'bg-red-600' },
-    { icon: <Users className="w-6 h-6" />, title: 'Gender Equality', color: 'bg-orange-500' },
-    { icon: <Droplet className="w-6 h-6" />, title: 'Clean Water', color: 'bg-cyan-500' },
-    { icon: <Zap className="w-6 h-6" />, title: 'Clean Energy', color: 'bg-yellow-500' },
-    { icon: <TrendingUp className="w-6 h-6" />, title: 'Economic Growth', color: 'bg-pink-600' },
-    { icon: <Building2 className="w-6 h-6" />, title: 'Infrastructure', color: 'bg-orange-600' },
-    { icon: <Lightbulb className="w-6 h-6" />, title: 'Reduce Inequalities', color: 'bg-purple-600' },
-    { icon: <Home className="w-6 h-6" />, title: 'Sustainable Cities', color: 'bg-yellow-600' },
-    { icon: <Recycle className="w-6 h-6" />, title: 'Responsible Consumption', color: 'bg-amber-600' },
-    { icon: <CloudRain className="w-6 h-6" />, title: 'Climate Action', color: 'bg-green-600' },
-    { icon: <Fish className="w-6 h-6" />, title: 'Life Below Water', color: 'bg-blue-500' },
-    { icon: <Leaf className="w-6 h-6" />, title: 'Life on Land', color: 'bg-green-500' },
-    { icon: <Scale className="w-6 h-6" />, title: 'Peace & Justice', color: 'bg-blue-600' },
-    { icon: <Globe className="w-6 h-6" />, title: 'Partnerships', color: 'bg-blue-700' }
+    { icon: <Heart className="w-6 h-6" />, title: 'No Poverty', color: '#E5243B' },
+    { icon: <Utensils className="w-6 h-6" />, title: 'Zero Hunger', color: '#DDA63A' },
+    { icon: <HeartPulse className="w-6 h-6" />, title: 'Good Health', color: '#4C9F38' },
+    { icon: <GraduationCap className="w-6 h-6" />, title: 'Quality Education', color: '#C5192D' },
+    { icon: <Users className="w-6 h-6" />, title: 'Gender Equality', color: '#FF3A21' },
+    { icon: <Droplet className="w-6 h-6" />, title: 'Clean Water', color: '#26BDE2' },
+    { icon: <Zap className="w-6 h-6" />, title: 'Clean Energy', color: '#FCC30B' },
+    { icon: <TrendingUp className="w-6 h-6" />, title: 'Economic Growth', color: '#A21942' },
+    { icon: <Building2 className="w-6 h-6" />, title: 'Infrastructure', color: '#FD6925' },
+    { icon: <Lightbulb className="w-6 h-6" />, title: 'Reduce Inequalities', color: '#DD1367' },
+    { icon: <Home className="w-6 h-6" />, title: 'Sustainable Cities', color: '#FD9D24' },
+    { icon: <Recycle className="w-6 h-6" />, title: 'Responsible Consumption', color: '#BF8B2E' },
+    { icon: <CloudRain className="w-6 h-6" />, title: 'Climate Action', color: '#3F7E44' },
+    { icon: <Fish className="w-6 h-6" />, title: 'Life Below Water', color: '#0A97D9' },
+    { icon: <Leaf className="w-6 h-6" />, title: 'Life on Land', color: '#56C02B' },
+    { icon: <Scale className="w-6 h-6" />, title: 'Peace & Justice', color: '#00689D' },
+    { icon: <Globe className="w-6 h-6" />, title: 'Partnerships', color: '#19486A' }
   ];
 
   return (
-    <section className="py-24 bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 relative overflow-hidden">
+    <section 
+      className="py-24 relative overflow-hidden"
+      style={{ 
+        background: `linear-gradient(135deg, ${BRAND.navy} 0%, ${BRAND.navyLight} 100%)`
+      }}
+    >
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-emerald-400 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 w-96 h-96 rounded-full blur-3xl" style={{ backgroundColor: BRAND.teal }}></div>
       </div>
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
@@ -53,14 +66,14 @@ export function SDGSection() {
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-white mb-6">
             <Globe className="w-4 h-4" />
-            <span>UN Sustainable Development Goals</span>
+            <span className="font-medium">UN Sustainable Development Goals</span>
           </div>
           
-          <h2 className="text-white mb-6">
+          <h2 className="text-white text-3xl sm:text-4xl lg:text-5xl font-bold mb-6">
             SDG-Aligned CSR Programs
           </h2>
           
-          <p className="text-blue-100 max-w-3xl mx-auto text-lg">
+          <p className="text-white/80 max-w-3xl mx-auto text-lg">
             All CSR projects are strategically aligned with UN Sustainable Development Goals, 
             ensuring your corporate impact contributes to global sustainability targets.
           </p>
@@ -71,12 +84,15 @@ export function SDGSection() {
           {sdgs.map((sdg, index) => (
             <div
               key={index}
-              className="group relative bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4 hover:bg-white/20 transition-all duration-300 cursor-pointer"
+              className="group relative bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-4 hover:bg-white/20 transition-all duration-300 cursor-pointer"
             >
-              <div className={`w-12 h-12 ${sdg.color} rounded-lg flex items-center justify-center text-white mb-3 group-hover:scale-110 transition-transform`}>
+              <div 
+                className="w-12 h-12 rounded-xl flex items-center justify-center text-white mb-3 group-hover:scale-110 transition-transform"
+                style={{ backgroundColor: sdg.color }}
+              >
                 {sdg.icon}
               </div>
-              <p className="text-white text-xs leading-snug">
+              <p className="text-white text-xs leading-snug font-medium">
                 {sdg.title}
               </p>
             </div>
@@ -85,18 +101,16 @@ export function SDGSection() {
 
         {/* Stats Row */}
         <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-          <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-6">
-            <div className="text-white mb-2">17/17</div>
-            <div className="text-blue-100">SDG Goals Covered</div>
-          </div>
-          <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-6">
-            <div className="text-white mb-2">200+</div>
-            <div className="text-blue-100">SDG-Aligned Projects</div>
-          </div>
-          <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-6">
-            <div className="text-white mb-2">100%</div>
-            <div className="text-blue-100">Impact Tracking</div>
-          </div>
+          {[
+            { value: '17/17', label: 'SDG Goals Covered' },
+            { value: '200+', label: 'SDG-Aligned Projects' },
+            { value: '100%', label: 'Impact Tracking' },
+          ].map((stat, index) => (
+            <div key={index} className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6 hover:bg-white/15 transition-colors">
+              <div className="text-white text-3xl font-bold mb-2">{stat.value}</div>
+              <div className="text-white/70">{stat.label}</div>
+            </div>
+          ))}
         </div>
       </div>
     </section>

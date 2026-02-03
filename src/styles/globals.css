@@ -156,43 +156,55 @@
 
 :root {
   --font-size: 16px;
+  
+  /* Wasilah Brand Colors - Matching logo.jpeg */
+  --wasilah-navy: #1B2A4E;
+  --wasilah-navy-light: #2A3F6E;
+  --wasilah-navy-dark: #111D36;
+  --wasilah-teal: #2EC4B6;
+  --wasilah-teal-light: #4DD8CB;
+  --wasilah-teal-dark: #22A89B;
+  --wasilah-cream: #F5EFE6;
+  --wasilah-cream-light: #FAF8F4;
+  --wasilah-cream-dark: #E8E0D4;
+  
   --background: #ffffff;
-  --foreground: oklch(0.145 0 0);
+  --foreground: var(--wasilah-navy);
   --card: #ffffff;
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: #030213;
-  --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.95 0.0058 264.53);
-  --secondary-foreground: #030213;
-  --muted: #ececf0;
-  --muted-foreground: #717182;
-  --accent: #e9ebef;
-  --accent-foreground: #030213;
+  --card-foreground: var(--wasilah-navy);
+  --popover: #ffffff;
+  --popover-foreground: var(--wasilah-navy);
+  --primary: var(--wasilah-navy);
+  --primary-foreground: #ffffff;
+  --secondary: var(--wasilah-cream);
+  --secondary-foreground: var(--wasilah-navy);
+  --muted: var(--wasilah-cream);
+  --muted-foreground: #6B7280;
+  --accent: var(--wasilah-teal);
+  --accent-foreground: #ffffff;
   --destructive: #d4183d;
   --destructive-foreground: #ffffff;
-  --border: rgba(0, 0, 0, 0.1);
+  --border: rgba(27, 42, 78, 0.1);
   --input: transparent;
-  --input-background: #f3f3f5;
+  --input-background: var(--wasilah-cream-light);
   --switch-background: #cbced4;
   --font-weight-medium: 500;
   --font-weight-normal: 400;
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
+  --ring: var(--wasilah-teal);
+  --chart-1: var(--wasilah-teal);
+  --chart-2: var(--wasilah-navy);
+  --chart-3: #6366F1;
+  --chart-4: #F59E0B;
+  --chart-5: #EC4899;
   --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: #030213;
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar: var(--wasilah-cream-light);
+  --sidebar-foreground: var(--wasilah-navy);
+  --sidebar-primary: var(--wasilah-navy);
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: var(--wasilah-teal);
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: var(--wasilah-cream-dark);
+  --sidebar-ring: var(--wasilah-teal);
 }
 
 .dark {
