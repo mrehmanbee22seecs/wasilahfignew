@@ -87,41 +87,49 @@ export function EnhancedMediaUploader({
 
     const droppedFiles = Array.from(e.dataTransfer.files);
     processFiles(droppedFiles);
-  }, [files.length, maxFiles]);
+  }, [processFiles]);
 
   const handleFileInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const selectedFiles = Array.from(e.target.files);
       processFiles(selectedFiles);
     }
-  }, [files.length, maxFiles]);
+  }, [processFiles]);
 
-  const processFiles = async (fileList: File[]) => {
-    // Validate file count
-    if (files.length + fileList.length > maxFiles) {
-      toast.error(`Maximum ${maxFiles} files allowed`);
-      return;
-    }
+  const processFiles = useCallback(async (fileList: File[]) => {
+    // Validate file count - use functional update to access current state
+    setFiles(prevFiles => {
+      if (prevFiles.length + fileList.length > maxFiles) {
+        toast.error(`Maximum ${maxFiles} files allowed`);
+        return prevFiles; // Return without modification
+      }
 
-    // Create initial file entries
-    const newFiles: OptimizedMediaFile[] = fileList.map((file) => ({
-      id: `${Date.now()}-${Math.random()}`,
-      originalFile: file,
-      optimizedFile: file,
-      preview: URL.createObjectURL(file),
-      progress: 0,
-      status: 'validating' as const,
-    }));
+      // Create initial file entries
+      const newFiles: OptimizedMediaFile[] = fileList.map((file) => ({
+        id: `${Date.now()}-${Math.random()}`,
+        originalFile: file,
+        optimizedFile: file,
+        preview: URL.createObjectURL(file),
+        progress: 0,
+        status: 'validating' as const,
+      }));
 
-    setFiles(prev => [...prev, ...newFiles]);
+      // Process each file asynchronously
+      newFiles.forEach(mediaFile => {
+        processFile(mediaFile);
+      });
 
-    // Process each file
-    for (const mediaFile of newFiles) {
-      await processFile(mediaFile);
-    }
-  };
+      return [...prevFiles, ...newFiles];
+    });
+  }, [maxFiles, processFile]);
 
-  const processFile = async (mediaFile: OptimizedMediaFile) => {
+  const updateFile = useCallback((id: string, updates: Partial<OptimizedMediaFile>) => {
+    setFiles(prev =>
+      prev.map(f => (f.id === id ? { ...f, ...updates } : f))
+    );
+  }, []);
+
+  const processFile = useCallback(async (mediaFile: OptimizedMediaFile) => {
     try {
       // Step 1: Validate
       updateFile(mediaFile.id, { status: 'validating', progress: 10 });
@@ -199,9 +207,9 @@ export function EnhancedMediaUploader({
       });
       toast.error(`Failed to process ${mediaFile.originalFile.name}`);
     }
-  };
+  }, [maxSize, acceptedFormats, autoOptimize, compressionQuality, updateFile]);
 
-  const simulateUpload = (fileId: string): Promise<void> => {
+  const simulateUpload = useCallback((fileId: string): Promise<void> => {
     return new Promise((resolve) => {
       let progress = 70;
       const interval = setInterval(() => {
@@ -214,13 +222,7 @@ export function EnhancedMediaUploader({
         }
       }, 200);
     });
-  };
-
-  const updateFile = (id: string, updates: Partial<OptimizedMediaFile>) => {
-    setFiles(prev =>
-      prev.map(f => (f.id === id ? { ...f, ...updates } : f))
-    );
-  };
+  }, [updateFile]);
 
   const removeFile = (id: string) => {
     const file = files.find(f => f.id === id);

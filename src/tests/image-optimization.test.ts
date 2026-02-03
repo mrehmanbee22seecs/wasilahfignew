@@ -218,7 +218,7 @@ describe('Image Optimization Performance', () => {
 
   it('should handle edge cases in file size formatting', () => {
     expect(formatFileSize(-1)).toBe('0 B');
-    expect(formatFileSize(0.5)).toBe('0.5 B');  
+    expect(formatFileSize(0.5)).toBe('0.50 B');  
     expect(formatFileSize(1023)).toBe('1023 B');
     expect(formatFileSize(1025)).toBe('1 KB');
   });

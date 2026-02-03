@@ -287,9 +287,8 @@ export async function compressMultipleImages(
  * Get file size in human-readable format
  */
 export function formatFileSize(bytes: number): string {
-  if (bytes < 0 || !isFinite(bytes)) return '0 B';
-  if (bytes === 0) return '0 B';
-  if (bytes < 1) return `${bytes} B`;
+  if (bytes < 0 || !isFinite(bytes) || bytes === 0) return '0 B';
+  if (bytes < 1) return `${bytes.toFixed(2)} B`;
   
   const k = 1024;
   const sizes = ['B', 'KB', 'MB', 'GB'];
