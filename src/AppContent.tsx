@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, Suspense, lazy } from "react";
 import { Navigation } from "./components/wasilah-v2/Navigation";
 import { Footer } from "./components/wasilah-v2/Footer";
 import { PageSwitcher } from "./components/PageSwitcher";
@@ -13,33 +13,39 @@ import { useExport } from "./hooks/useExport";
 import { NetworkStatus } from "./components/ui/NetworkStatus";
 import { ToastContainer, ToastProps } from "./components/ui/Toast";
 import { applyReducedMotionStyles } from "./utils/reducedMotion";
+import { ChunkErrorBoundary } from "./components/lazy/ChunkErrorBoundary";
+import { LazyLoadingFallback } from "./components/lazy/LazyLoadingFallback";
 
 // Auth System
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 
-// Import Pages
+// Keep HomePage loaded immediately for initial render
 import { HomePage } from "./pages/HomePage";
-import { SolutionsPage } from "./pages/SolutionsPage";
-import { VolunteerProgramPage } from "./pages/VolunteerProgramPage";
-import { NGOPartnersPage } from "./pages/NGOPartnersPage";
-import { CorporateServicesPage } from "./pages/CorporateServicesPage";
-import { NGODirectoryPage } from "./pages/NGODirectoryPage";
-import { NGOProfilePage } from "./pages/NGOProfilePage";
-import { VolunteerProfilePage } from "./pages/VolunteerProfilePage";
-import { VolunteerDirectoryPage } from "./pages/VolunteerDirectoryPage";
-import { VolunteerOpportunitiesPage } from "./pages/VolunteerOpportunitiesPage";
-import { OpportunityDetailPage } from "./pages/OpportunityDetailPage";
-import { NGOProfilePageV2 } from "./pages/NGOProfilePageV2";
-import { ContactPage } from "./pages/ContactPage";
-import { AuthPage } from "./pages/AuthPage";
-import { CorporateDashboard } from "./pages/CorporateDashboard";
-import NGODashboard from "./pages/NGODashboard";
-import VolunteerDashboard from "./pages/VolunteerDashboard";
-import AdminDashboard from "./pages/AdminDashboard";
-import { ResourcesHub } from "./pages/ResourcesHub";
-import { ImpactPage } from "./pages/ImpactPage";
-import { UnauthorizedPage } from "./pages/UnauthorizedPage";
-import { SkeletonsDemo } from "./pages/dev/SkeletonsDemo";
+
+// Lazy load all other pages
+const SolutionsPage = lazy(() => import("./pages/SolutionsPage").then(m => ({ default: m.SolutionsPage })));
+const VolunteerProgramPage = lazy(() => import("./pages/VolunteerProgramPage").then(m => ({ default: m.VolunteerProgramPage })));
+const NGOPartnersPage = lazy(() => import("./pages/NGOPartnersPage").then(m => ({ default: m.NGOPartnersPage })));
+const CorporateServicesPage = lazy(() => import("./pages/CorporateServicesPage").then(m => ({ default: m.CorporateServicesPage })));
+const NGODirectoryPage = lazy(() => import("./pages/NGODirectoryPage").then(m => ({ default: m.NGODirectoryPage })));
+const NGOProfilePage = lazy(() => import("./pages/NGOProfilePage").then(m => ({ default: m.NGOProfilePage })));
+const VolunteerProfilePage = lazy(() => import("./pages/VolunteerProfilePage").then(m => ({ default: m.VolunteerProfilePage })));
+const VolunteerDirectoryPage = lazy(() => import("./pages/VolunteerDirectoryPage").then(m => ({ default: m.VolunteerDirectoryPage })));
+const VolunteerOpportunitiesPage = lazy(() => import("./pages/VolunteerOpportunitiesPage").then(m => ({ default: m.VolunteerOpportunitiesPage })));
+const OpportunityDetailPage = lazy(() => import("./pages/OpportunityDetailPage").then(m => ({ default: m.OpportunityDetailPage })));
+const NGOProfilePageV2 = lazy(() => import("./pages/NGOProfilePageV2").then(m => ({ default: m.NGOProfilePageV2 })));
+const ContactPage = lazy(() => import("./pages/ContactPage").then(m => ({ default: m.ContactPage })));
+const AuthPage = lazy(() => import("./pages/AuthPage").then(m => ({ default: m.AuthPage })));
+const ResourcesHub = lazy(() => import("./pages/ResourcesHub").then(m => ({ default: m.ResourcesHub })));
+const ImpactPage = lazy(() => import("./pages/ImpactPage").then(m => ({ default: m.ImpactPage })));
+const UnauthorizedPage = lazy(() => import("./pages/UnauthorizedPage").then(m => ({ default: m.UnauthorizedPage })));
+const SkeletonsDemo = lazy(() => import("./pages/dev/SkeletonsDemo").then(m => ({ default: m.SkeletonsDemo })));
+
+// Dashboard pages - larger bundles, lazy load with dashboard skeleton
+const CorporateDashboard = lazy(() => import("./pages/CorporateDashboard").then(m => ({ default: m.CorporateDashboard })));
+const NGODashboard = lazy(() => import("./pages/NGODashboard"));
+const VolunteerDashboard = lazy(() => import("./pages/VolunteerDashboard"));
+const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
 
 // Legal Pages
 import { PrivacyPolicyPage, TermsOfServicePage, CookiePolicyPage } from "./pages/legal";
@@ -181,92 +187,134 @@ export function AppContent() {
       case "home":
         return <HomePage />;
       case "csr-solutions":
-        return <SolutionsPage />;
+        return (
+          <Suspense fallback={<LazyLoadingFallback type="page" />}>
+            <SolutionsPage />
+          </Suspense>
+        );
       case "volunteer-program":
-        return <VolunteerProgramPage />;
+        return (
+          <Suspense fallback={<LazyLoadingFallback type="page" />}>
+            <VolunteerProgramPage />
+          </Suspense>
+        );
       case "ngo-partners":
-        return <NGOPartnersPage />;
+        return (
+          <Suspense fallback={<LazyLoadingFallback type="page" />}>
+            <NGOPartnersPage />
+          </Suspense>
+        );
       case "corporate-services":
-        return <CorporateServicesPage />;
+        return (
+          <Suspense fallback={<LazyLoadingFallback type="page" />}>
+            <CorporateServicesPage />
+          </Suspense>
+        );
       case "ngo-directory":
         return (
-          <NGODirectoryPage
-            onNavigateToProfile={handleNavigateToProfile}
-          />
+          <Suspense fallback={<LazyLoadingFallback type="page" />}>
+            <NGODirectoryPage
+              onNavigateToProfile={handleNavigateToProfile}
+            />
+          </Suspense>
         );
       case "ngo-profile":
-        return <NGOProfilePage ngoId={selectedNGOId} />;
+        return (
+          <Suspense fallback={<LazyLoadingFallback type="page" />}>
+            <NGOProfilePage ngoId={selectedNGOId} />
+          </Suspense>
+        );
       case "ngo-profile-v2":
         return (
-          <NGOProfilePageV2
-            ngoId={selectedNGOId}
-            onBackToOpportunity={handleBackToOpportunityDetail}
-            onViewOpportunity={handleNavigateToOpportunityDetail}
-            onApplyToOpportunity={(oppId) => console.log("Apply to:", oppId)}
-            onViewAllOpportunities={handleBackToOpportunities}
-          />
+          <Suspense fallback={<LazyLoadingFallback type="page" />}>
+            <NGOProfilePageV2
+              ngoId={selectedNGOId}
+              onBackToOpportunity={handleBackToOpportunityDetail}
+              onViewOpportunity={handleNavigateToOpportunityDetail}
+              onApplyToOpportunity={(oppId) => console.log("Apply to:", oppId)}
+              onViewAllOpportunities={handleBackToOpportunities}
+            />
+          </Suspense>
         );
       case "volunteer-directory":
         return (
-          <VolunteerDirectoryPage
-            onNavigateToProfile={handleNavigateToVolunteerProfile}
-          />
+          <Suspense fallback={<LazyLoadingFallback type="page" />}>
+            <VolunteerDirectoryPage
+              onNavigateToProfile={handleNavigateToVolunteerProfile}
+            />
+          </Suspense>
         );
       case "volunteer-profile":
-        return <VolunteerProfilePage volunteerId={selectedVolunteerId} />;
+        return (
+          <Suspense fallback={<LazyLoadingFallback type="page" />}>
+            <VolunteerProfilePage volunteerId={selectedVolunteerId} />
+          </Suspense>
+        );
       case "opportunities":
         return (
-          <VolunteerOpportunitiesPage
-            onNavigateToDetail={handleNavigateToOpportunityDetail}
-          />
+          <Suspense fallback={<LazyLoadingFallback type="page" />}>
+            <VolunteerOpportunitiesPage
+              onNavigateToDetail={handleNavigateToOpportunityDetail}
+            />
+          </Suspense>
         );
       case "opportunity-detail":
         return (
-          <OpportunityDetailPage
-            opportunityId={selectedOpportunityId}
-            onBackToOpportunities={handleBackToOpportunities}
-            onViewNGOProfile={handleNavigateToNGOProfileV2}
-          />
+          <Suspense fallback={<LazyLoadingFallback type="page" />}>
+            <OpportunityDetailPage
+              opportunityId={selectedOpportunityId}
+              onBackToOpportunities={handleBackToOpportunities}
+              onViewNGOProfile={handleNavigateToNGOProfileV2}
+            />
+          </Suspense>
         );
       case "volunteer-dashboard":
         return (
-          <ProtectedRoute
-            allowedRoles={['volunteer']}
-            onUnauthorized={() => setCurrentPage('unauthorized')}
-            onUnauthenticated={() => setCurrentPage('auth')}
-          >
-            <VolunteerDashboard />
-          </ProtectedRoute>
+          <Suspense fallback={<LazyLoadingFallback type="dashboard" />}>
+            <ProtectedRoute
+              allowedRoles={['volunteer']}
+              onUnauthorized={() => setCurrentPage('unauthorized')}
+              onUnauthenticated={() => setCurrentPage('auth')}
+            >
+              <VolunteerDashboard />
+            </ProtectedRoute>
+          </Suspense>
         );
       case "admin-dashboard":
         return (
-          <ProtectedRoute
-            allowedRoles={['admin']}
-            onUnauthorized={() => setCurrentPage('unauthorized')}
-            onUnauthenticated={() => setCurrentPage('auth')}
-          >
-            <AdminDashboard />
-          </ProtectedRoute>
+          <Suspense fallback={<LazyLoadingFallback type="dashboard" />}>
+            <ProtectedRoute
+              allowedRoles={['admin']}
+              onUnauthorized={() => setCurrentPage('unauthorized')}
+              onUnauthenticated={() => setCurrentPage('auth')}
+            >
+              <AdminDashboard />
+            </ProtectedRoute>
+          </Suspense>
         );
       case "corporate-dashboard":
         return (
-          <ProtectedRoute
-            allowedRoles={['corporate']}
-            onUnauthorized={() => setCurrentPage('unauthorized')}
-            onUnauthenticated={() => setCurrentPage('auth')}
-          >
-            <CorporateDashboard onNavigateHome={() => setCurrentPage("home")} />
-          </ProtectedRoute>
+          <Suspense fallback={<LazyLoadingFallback type="dashboard" />}>
+            <ProtectedRoute
+              allowedRoles={['corporate']}
+              onUnauthorized={() => setCurrentPage('unauthorized')}
+              onUnauthenticated={() => setCurrentPage('auth')}
+            >
+              <CorporateDashboard onNavigateHome={() => setCurrentPage("home")} />
+            </ProtectedRoute>
+          </Suspense>
         );
       case "ngo-dashboard":
         return (
-          <ProtectedRoute
-            allowedRoles={['ngo']}
-            onUnauthorized={() => setCurrentPage('unauthorized')}
-            onUnauthenticated={() => setCurrentPage('auth')}
-          >
-            <NGODashboard onNavigateHome={() => setCurrentPage("home")} />
-          </ProtectedRoute>
+          <Suspense fallback={<LazyLoadingFallback type="dashboard" />}>
+            <ProtectedRoute
+              allowedRoles={['ngo']}
+              onUnauthorized={() => setCurrentPage('unauthorized')}
+              onUnauthenticated={() => setCurrentPage('auth')}
+            >
+              <NGODashboard onNavigateHome={() => setCurrentPage("home")} />
+            </ProtectedRoute>
+          </Suspense>
         );
       case "portfolio":
         return (
@@ -280,15 +328,35 @@ export function AppContent() {
           </div>
         );
       case "contact":
-        return <ContactPage />;
+        return (
+          <Suspense fallback={<LazyLoadingFallback type="page" />}>
+            <ContactPage />
+          </Suspense>
+        );
       case "auth":
-        return <AuthPage onNavigateHome={() => setCurrentPage("home")} />;
+        return (
+          <Suspense fallback={<LazyLoadingFallback type="page" />}>
+            <AuthPage onNavigateHome={() => setCurrentPage("home")} />
+          </Suspense>
+        );
       case "resources":
-        return <ResourcesHub />;
+        return (
+          <Suspense fallback={<LazyLoadingFallback type="page" />}>
+            <ResourcesHub />
+          </Suspense>
+        );
       case "impact":
-        return <ImpactPage />;
+        return (
+          <Suspense fallback={<LazyLoadingFallback type="page" />}>
+            <ImpactPage />
+          </Suspense>
+        );
       case "unauthorized":
-        return <UnauthorizedPage onNavigate={(page) => setCurrentPage(page as PageType)} />;
+        return (
+          <Suspense fallback={<LazyLoadingFallback type="page" />}>
+            <UnauthorizedPage onNavigate={(page) => setCurrentPage(page as PageType)} />
+          </Suspense>
+        );
       case "skeletons-demo":
         return <SkeletonsDemo />;
       case "privacy-policy":
@@ -303,6 +371,10 @@ export function AppContent() {
             onBack={() => setCurrentPage("home")} 
             onNavigate={(page) => setCurrentPage(page as PageType)}
           />
+        return (
+          <Suspense fallback={<LazyLoadingFallback type="page" />}>
+            <SkeletonsDemo />
+          </Suspense>
         );
       default:
         return <HomePage />;
@@ -322,7 +394,7 @@ export function AppContent() {
 
   if (pagesWithoutNavFooter.includes(currentPage)) {
     return (
-      <>
+      <ChunkErrorBoundary>
         {/* Network Status Banner */}
         <NetworkStatus />
         
@@ -338,25 +410,26 @@ export function AppContent() {
         />
         
         <PageSwitcher currentPage={currentPage} onNavigate={(page) => setCurrentPage(page as PageType)} />
-      </>
+      </ChunkErrorBoundary>
     );
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Network Status Banner */}
-      <NetworkStatus />
-      
-      {/* Toast Notifications */}
-      <ToastContainer toasts={toasts} onRemove={removeToast} />
-      
-      <Navigation
-        currentPage={currentPage}
-        onNavigate={(page) => setCurrentPage(page as PageType)}
-      />
+    <ChunkErrorBoundary>
+      <div className="min-h-screen bg-white">
+        {/* Network Status Banner */}
+        <NetworkStatus />
+        
+        {/* Toast Notifications */}
+        <ToastContainer toasts={toasts} onRemove={removeToast} />
+        
+        <Navigation
+          currentPage={currentPage}
+          onNavigate={(page) => setCurrentPage(page as PageType)}
+        />
 
-      {/* Render Current Page */}
-      {renderPage()}
+        {/* Render Current Page */}
+        {renderPage()}
 
       <Footer onNavigate={(page) => setCurrentPage(page as PageType)} />
       
@@ -367,46 +440,56 @@ export function AppContent() {
           onClick={() => setNotificationsPanelOpen(true)}
         />
       </div>
+        <Footer />
+        
+        {/* Notification Badge - Fixed Position */}
+        <div className="fixed top-4 right-4 z-30">
+          <NotificationBadge
+            count={unreadCount}
+            onClick={() => setNotificationsPanelOpen(true)}
+          />
+        </div>
 
-      {/* Notifications Panel */}
-      <NotificationsPanel
-        isOpen={notificationsPanelOpen}
-        onClose={() => setNotificationsPanelOpen(false)}
-        notifications={notifications}
-        onMarkAsRead={markAsRead}
-        onMarkAsUnread={markAsUnread}
-        onMarkAllAsRead={markAllAsRead}
-        onDelete={deleteNotification}
-        onDeleteAll={deleteAllNotifications}
-        onRefresh={fetchNotifications}
-      />
+        {/* Notifications Panel */}
+        <NotificationsPanel
+          isOpen={notificationsPanelOpen}
+          onClose={() => setNotificationsPanelOpen(false)}
+          notifications={notifications}
+          onMarkAsRead={markAsRead}
+          onMarkAsUnread={markAsUnread}
+          onMarkAllAsRead={markAllAsRead}
+          onDelete={deleteNotification}
+          onDeleteAll={deleteAllNotifications}
+          onRefresh={fetchNotifications}
+        />
 
-      {/* Global Search Modal */}
-      <GlobalSearchModal
-        isOpen={searchModalOpen}
-        onClose={() => setSearchModalOpen(false)}
-      />
+        {/* Global Search Modal */}
+        <GlobalSearchModal
+          isOpen={searchModalOpen}
+          onClose={() => setSearchModalOpen(false)}
+        />
 
-      {/* Export Modal */}
-      <ExportModal
-        isOpen={exportModalOpen}
-        onClose={() => setExportModalOpen(false)}
-        onExport={performExport}
-        isExporting={isExporting}
-      />
+        {/* Export Modal */}
+        <ExportModal
+          isOpen={exportModalOpen}
+          onClose={() => setExportModalOpen(false)}
+          onExport={performExport}
+          isExporting={isExporting}
+        />
 
-      {/* Export History Panel */}
-      <ExportHistoryPanel
-        isOpen={exportHistoryOpen}
-        onClose={() => setExportHistoryOpen(false)}
-        jobs={exportJobs}
-        onDelete={deleteExportJob}
-        onClearAll={clearExportHistory}
-        onRefresh={loadExportHistory}
-      />
-      
-      {/* Page Switcher for Quick Access */}
-      <PageSwitcher currentPage={currentPage} onNavigate={(page) => setCurrentPage(page as PageType)} />
-    </div>
+        {/* Export History Panel */}
+        <ExportHistoryPanel
+          isOpen={exportHistoryOpen}
+          onClose={() => setExportHistoryOpen(false)}
+          jobs={exportJobs}
+          onDelete={deleteExportJob}
+          onClearAll={clearExportHistory}
+          onRefresh={loadExportHistory}
+        />
+        
+        {/* Page Switcher for Quick Access */}
+        <PageSwitcher currentPage={currentPage} onNavigate={(page) => setCurrentPage(page as PageType)} />
+      </div>
+    </ChunkErrorBoundary>
   );
 }
