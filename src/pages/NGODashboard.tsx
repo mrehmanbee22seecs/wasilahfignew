@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { CheckCircle, Clock, AlertCircle, Menu, X, FileText, User, TrendingUp, Home, MessageSquare, HelpCircle, LogOut, FolderKanban, DollarSign, PieChart } from 'lucide-react';
+import { BRAND } from '../constants/brand';
 import { TimelineStepper } from '../components/ngo-dashboard/TimelineStepper';
 import { RequestVerificationModal } from '../components/ngo-dashboard/modals/RequestVerificationModal';
 import { VettingWarningModal } from '../components/ngo-dashboard/modals/VettingWarningModal';
@@ -256,16 +257,16 @@ export default function NGODashboard({ onNavigateHome }: { onNavigateHome?: () =
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen" style={{ backgroundColor: BRAND.creamLight }}>
       {/* Mobile Header */}
-      <div className="lg:hidden bg-white border-b-2 border-slate-200 px-4 py-3">
+      <div className="lg:hidden bg-white border-b-2 px-4 py-3" style={{ borderColor: `${BRAND.navy}15` }}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             {ngo.logo_url && (
               <img src={ngo.logo_url} alt={ngo.name} className="w-10 h-10 rounded-lg" />
             )}
             <div>
-              <h3 className="text-sm text-slate-900">{ngo.name}</h3>
+              <h3 className="text-sm" style={{ color: BRAND.navy }}>{ngo.name}</h3>
               <span className={`text-xs px-2 py-0.5 rounded ${statusConfig.color}`}>
                 {statusConfig.label}
               </span>
@@ -273,8 +274,9 @@ export default function NGODashboard({ onNavigateHome }: { onNavigateHome?: () =
           </div>
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="p-2 hover:bg-slate-100 rounded-lg"
+            className="p-2 hover:bg-gray-100 rounded-lg"
             aria-label="Toggle menu"
+            style={{ color: BRAND.navy }}
           >
             {sidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -284,23 +286,24 @@ export default function NGODashboard({ onNavigateHome }: { onNavigateHome?: () =
       <div className="flex">
         {/* Sidebar */}
         <aside className={`
-          fixed lg:sticky top-0 left-0 h-screen w-72 bg-white border-r-2 border-slate-200 z-40
+          fixed lg:sticky top-0 left-0 h-screen w-72 bg-white border-r-2 z-40
           transition-transform duration-300 lg:translate-x-0
           ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-        `}>
+        `} style={{ borderColor: `${BRAND.navy}15` }}>
           <div className="flex flex-col h-full overflow-y-auto">
             {/* NGO Header */}
-            <div className="p-6 border-b-2 border-slate-200">
+            <div className="p-6 border-b-2" style={{ borderColor: `${BRAND.navy}15` }}>
               <div className="flex items-center gap-4 mb-4">
                 {ngo.logo_url && (
                   <img
                     src={ngo.logo_url}
                     alt={ngo.name}
-                    className="w-16 h-16 rounded-xl object-cover border-2 border-slate-200"
+                    className="w-16 h-16 rounded-xl object-cover border-2"
+                    style={{ borderColor: `${BRAND.navy}20` }}
                   />
                 )}
                 <div className="flex-1">
-                  <h2 className="text-sm text-slate-900 mb-1">{ngo.name}</h2>
+                  <h2 className="text-sm mb-1" style={{ color: BRAND.navy }}>{ngo.name}</h2>
                   <span className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-lg text-xs border-2 ${statusConfig.color}`}>
                     <StatusIcon className="w-3 h-3" />
                     {statusConfig.label}
@@ -310,13 +313,13 @@ export default function NGODashboard({ onNavigateHome }: { onNavigateHome?: () =
 
               {/* Quick Stats */}
               <div className="grid grid-cols-2 gap-3 mb-4">
-                <div className="p-3 bg-slate-50 rounded-lg">
-                  <p className="text-xs text-slate-600 mb-0.5">Projects</p>
-                  <p className="text-lg text-slate-900">{stats.activeProjects}</p>
+                <div className="p-3 rounded-lg" style={{ backgroundColor: BRAND.cream }}>
+                  <p className="text-xs mb-0.5" style={{ color: BRAND.gray600 }}>Projects</p>
+                  <p className="text-lg" style={{ color: BRAND.navy }}>{stats.activeProjects}</p>
                 </div>
-                <div className="p-3 bg-slate-50 rounded-lg">
-                  <p className="text-xs text-slate-600 mb-0.5">Volunteers</p>
-                  <p className="text-lg text-slate-900">{stats.volunteers}</p>
+                <div className="p-3 rounded-lg" style={{ backgroundColor: BRAND.cream }}>
+                  <p className="text-xs mb-0.5" style={{ color: BRAND.gray600 }}>Volunteers</p>
+                  <p className="text-lg" style={{ color: BRAND.navy }}>{stats.volunteers}</p>
                 </div>
               </div>
 
@@ -325,14 +328,16 @@ export default function NGODashboard({ onNavigateHome }: { onNavigateHome?: () =
                 {verificationStatus === 'unverified' && (
                   <button
                     onClick={() => setShowVerificationModal(true)}
-                    className="w-full px-4 py-2 bg-gradient-to-r from-indigo-600 to-blue-600 text-white rounded-lg hover:shadow-lg transition-all text-sm"
+                    className="w-full px-4 py-2 text-white rounded-lg hover:shadow-lg transition-all text-sm"
+                    style={{ background: `linear-gradient(135deg, ${BRAND.navy} 0%, ${BRAND.teal} 100%)` }}
                   >
                     Request Verification
                   </button>
                 )}
                 <button
                   onClick={() => setActiveTab('profile')}
-                  className="w-full px-4 py-2 bg-white border-2 border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors text-sm"
+                  className="w-full px-4 py-2 bg-white border-2 rounded-lg hover:bg-gray-50 transition-colors text-sm"
+                  style={{ borderColor: `${BRAND.navy}20`, color: BRAND.navy }}
                 >
                   Edit Profile
                 </button>
@@ -352,14 +357,25 @@ export default function NGODashboard({ onNavigateHome }: { onNavigateHome?: () =
                         setActiveTab(tab.id);
                         setSidebarOpen(false);
                       }}
-                      className={`
-                        w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm transition-all
-                        ${isActive 
-                          ? 'bg-gradient-to-r from-indigo-600 to-blue-600 text-white shadow-md' 
-                          : 'text-slate-700 hover:bg-slate-100'
-                        }
-                      `}
+                      className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm transition-all"
+                      style={isActive ? {
+                        background: `linear-gradient(135deg, ${BRAND.navy} 0%, ${BRAND.teal} 100%)`,
+                        color: BRAND.white,
+                        boxShadow: '0 4px 12px rgba(27, 42, 78, 0.3)'
+                      } : {
+                        color: BRAND.navy
+                      }}
                       aria-current={isActive ? 'page' : undefined}
+                      onMouseEnter={(e) => {
+                        if (!isActive) {
+                          e.currentTarget.style.backgroundColor = BRAND.cream;
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (!isActive) {
+                          e.currentTarget.style.backgroundColor = 'transparent';
+                        }
+                      }}
                     >
                       <Icon className="w-5 h-5 flex-shrink-0" />
                       <span>{tab.label}</span>
@@ -370,19 +386,20 @@ export default function NGODashboard({ onNavigateHome }: { onNavigateHome?: () =
             </nav>
 
             {/* Footer */}
-            <div className="p-4 border-t-2 border-slate-200 space-y-1">
-              <button className="w-full flex items-center gap-3 px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 rounded-lg transition-colors">
+            <div className="p-4 border-t-2 space-y-1" style={{ borderColor: `${BRAND.navy}15` }}>
+              <button className="w-full flex items-center gap-3 px-4 py-2 text-sm rounded-lg transition-colors hover:bg-gray-100" style={{ color: BRAND.navy }}>
                 <MessageSquare className="w-5 h-5" />
                 Contact Support
               </button>
-              <button className="w-full flex items-center gap-3 px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 rounded-lg transition-colors">
+              <button className="w-full flex items-center gap-3 px-4 py-2 text-sm rounded-lg transition-colors hover:bg-gray-100" style={{ color: BRAND.navy }}>
                 <HelpCircle className="w-5 h-5" />
                 Help Center
               </button>
               {onNavigateHome && (
                 <button 
                   onClick={onNavigateHome}
-                  className="w-full flex items-center gap-3 px-4 py-2 text-sm text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
+                  className="w-full flex items-center gap-3 px-4 py-2 text-sm rounded-lg transition-colors"
+                  style={{ color: BRAND.teal, backgroundColor: `${BRAND.teal}10` }}
                   aria-label="Exit dashboard and return to home"
                 >
                   <LogOut className="w-5 h-5" />
@@ -405,12 +422,12 @@ export default function NGODashboard({ onNavigateHome }: { onNavigateHome?: () =
         {/* Main Content */}
         <main className="flex-1 min-w-0">
           {/* Header */}
-          <div className="bg-white border-b-2 border-slate-200 px-6 py-6 lg:py-8">
+          <div className="bg-white border-b-2 px-6 py-6 lg:py-8" style={{ borderColor: `${BRAND.navy}15` }}>
             <div className="max-w-7xl mx-auto">
               <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6">
                 <div>
-                  <h1 className="text-slate-900 mb-1">NGO Dashboard</h1>
-                  <p className="text-slate-600">
+                  <h1 className="mb-1" style={{ color: BRAND.navy }}>NGO Dashboard</h1>
+                  <p style={{ color: BRAND.gray600 }}>
                     Manage your organization profile and verification status
                   </p>
                 </div>
@@ -418,7 +435,8 @@ export default function NGODashboard({ onNavigateHome }: { onNavigateHome?: () =
                 {verificationStatus === 'unverified' && (
                   <button
                     onClick={() => setShowVerificationModal(true)}
-                    className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-blue-600 text-white rounded-lg hover:shadow-lg transition-all whitespace-nowrap"
+                    className="px-6 py-3 text-white rounded-lg hover:shadow-lg transition-all whitespace-nowrap"
+                    style={{ background: `linear-gradient(135deg, ${BRAND.navy} 0%, ${BRAND.teal} 100%)` }}
                   >
                     Request Verification
                   </button>

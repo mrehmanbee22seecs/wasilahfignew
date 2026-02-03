@@ -7,6 +7,7 @@ import { RoleSelector } from '../components/auth/RoleSelector';
 import { OnboardingWizard, OnboardingData } from '../components/auth/OnboardingWizard';
 import { ForgotPasswordModal } from '../components/auth/ForgotPasswordModal';
 import { CheckCircle, Sparkles } from 'lucide-react';
+import { BRAND } from '../constants/brand';
 
 type AuthState = 'login' | 'signup' | 'verify' | 'role' | 'onboarding' | 'complete';
 
@@ -142,41 +143,44 @@ export function AuthPage({ onNavigateHome }: { onNavigateHome?: () => void }) {
         {/* State: Complete (Success Screen) */}
         {authState === 'complete' && (
           <div className="w-full max-w-2xl mx-auto animate-in fade-in zoom-in-95 duration-500">
-            <div className="bg-white rounded-2xl border-2 border-slate-200 shadow-lg p-12 text-center">
+            <div className="bg-white rounded-2xl border-2 shadow-lg p-12 text-center" style={{ borderColor: `${BRAND.navy}15` }}>
               {/* Success Icon */}
-              <div className="w-24 h-24 bg-gradient-to-br from-teal-600 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg animate-in zoom-in-50 duration-500 delay-150">
+              <div 
+                className="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg animate-in zoom-in-50 duration-500 delay-150"
+                style={{ background: `linear-gradient(135deg, ${BRAND.navy} 0%, ${BRAND.teal} 100%)` }}
+              >
                 <CheckCircle className="w-12 h-12 text-white" />
               </div>
 
               {/* Title */}
-              <h1 className="text-slate-900 mb-3 animate-in slide-in-from-bottom-2 duration-300 delay-300">
+              <h1 className="mb-3 animate-in slide-in-from-bottom-2 duration-300 delay-300" style={{ color: BRAND.navy }}>
                 Welcome to Wasilah! 🎉
               </h1>
 
-              <p className="text-slate-600 text-lg mb-8 animate-in slide-in-from-bottom-2 duration-300 delay-500">
+              <p className="text-lg mb-8 animate-in slide-in-from-bottom-2 duration-300 delay-500" style={{ color: BRAND.gray600 }}>
                 Your account is ready. Let's start making an impact together.
               </p>
 
               {/* Quick Actions */}
               <div className="grid sm:grid-cols-2 gap-4 mb-8 animate-in slide-in-from-bottom-2 duration-300 delay-700">
-                <div className="p-6 bg-teal-50 rounded-xl border border-teal-200">
-                  <div className="text-teal-600 text-3xl mb-2">🎯</div>
-                  <h3 className="text-slate-900 text-sm mb-2">
+                <div className="p-6 rounded-xl border" style={{ backgroundColor: `${BRAND.teal}10`, borderColor: `${BRAND.teal}30` }}>
+                  <div className="text-3xl mb-2" style={{ color: BRAND.teal }}>🎯</div>
+                  <h3 className="text-sm mb-2" style={{ color: BRAND.navy }}>
                     {selectedRole === 'corporate' && 'Create your first project'}
                     {selectedRole === 'ngo' && 'List an opportunity'}
                     {selectedRole === 'volunteer' && 'Browse opportunities'}
                   </h3>
-                  <p className="text-slate-600 text-xs">
+                  <p className="text-xs" style={{ color: BRAND.gray600 }}>
                     {selectedRole === 'corporate' && 'Launch a CSR initiative with vetted NGOs'}
                     {selectedRole === 'ngo' && 'Connect with volunteers and corporates'}
                     {selectedRole === 'volunteer' && 'Find causes you care about'}
                   </p>
                 </div>
 
-                <div className="p-6 bg-blue-50 rounded-xl border border-blue-200">
-                  <div className="text-blue-600 text-3xl mb-2">📊</div>
-                  <h3 className="text-slate-900 text-sm mb-2">Explore your dashboard</h3>
-                  <p className="text-slate-600 text-xs">
+                <div className="p-6 rounded-xl border" style={{ backgroundColor: `${BRAND.navy}08`, borderColor: `${BRAND.navy}20` }}>
+                  <div className="text-3xl mb-2" style={{ color: BRAND.navy }}>📊</div>
+                  <h3 className="text-sm mb-2" style={{ color: BRAND.navy }}>Explore your dashboard</h3>
+                  <p className="text-xs" style={{ color: BRAND.gray600 }}>
                     View insights, track impact, and manage your activity
                   </p>
                 </div>
@@ -185,7 +189,8 @@ export function AuthPage({ onNavigateHome }: { onNavigateHome?: () => void }) {
               {/* CTA */}
               <button
                 onClick={() => window.location.href = `/${selectedRole || 'home'}`}
-                className="flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-teal-600 to-blue-600 text-white rounded-lg hover:shadow-lg transition-all hover:scale-105 mx-auto animate-in slide-in-from-bottom-2 duration-300 delay-1000"
+                className="flex items-center justify-center gap-2 px-8 py-4 text-white rounded-lg hover:shadow-lg transition-all hover:scale-105 mx-auto animate-in slide-in-from-bottom-2 duration-300 delay-1000"
+                style={{ background: `linear-gradient(135deg, ${BRAND.navy} 0%, ${BRAND.teal} 100%)` }}
                 data-analytics="auth_complete_goto_dashboard"
               >
                 <Sparkles className="w-5 h-5" />
@@ -195,7 +200,10 @@ export function AuthPage({ onNavigateHome }: { onNavigateHome?: () => void }) {
               {/* Skip Link */}
               <button
                 onClick={() => window.location.href = '/'}
-                className="mt-6 text-slate-600 hover:text-slate-900 text-sm transition-colors"
+                className="mt-6 text-sm transition-colors"
+                style={{ color: BRAND.gray600 }}
+                onMouseEnter={(e) => e.currentTarget.style.color = BRAND.navy}
+                onMouseLeave={(e) => e.currentTarget.style.color = BRAND.gray600}
               >
                 I'll explore later
               </button>

@@ -15,6 +15,7 @@ import {
   LogOut,
   Home
 } from 'lucide-react';
+import { BRAND } from '../../constants/brand';
 
 interface DashboardNavProps {
   activeTab: 'overview' | 'payments' | 'budget' | 'contracts' | 'csr-plan' | 'volunteering' | 'calendar' | 'projects';
@@ -84,29 +85,39 @@ export function DashboardNav({
       {/* Navigation */}
       <nav
         className={`
-          fixed lg:sticky top-0 left-0 h-screen bg-white border-r-2 border-slate-200 
+          fixed lg:sticky top-0 left-0 h-screen bg-white border-r-2
           flex flex-col z-50 transition-all duration-300
           ${isCollapsed ? 'w-20' : 'w-64'}
           ${isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         `}
+        style={{ borderColor: `${BRAND.navy}15` }}
         aria-label="Main navigation"
       >
         {/* Header */}
-        <div className={`p-6 border-b-2 border-slate-200 flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'}`}>
+        <div 
+          className={`p-6 border-b-2 flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'}`}
+          style={{ borderColor: `${BRAND.navy}15` }}
+        >
           {!isCollapsed && (
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-teal-600 to-blue-600 rounded-lg flex items-center justify-center">
+              <div 
+                className="w-10 h-10 rounded-lg flex items-center justify-center"
+                style={{ background: `linear-gradient(135deg, ${BRAND.navy} 0%, ${BRAND.teal} 100%)` }}
+              >
                 <span className="text-white text-xl">W</span>
               </div>
               <div>
-                <div className="text-slate-900">Wasilah</div>
-                <div className="text-slate-600 text-xs">Corporate Portal</div>
+                <div style={{ color: BRAND.navy }}>Wasilah</div>
+                <div className="text-xs" style={{ color: BRAND.gray600 }}>Corporate Portal</div>
               </div>
             </div>
           )}
           
           {isCollapsed && (
-            <div className="w-10 h-10 bg-gradient-to-br from-teal-600 to-blue-600 rounded-lg flex items-center justify-center">
+            <div 
+              className="w-10 h-10 rounded-lg flex items-center justify-center"
+              style={{ background: `linear-gradient(135deg, ${BRAND.navy} 0%, ${BRAND.teal} 100%)` }}
+            >
               <span className="text-white text-xl">W</span>
             </div>
           )}
@@ -114,10 +125,10 @@ export function DashboardNav({
           {/* Mobile Close Button */}
           <button
             onClick={onToggleMobile}
-            className="lg:hidden p-2 hover:bg-slate-100 rounded-lg transition-colors"
+            className="lg:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors"
             aria-label="Close menu"
           >
-            <X className="w-5 h-5 text-slate-600" />
+            <X className="w-5 h-5" style={{ color: BRAND.gray600 }} />
           </button>
         </div>
 
@@ -138,12 +149,25 @@ export function DashboardNav({
                 onKeyDown={(e) => handleKeyDown(e, item.id)}
                 className={`
                   w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all
-                  ${isActive 
-                    ? 'bg-gradient-to-r from-teal-600 to-blue-600 text-white shadow-lg' 
-                    : 'text-slate-700 hover:bg-slate-100'
-                  }
                   ${isCollapsed ? 'justify-center' : ''}
                 `}
+                style={isActive ? {
+                  background: `linear-gradient(135deg, ${BRAND.navy} 0%, ${BRAND.teal} 100%)`,
+                  color: BRAND.white,
+                  boxShadow: '0 4px 12px rgba(27, 42, 78, 0.3)'
+                } : {
+                  color: BRAND.navy
+                }}
+                onMouseEnter={(e) => {
+                  if (!isActive) {
+                    e.currentTarget.style.backgroundColor = BRAND.cream;
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isActive) {
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                  }
+                }}
                 aria-current={isActive ? 'page' : undefined}
                 title={isCollapsed ? item.label : undefined}
               >
@@ -155,7 +179,7 @@ export function DashboardNav({
         </div>
 
         {/* Bottom Items */}
-        <div className="border-t-2 border-slate-200 p-3 space-y-1">
+        <div className="border-t-2 p-3 space-y-1" style={{ borderColor: `${BRAND.navy}15` }}>
           {bottomItems.map((item) => {
             const Icon = item.icon;
             
@@ -166,10 +190,16 @@ export function DashboardNav({
                 onClick={() => console.log(item.id)}
                 onKeyDown={(e) => handleKeyDown(e, item.id)}
                 className={`
-                  w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all
-                  text-slate-700 hover:bg-slate-100 text-sm
+                  w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all text-sm
                   ${isCollapsed ? 'justify-center' : ''}
                 `}
+                style={{ color: BRAND.navy }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = BRAND.cream;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                }}
                 title={isCollapsed ? item.label : undefined}
               >
                 <Icon className="w-5 h-5 flex-shrink-0" />
@@ -183,10 +213,14 @@ export function DashboardNav({
             <button
               onClick={onNavigateHome}
               className={`
-                w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all
-                text-slate-700 hover:bg-red-50 hover:text-red-600 text-sm
+                w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all text-sm border-2
                 ${isCollapsed ? 'justify-center' : ''}
               `}
+              style={{ 
+                color: BRAND.teal, 
+                borderColor: `${BRAND.teal}30`,
+                backgroundColor: `${BRAND.teal}08`
+              }}
               title={isCollapsed ? 'Exit to Home' : undefined}
               aria-label="Exit dashboard and return to home"
             >
@@ -199,7 +233,14 @@ export function DashboardNav({
         {/* Collapse Toggle (Desktop Only) */}
         <button
           onClick={onCollapse}
-          className="hidden lg:block border-t-2 border-slate-200 p-4 text-slate-600 hover:bg-slate-50 transition-colors text-sm"
+          className="hidden lg:block border-t-2 p-4 transition-colors text-sm"
+          style={{ borderColor: `${BRAND.navy}15`, color: BRAND.gray600 }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = BRAND.cream;
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = 'transparent';
+          }}
         >
           {isCollapsed ? '→ Expand' : '← Collapse'}
         </button>
