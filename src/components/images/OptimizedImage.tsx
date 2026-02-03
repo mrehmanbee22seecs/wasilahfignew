@@ -198,10 +198,10 @@ export function Picture({
 
   return (
     <picture>
-      {modernFormats && urls.avif && (
+      {modernFormats && 'avif' in urls && urls.avif && (
         <source type="image/avif" srcSet={urls.avif} sizes={sizes} />
       )}
-      {modernFormats && urls.webp && (
+      {modernFormats && 'webp' in urls && urls.webp && (
         <source type="image/webp" srcSet={urls.webp} sizes={sizes} />
       )}
       <OptimizedImage
