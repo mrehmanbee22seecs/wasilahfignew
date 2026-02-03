@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react-swc';
 import path from 'path';
 import { securityHeadersPlugin } from './src/lib/security/viteSecurityPlugin';
 import { visualizer } from 'rollup-plugin-visualizer';
+import { imagetools } from 'vite-imagetools';
 
 export default defineConfig({
   plugins: [
@@ -13,6 +14,13 @@ export default defineConfig({
       filename: 'dist/stats.html',
       gzipSize: true,
       brotliSize: true,
+    }),
+    // Image optimization plugin for automatic format conversion and compression
+    imagetools({
+      defaultDirectives: (url) => {
+        // Only process images with explicit directives
+        return new URLSearchParams();
+      },
     }),
   ],
   resolve: {
