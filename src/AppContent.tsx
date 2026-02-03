@@ -371,10 +371,6 @@ export function AppContent() {
             onBack={() => setCurrentPage("home")} 
             onNavigate={(page) => setCurrentPage(page as PageType)}
           />
-        return (
-          <Suspense fallback={<LazyLoadingFallback type="page" />}>
-            <SkeletonsDemo />
-          </Suspense>
         );
       default:
         return <HomePage />;
